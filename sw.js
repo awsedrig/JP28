@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jp28-night-v4';
+const CACHE_NAME = 'jp28-night-v5';
 const CORE_ASSETS = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', (event) => {
