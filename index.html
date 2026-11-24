@@ -339,6 +339,33 @@
       .toast { bottom: 20px; }
     }
     .toast.show { transform: translateY(0); opacity: 1; }
+
+    .step-guide {
+      border-top: 1px dashed rgba(163, 204, 168, 0.14);
+      margin-top: 8px;
+      padding-top: 8px;
+      font-size: 12px;
+      line-height: 1.55;
+      color: #B6BCB3;
+      white-space: pre-line;
+    }
+    .stage-pill-locked {
+      opacity: 0.55;
+      background: rgba(10, 12, 11, 0.55);
+      border-color: rgba(163, 204, 168, 0.08);
+      color: #6B726A;
+    }
+    .stage-pill-done {
+      background: rgba(163, 204, 168, 0.09);
+      border-color: rgba(163, 204, 168, 0.35);
+      color: #A3CCA8;
+    }
+    .stage-pill-active {
+      background: rgba(163, 204, 168, 0.18);
+      border-color: #A3CCA8;
+      color: #E8ECF4;
+      box-shadow: 0 0 14px rgba(163, 204, 168, 0.16);
+    }
   </style>
 </head>
 <body>
@@ -429,10 +456,14 @@
               <button type="button" data-qdate="yesterday" class="qdate-btn px-2.5 py-0.5 rounded text-[#868C84] hover:text-[#E8ECF4]">ВЧЕРА</button>
             </div>
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div id="qa-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             <button type="button" id="qa-shift" class="panel-recessed p-3 text-left hover:border-[#A3CCA8] transition group cursor-pointer">
               <div class="font-mono-num text-[10px] text-[#868C84] group-hover:text-[#A3CCA8]">+1 СМЕНА OZON</div>
               <div class="font-mono-num text-sm font-semibold text-[#E8ECF4] mt-1">+4 000 ₽</div>
+            </button>
+            <button type="button" id="qa-fe" class="hidden panel-recessed p-3 text-left hover:border-[#A3CCA8] transition group cursor-pointer">
+              <div class="font-mono-num text-[10px] text-[#868C84] group-hover:text-[#A3CCA8]">+1 ЧАС ITPEC FE</div>
+              <div class="font-mono-num text-sm font-semibold text-[#E8ECF4] mt-1">В ПРОГРЕСС FE</div>
             </button>
             <button type="button" id="qa-jp" class="panel-recessed p-3 text-left hover:border-[#A3CCA8] transition group cursor-pointer">
               <div class="font-mono-num text-[10px] text-[#868C84] group-hover:text-[#A3CCA8]">+45 МИН ЯПОНСКИЙ</div>
@@ -451,9 +482,9 @@
 
         <!-- 4 Main Numeric KPIs -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <div class="panel p-4 space-y-2">
+          <div id="kpi-debt-card" class="panel p-4 space-y-2">
             <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
-              <span>ДОЛГ · <span class="font-mincho">負債</span></span>
+              <span>ДОЛГ Т-БАНК · <span class="font-mincho">負債</span></span>
               <span id="kpi-debt-pct" class="text-[#A3CCA8]">0%</span>
             </div>
             <div id="kpi-debt-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#DF9B94]">70 000 ₽</div>
@@ -461,7 +492,7 @@
             <div id="kpi-debt-sub" class="font-mono-num text-[10px] text-[#868C84]">Погашено: 0 ₽</div>
           </div>
 
-          <div class="panel p-4 space-y-2">
+          <div id="kpi-shift-card" class="panel p-4 space-y-2">
             <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
               <span>СМЕНЫ · <span class="font-mincho">労働</span></span>
               <span id="kpi-shift-pct" class="text-[#C8C1AE]">0%</span>
@@ -469,6 +500,26 @@
             <div id="kpi-shift-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">0 / 25</div>
             <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-shift-bar" class="h-full bg-[#C8C1AE] transition-all" style="width:0%"></div></div>
             <div id="kpi-shift-sub" class="font-mono-num text-[10px] text-[#A3CCA8]">Выручка: +0 ₽</div>
+          </div>
+
+          <div id="kpi-stage-card" class="hidden panel p-4 space-y-2">
+            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
+              <span>ЭТАП ПЛАНА · <span class="font-mincho">段階</span></span>
+              <span id="kpi-stage-pct" class="text-[#A3CCA8]">0%</span>
+            </div>
+            <div id="kpi-stage-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">03 / 08</div>
+            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-stage-bar" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div></div>
+            <div id="kpi-stage-sub" class="font-mono-num text-[10px] text-[#868C84] truncate">Текущий этап</div>
+          </div>
+
+          <div id="kpi-fe-card" class="hidden panel p-4 space-y-2">
+            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
+              <span>ITPEC FE · <span class="font-mincho">試験</span></span>
+              <span id="kpi-fe-pct" class="text-[#C8C1AE]">0%</span>
+            </div>
+            <div id="kpi-fe-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">0.0 / 100ч</div>
+            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-fe-bar" class="h-full bg-[#C8C1AE] transition-all" style="width:0%"></div></div>
+            <div class="font-mono-num text-[10px] text-[#868C84]">Допуск к визе 技人国</div>
           </div>
 
           <div class="panel p-4 space-y-2">
@@ -490,6 +541,19 @@
             <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-cap-bar" class="h-full bg-[#C8C1AE] transition-all" style="width:0%"></div></div>
             <div id="kpi-cap-sub" class="font-mono-num text-[10px] text-[#868C84]">0% от порога CoE (¥2M)</div>
           </div>
+        </div>
+
+        <!-- Active Stage Mission Card -->
+        <div class="panel p-4 space-y-3 border-[rgba(163,204,168,0.25)]">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="deck-stage-badge" class="font-mono-num text-[10px] px-2 py-0.5 rounded bg-[rgba(163,204,168,0.16)] border border-[rgba(163,204,168,0.35)] text-[#A3CCA8] shrink-0">ЭТАП 01</span>
+              <span id="deck-stage-title" class="font-mincho text-sm sm:text-base font-semibold text-[#E8ECF4] truncate">Антикризис и база</span>
+            </div>
+            <button type="button" data-jump="view-plan" class="font-mono-num text-[10px] text-[#A3CCA8] hover:underline cursor-pointer shrink-0">ПОЛНЫЙ ПЛАН И ИНСТРУКЦИИ →</button>
+          </div>
+          <div id="deck-stage-gates" class="flex flex-wrap gap-1.5"></div>
+          <div id="deck-stage-steps" class="space-y-1.5"></div>
         </div>
 
         <!-- Focus Timer + Activity Heatmap -->
@@ -545,10 +609,10 @@
         </div>
 
         <!-- Active Deadlines & Tasks Snapshot -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div class="panel p-4 space-y-3">
+        <div id="deck-snap-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div id="deck-debts-card" class="panel p-4 space-y-3">
             <div class="flex items-center justify-between">
-              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">БЛИЖАЙШИЕ ПЛАТЕЖИ</div>
+              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">БЛИЖАЙШИЕ ПЛАТЕЖИ (Т-БАНК)</div>
               <button type="button" data-jump="view-finance" class="font-mono-num text-[10px] text-[#A3CCA8] hover:underline cursor-pointer">ВСЕ ФИНАНСЫ →</button>
             </div>
             <div id="deck-next-debts" class="space-y-1.5"></div>
@@ -571,13 +635,21 @@
             <div class="font-mono-num text-[10px] text-[#A3CCA8] tracking-widest uppercase">02 // <span class="font-mincho">財務</span> · АНТИКРИЗИС И КАПИТАЛ</div>
             <h2 class="font-mincho text-lg sm:text-xl font-semibold text-[#E8ECF4] mt-0.5">Смены Ozon, Долги, Копилка и Карантин 72ч</h2>
           </div>
-          <div class="font-mono-num text-xs text-[#868C84]">Курс: <span id="fin-fx-display" class="text-[#DFDDD4] font-semibold">0.64</span> ₽/¥</div>
+          <div class="flex items-center gap-3">
+            <button type="button" id="btn-toggle-ozon-archive" class="btn btn-ghost text-[10px] py-1 px-2.5">АРХИВ OZON / ДОЛГОВ</button>
+            <div class="font-mono-num text-xs text-[#868C84]">Курс: <span id="fin-fx-display" class="text-[#DFDDD4] font-semibold">0.64</span> ₽/¥</div>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div id="fin-archived-banner" class="hidden panel-recessed px-4 py-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="font-mono-num text-[#A3CCA8]">✓ Этап Ozon и Долгов в архиве — на экране только капитал, карантин и замки Т-Банка.</div>
+          <button type="button" id="btn-restore-ozon" class="btn btn-ghost py-1 px-2.5 text-[10px]">ПОКАЗАТЬ ИСТОРИЮ</button>
+        </div>
+
+        <div id="fin-top-grid" class="grid grid-cols-1 lg:grid-cols-12 gap-4">
           <!-- Shifts + Capital -->
-          <div class="lg:col-span-5 space-y-4">
-            <div class="panel p-4 space-y-3">
+          <div id="fin-left-col" class="lg:col-span-5 space-y-4">
+            <div id="fin-shifts-panel" class="panel p-4 space-y-3">
               <div class="flex items-center justify-between">
                 <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">ЛОГ СМЕН OZON JOB</div>
                 <span id="fin-shifts-badge" class="font-mono-num text-xs font-semibold text-[#A3CCA8]">0 / 25</span>
@@ -613,9 +685,9 @@
           </div>
 
           <!-- Debt Payments -->
-          <div class="lg:col-span-7 panel p-4 space-y-3">
+          <div id="fin-debt-panel" class="lg:col-span-7 panel p-4 space-y-3">
             <div class="flex items-center justify-between gap-2">
-              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">ГРАФИК ПЛАТЕЖЕЙ ПО ДОЛГАМ</div>
+              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">ГРАФИК ПЛАТЕЖЕЙ (Т-БАНК)</div>
               <span id="fin-debt-left" class="font-mono-num text-xs font-semibold text-[#DF9B94] whitespace-nowrap shrink-0">Остаток: 70 000 ₽</span>
             </div>
 
@@ -650,7 +722,7 @@
 
           <div class="lg:col-span-5 panel p-4 space-y-3">
             <div class="flex items-center justify-between">
-              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">ЗАМКИ ПРОТИВ BNPL (283-ФЗ)</div>
+              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">ЗАМКИ Т-БАНК И ГОСУСЛУГИ (283-ФЗ)</div>
               <span id="bnpl-badge" class="font-mono-num text-xs font-semibold text-[#A3CCA8]">0 / 5</span>
             </div>
             <div id="bnpl-list" class="space-y-1.5"></div>
@@ -851,6 +923,27 @@
           </div>
         </div>
 
+        <!-- 8-Stage Gated Playbook -->
+        <div class="panel p-4 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#A3CCA8]">ПОЭТАПНЫЙ МАСТЕР-ПЛАН · 8 ЭТАПОВ С ОТКРЫТИЕМ</div>
+              <div id="plan-global-progress" class="font-mono-num text-xs text-[#868C84] mt-0.5">Этап 1 из 8 · Выполнено шагов: 0 / 44</div>
+            </div>
+            <label class="flex items-center gap-2 cursor-pointer font-mono-num text-[11px] text-[#A5ABA2] panel-recessed px-2.5 py-1.5">
+              <input id="cb-peek-locked" type="checkbox" class="chk" />
+              <span>Подсмотреть закрытые</span>
+            </label>
+          </div>
+
+          <div class="w-full h-1.5 bg-[#1B201D] rounded-full overflow-hidden">
+            <div id="plan-global-bar" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div>
+          </div>
+
+          <div id="roadmap-btns" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1.5"></div>
+          <div id="roadmap-box" class="panel-recessed p-4 space-y-4"></div>
+        </div>
+
         <!-- Financial & City Simulator -->
         <div class="panel p-4 space-y-5">
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -921,13 +1014,6 @@
           </div>
         </div>
 
-        <!-- 8-Node Roadmap -->
-        <div class="panel p-4 space-y-3">
-          <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">8 КОНТРОЛЬНЫХ УЗЛОВ (2026–2028)</div>
-          <div id="roadmap-btns" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1.5"></div>
-          <div id="roadmap-box" class="panel-recessed p-4 space-y-2"></div>
-        </div>
-
         <!-- Legal & Visa Reference -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <div class="panel p-4 space-y-2">
@@ -996,6 +1082,10 @@
           <input id="snow-enable-cb" type="checkbox" class="chk" checked />
           <span>Медленный ночной снег</span>
         </label>
+        <label class="flex items-center gap-2 cursor-pointer text-[#A5ABA2]">
+          <input id="hide-ozon-cb" type="checkbox" class="chk" />
+          <span>Скрыть Ozon и Долги (этап 1–2 пройден)</span>
+        </label>
         <div class="flex gap-2 pt-1">
           <button type="button" id="btn-custom-bg" class="btn btn-ghost flex-1 py-1 text-[10px]">СВОЁ ФОТО НА ФОН</button>
           <button type="button" id="btn-reset-bg" class="btn btn-ghost py-1 text-[10px]">СБРОС ФОНА</button>
@@ -1030,6 +1120,7 @@
         <div class="flex flex-wrap gap-2">
           <button type="button" id="btn-json-export" class="btn btn-ghost flex-1">СКАЧАТЬ JSON</button>
           <button type="button" id="btn-json-import" class="btn btn-ghost flex-1">ЗАГРУЗИТЬ JSON</button>
+          <button type="button" id="btn-csv-export" class="btn btn-ghost w-full">ЭКСПОРТ В CSV (EXCEL / SHEETS)</button>
           <input type="file" id="json-file-in" accept=".json" class="hidden" />
         </div>
         <div class="pt-1 flex justify-between items-center">
@@ -1197,11 +1288,11 @@
     ];
 
     const bnplItems = [
-      { id: 'b1', title: 'Полный самозапрет на Госуслугах', desc: 'Установление запрета на получение кредита → полный' },
-      { id: 'b2', title: 'Аннулировать лимит Ozon Рассрочки', desc: 'Через чат Ozon Банка после закрытия долга' },
-      { id: 'b3', title: 'Закрыть счёт Яндекс Сплит', desc: 'Яндекс Пэй → Сплит → Закрыть счёт + отвязать карты' },
-      { id: 'b4', title: 'Отключить Подели / Долями / WB Частями', desc: 'Убрать лазейку до 50 000 ₽ вне БКИ' },
-      { id: 'b5', title: 'Закрыть кредитку после 09.02.2027', desc: 'Кэш держать на отдельном счёте без привязок' }
+      { id: 'b1', title: 'Полный самозапрет на Госуслугах', desc: 'Поиск «Установление запрета на получение кредита» → Полный → простая ЭП (перекрывает новые кредиты и кредитки по всей РФ)' },
+      { id: 'b2', title: 'Отключить «Долями» и «Долями Плюс» (Т-Банк)', desc: 'Снять BNPL-лазейку Т-Банка до 50 000 ₽ вне БКИ (283-ФЗ) в приложении или через чат поддержки' },
+      { id: 'b3', title: 'Чат Т-Банка: отключить предодобренные рассрочки', desc: 'Попросить поддержку убрать автопредложения рассрочек и «оплату частями в 1 клик» в приложении' },
+      { id: 'b4', title: 'Закрыть кредитку Т-Банка (или лимит в минимум)', desc: 'Сразу после закрытия долга (до 09.02.2027) закрыть кредитный счёт, чтобы не откатиться назад' },
+      { id: 'b5', title: 'Отдельный накопительный счёт + отвязать карты', desc: 'Переводить кэш со смен на отдельный счёт и отвязать карты Т-Банка от маркетплейсов' }
     ];
 
     const order30Weeks = [
@@ -1239,22 +1330,390 @@
       }
     ];
 
-    const roadmapNodes = [
-      { code: '01', date: 'Ноя–Дек 26', title: 'Антикризис и база', text: 'Школа 21, 5 CRUD колледжа, самозапрет, 9 смен Ozon → резерв ~33к ₽ к 31.12, пет-проект на .NET 10.' },
-      { code: '02', date: 'Янв–Мар 27', title: 'Долг 0 ₽ и Middle', text: 'Закрытие грейса (09.01), кредитки (09.02) и 3DS (15.03). Воронка собесов → удалённый Middle 180–220к+ net.' },
-      { code: '03', date: 'Апр–Июл 27', title: 'Капитал и N5', text: 'Старт 18 мес накоплений (150–185к/мес). Аудит договора СПО, 2-й загранпаспорт, сдача JLPT N5 (04.07.2027).' },
-      { code: '04', date: 'Дек 2027', title: 'JLPT N4 и SBI Bank', text: 'Сдача JLPT N4 (05.12.2027) — закрывает визовый фильтр A1. Открытие счёта SBI Bank для оплаты школы.' },
-      { code: '05', date: 'Апр 2028', title: 'CoE и ITPEC FE', text: 'Подача на CoE в школу MEXT (на счёте ¥3–4.5M + 2-НДФЛ). Поездка в Улан-Батор и сдача ITPEC FE (англ).' },
-      { code: '06', date: 'Май–Июн 28', title: 'Диплом и каникулы', text: 'Заявление на последипломные каникулы до 15.05.2028 (продление отсрочки на лето), защита диплома СПО.' },
-      { code: '07', date: 'Июл–Сен 28', title: 'N3, виза и вылет', text: 'JLPT N3 (02.07.2028), выход CoE в августе, оплата школы, вылет до 1 октября, дистанционное снятие с учёта.' },
-      { code: '08', date: 'Окт 28–29', title: 'N2 и виза 技人国', text: 'Отказ от удалёнки РФ, Zairyu Card, Japan Post Bank, дожим до N2 (и IPA FE при нужде) → оффер и рабочая виза.' }
-    ];
+    const defaultPlanStages = [
+      {
+            "code": "01",
+            "date": "Ноя–Дек 26",
+            "title": "Антикризис, замки Т-Банка и база .NET",
+            "summary": "Стабилизация денег перед январским пиком списаний, защита от новых рассрочек в Т-Банке, практика Школы 21 и фундамент пет-проекта.",
+            "unlockRule": "Стартовый этап — открыт сразу.",
+            "steps": [
+                  {
+                        "id": "s1_1",
+                        "tag": "Т-БАНК",
+                        "done": false,
+                        "title": "Включить самозапрет на Госуслугах и отключить «Долями Плюс» в Т-Банке",
+                        "guide": "1) Госуслуги → поиск «Установление запрета на получение кредита» → выбрать ПОЛНЫЙ запрет → подписать простой ЭП (вступает в силу на следующий день; снять можно только с УКЭП).\n2) В приложении Т-Банка отключить «Долями Плюс» (BNPL до 50к ₽ не попадает под самозапрет из-за 283-ФЗ) и написать в чат поддержки запрос убрать предодобренные рассрочки.\n3) Отвязать карты Т-Банка от маркетплейсов, чтобы исключить покупки в 1 клик на усталости."
+                  },
+                  {
+                        "id": "s1_2",
+                        "tag": "OZON",
+                        "done": false,
+                        "title": "Привязать карту Ozon Банка к Ozon Job и закрыть 9 пиковых смен → резерв ≥32 900 ₽",
+                        "guide": "1) Привяжи карту Ozon Банка в профиле Ozon Job: деньги за смены приходят через 3–12 часов вместо задержки 1–2 недели на сторонние банки (НПД 6% частично перекрывается стартовым бонусом самозанятого 10 000 ₽).\n2) Используй сезонные надбавки ноября–декабря (+15–20% на складе Артём MRFC): 1–2 смены в неделю достаточно.\n3) До 13.12 оплати Switch №1 (4 300 ₽). К 31.12 на счёте должно лежать ≥32 900 ₽ — это с запасом перекрывает весь январский кластер Т-Банка (26 400 ₽)."
+                  },
+                  {
+                        "id": "s1_3",
+                        "tag": "ШКОЛА 21",
+                        "done": false,
+                        "title": "Выжать максимум из 2 недель в Школе 21 (Алеутская, 65б)",
+                        "guide": "1) Используй ежедневные peer-to-peer проверки как боевой тренажёр Live Code Review (именно это главный фильтр на техсобесах РФ в 2026): ищи у других edge cases, race conditions и проблемы с null/деньгами, спокойно защищай свой код.\n2) Собери 2–3 сильных ребят в кампусе и договорись на 4–5 взаимных мок-собесов по часу с записью пробелов.\n3) Используй круглосуточный кампус как коворкинг без кровати и консолей для сборки пет-проекта."
+                  },
+                  {
+                        "id": "s1_4",
+                        "tag": ".NET 10",
+                        "done": false,
+                        "title": "Закрыть 5 CRUD-сайтов колледжа и собрать боевой пет-проект на .NET 10",
+                        "guide": "1) Быстро сдать 5 учебных CRUD колледжа (ASP.NET Core), чтобы снять академический хвост.\n2) Собрать 1 вылизанный портфолио-проект на .NET 10 + C# 14 (например, биллинговый или ордерный сервис):\n   • PostgreSQL + EF Core 10 (Named Query Filters, ExecuteUpdateAsync) и Dapper\n   • Transactional Outbox Pattern + RabbitMQ + идемпотентность по MessageId + DLQ\n   • Redis (Cache-Aside, TTL + jitter) + Serilog + OpenTelemetry + Health Checks\n   • Интеграционные тесты на Testcontainers и короткие ADR в README (зачем выбран каждый компромисс)."
+                  },
+                  {
+                        "id": "s1_5",
+                        "tag": "ЯПОНСКИЙ",
+                        "done": false,
+                        "title": "Хирагана + Катакана (100%), запуск Anki Kaishi 1.5k и Genki I (гл. 1–4)",
+                        "guide": "1) Первые 2 недели — полностью закрыть хирагану и катакану (ритм Фазы 1: всего 45 мин/день = 5,25 ч/нед, чтобы не выгорать).\n2) Поставить Anki + колоду Kaishi 1.5k (10–15 новых слов в день, без пропусков повторений).\n3) Пройти Genki I главы 1–4. Не распыляться на 10 приложений сразу."
+                  },
+                  {
+                        "id": "s1_6",
+                        "tag": "ЮР.ЩИТ",
+                        "done": false,
+                        "title": "Проверить дату окончания обучения в договоре СПО и учебном графике",
+                        "guide": "Подними оригинал договора с колледжем и календарный учебный график по 09.02.07:\n• Если там жёстко зафиксировано окончание 30 июня 2028 без каникул — колледж вправе отказать в последипломных каникулах, и это нужно знать заранее в 2027 году.\n• Если предусмотрен летний каникулярный период — зафиксируй это для подачи заявления до 15.05.2028."
+                  }
+            ]
+      },
+      {
+            "code": "02",
+            "date": "Янв–Мар 27",
+            "title": "Долг = 0 ₽ и оффер удалённого Middle .NET",
+            "summary": "Полное закрытие кредитки и рассрочек Т-Банка, окончательный уход со склада Ozon и выход на удалённый доход 180–220к+ net.",
+            "unlockRule": "Откроется после закрытия всех шагов Этапа 01 (или ручной разблокировки).",
+            "steps": [
+                  {
+                        "id": "s2_1",
+                        "tag": "Т-БАНК",
+                        "done": false,
+                        "title": "Пройти январско-февральский кластер без срыва грейса и закрыть кредитку",
+                        "guide": "Строгий порядок списаний Т-Банка:\n• До 06.01.2027 — New 3DS LL №1 (4 100 ₽)\n• До 09.01.2027 — Кредитка грейс (15–18 000 ₽ — НЕ СОРВАТЬ!)\n• До 13.01.2027 — Nintendo Switch финал (4 300 ₽)\n• До 06.02.2027 — New 3DS LL №2 (4 100 ₽)\n• До 09.02.2027 — Кредитка полное закрытие (~22 000 ₽)\nСразу после обнуления кредитки — закрыть кредитный счёт в чате Т-Банка и взять справку об отсутствии задолженности."
+                  },
+                  {
+                        "id": "s2_2",
+                        "tag": "ДОЛГ = 0",
+                        "done": false,
+                        "title": "Досрочно закрыть остаток по New 3DS LL (до 15.03.2027) и уйти с Ozon",
+                        "guide": "1) По ФЗ № 283 ты имеешь право досрочно погашать BNPL-рассрочку без штрафов и комиссий — закрывай остаток (~16 200 ₽) к 15 марта 2027.\n2) После этого в разделе «Финансы» включи тумблер «Архив Ozon / Долгов», чтобы навсегда убрать склад и долги с глаз."
+                  },
+                  {
+                        "id": "s2_3",
+                        "tag": "ТЕХБАЗА",
+                        "done": false,
+                        "title": "Дожать глубину Middle: CLR, PostgreSQL, распределёнка и собесы 2026",
+                        "guide": "Чеклист тем, на которых сыпятся на 180–250к ₽:\n• CLR и память: GC (Gen 0/1/2, LOH/POH), struct vs class, boxing, Span<T>, async/await State Machine, ValueTask, CancellationToken до драйвера БД, ThreadPool starvation, Channel<T>, SemaphoreSlim.\n• PostgreSQL: EXPLAIN (ANALYZE, BUFFERS), B-Tree vs GIN (JSONB), порядок колонок в составных индексах, MVCC/VACUUM/bloat, уровни изоляции, SELECT ... FOR UPDATE SKIP LOCKED, xmin.\n• Формат 2026: Live Code Review (ловить ИИ-баги: деньги/округление, идемпотентность, гонки), алгоритмы + edge cases, System Design начиная с вопросов про RPS, консистентность и даунтайм (без баззворд-бинго)."
+                  },
+                  {
+                        "id": "s2_4",
+                        "tag": "ВОРОНКА",
+                        "done": false,
+                        "title": "Запустить прямую воронку откликов (5–8 касаний в день) вне банков/госов",
+                        "guide": "1) Каналы: Telegram (@dotnet_jobs, @DotNetRuJobs, @DotNetRuJobsFeed, @csharpdevjob, @forcsharp, @runello_rus_c), Хабр Карьера, GetMatch, Реестр аккредитованных IT-компаний Минцифры (reestr.digital.gov.ru → писать напрямую тимлидам/CTO).\n2) Фильтр компаний: средние продуктовые/SaaS 30–250 чел. (e-commerce, логистика, B2B, MarTech, EdTech) и частные аутстафф-студии. Обходить банки, телеком и госкорпорации (жёсткие проверки СТД-СФР).\n3) Абсолютное табу: НИКАКОЙ подделки справок (СТД-СФР, 2-НДФЛ). Если требуют полную сверку ЭТК — спокойно выходишь из процесса.\n4) Прописать 30 уточняющих вопросов по легенде (CI/CD, релизы, продовый инцидент, код-ревью) и сверить, чтобы текущий GitHub не противоречил."
+                  },
+                  {
+                        "id": "s2_5",
+                        "tag": "ОФФЕР",
+                        "done": false,
+                        "title": "Получить оффер 180–220к+ net и зафиксировать график под Владивосток (МСК+7)",
+                        "guide": "1) Считай Gross по шкале НДФЛ 2026 (13% до 2,4 млн/год, 15% свыше): для 180к net нужен оклад ~207к gross; для 220к net — ~254к gross; для 250к net — ~289к gross.\n2) На этапе оффера обязательно зафиксируй асинхронный сдвинутый день: 12:00–20:00 ВЛД (самостоятельная работа 12–15 + пересечение с Москвой 15–20 ВЛД = 08–13 МСК). Московский график 17:00–02:00 ВЛД убьёт режим за квартал.\n3) Обязательно белое оформление (ТК РФ + 2-НДФЛ) — это фундамент для CoE в апреле 2028."
+                  }
+            ]
+      },
+      {
+            "code": "03",
+            "date": "Апр–Июл 27",
+            "title": "Испытательный срок, Капитал, N5 и документы РФ",
+            "summary": "Успешное прохождение ИС (90 дней), перевод колледжа на свободное посещение, старт накоплений 150–185к/мес, JLPT N5 и 2-й загран.",
+            "unlockRule": "Откроется после закрытия Этапа 02 и обнуления долга (Остаток = 0 ₽).",
+            "steps": [
+                  {
+                        "id": "s3_1",
+                        "tag": "ИС 90 ДНЕЙ",
+                        "done": false,
+                        "title": "Пройти испытательный срок по протоколу 90 дней",
+                        "guide": "• Дни 1–7: поднять проект локально за 3 дня, прочитать git log за полгода, пройти отладчиком 2–3 бизнес-потока. Вопросы собирать пачками 1–2 раза в день в формате Middle: «проверил X/Y, вижу варианты А и Б, склоняюсь к А по причине Z — ок?».\n• Недели 2–4: аккуратные PR по 200–400 строк с тестами и саморевью, не «переписывать легаси» с порога.\n• Месяцы 2–3: закладывать +30–40% буфер в оценки, о блокерах говорить за 1–2 дня до дедлайна. На 60-й день сам инициируй 1-on-1 с лидом: «что закрыть в последний месяц, чтобы пройти ИС с запасом?»."
+                  },
+                  {
+                        "id": "s3_2",
+                        "tag": "КОЛЛЕДЖ",
+                        "done": false,
+                        "title": "Оформить свободное посещение в колледже через куратора по справке с работы",
+                        "guide": "Возьми на новой работе официальную справку о трудоустройстве по специальности (.NET Backend Developer) и отнеси куратору для перевода на свободное посещение.\nДоговорись сдавать лабораторные и курсовые пакетами раз в 2–3 недели в утренний слот 09:30–11:30 ВЛД."
+                  },
+                  {
+                        "id": "s3_3",
+                        "tag": "РЕЖИМ + КЭШ",
+                        "done": false,
+                        "title": "Выйти на ритм Фазы 2 (13,5 ч/нед JP) и норму сбережений 83–84%",
+                        "guide": "• Сетка будней: 08:00–09:30 (1,5ч японский на свежую голову) → 09:30–11:30 (колледж/зал/документы) → 12:00–20:00 (работа) → 21:00–22:30 (отдых/Switch/3DS).\n• Выходные: по 3ч японского утром, остальной день свободен (итого 13,5 ч/нед без выгорания).\n• Деньги: с каждой зарплаты сразу откладывать 150 000 ₽ (при 180к) или 185 000 ₽ (при 220к) на отдельный накопительный счёт. Личный бюджет строго 30–35к ₽/мес."
+                  },
+                  {
+                        "id": "s3_4",
+                        "tag": "ДВА МИРА",
+                        "done": false,
+                        "title": "После ИС зачистить цифровой след российского резюме",
+                        "guide": "Протокол «Двух миров»: как только испытательный срок пройден, удали или скрой старые резюме с вымышленным стажем на Хабр Карьере, GetMatch и в Telegram-чатах.\nУбедись, что публичные LinkedIn и GitHub (которые потом увидят японские рекрутеры и офицеры ISA) не содержат придуманных мест работы."
+                  },
+                  {
+                        "id": "s3_5",
+                        "tag": "JLPT N5",
+                        "done": false,
+                        "title": "Зарегистрироваться в конце марта и сдать JLPT N5 (04.07.2027, ДВФУ)",
+                        "guide": "• Окно регистрации: всего 5 рабочих дней в конце марта 2027.\n• Куда идти: лично в Генконсульство Японии (Владивосток, ул. Верхнепортовая, 46, 6 этаж, 14:00–17:00, лучше прийти до 16:00). Почта не принимается.\n• Оплата: строго наличными без сдачи (~800 ₽ для N5).\n• Экзамен: 4 июля 2027 в кампусе ДВФУ (о. Русский). Проходной балл 80/180 — быстрая страховка нового визового фильтра A1."
+                  },
+                  {
+                        "id": "s3_6",
+                        "tag": "ДОКУМЕНТЫ",
+                        "done": false,
+                        "title": "Оформить 2-й биометрический загранпаспорт (10 лет) + полное медобследование",
+                        "guide": "1) Подай на Госуслугах заявление на ВТОРОЙ биометрический загранпаспорт на 10 лет (в дополнение к действующему) — критично, когда первый паспорт сдан в консульство на визу.\n2) Пройди полное независимое медобследование в госклиниках по всем направлениям с учётом обновлённого Расписания болезней 2025–2026 (зафиксировать все реальные диагнозы в медкартах заранее)."
+                  }
+            ]
+      },
+      {
+            "code": "04",
+            "date": "Авг–Дек 27",
+            "title": "JLPT N4 (ключ к CoE), MEXT-школа и банки",
+            "summary": "Сдача JLPT N4 для визового пакета, отбор сертифицированной школы MEXT, открытие SBI Bank и подготовка базы перед CoE.",
+            "unlockRule": "Откроется после закрытия Этапа 03.",
+            "steps": [
+                  {
+                        "id": "s4_1",
+                        "tag": "JLPT N4",
+                        "done": false,
+                        "title": "Подать заявку в начале сентября и сдать JLPT N4 (05.12.2027, ДВФУ)",
+                        "guide": "• Окно регистрации: 5 рабочих дней в начале сентября 2027 в Генконсульстве (Верхнепортовая, 46, 14:00–17:00, ~800 ₽ наличными без сдачи).\n• Учебный стек: добить Genki I и II, Kaishi 1.5k / Core 2k, кандзи по 5/день (KKLC или WaniKani).\n• Экзамен 5 декабря 2027 (проходной 90/180). Бумажный сертификат придёт в конце февраля 2028 — ровно к подаче на CoE в апреле, полностью закрывая требование ISA."
+                  },
+                  {
+                        "id": "s4_2",
+                        "tag": "ПОГРУЖЕНИЕ",
+                        "done": false,
+                        "title": "Перевести прошитую New 3DS LL на японский для мягкого погружения",
+                        "guide": "С уровня N4+ (осень 2027) переведи вечерний 45-минутный слот игр на японские ромы с фуриганой и простым бытовым языком: とびだせ どうぶつの森 (Animal Crossing: New Leaf), Yo-Kai Watch, Pokémon.\nЭто даёт живой бытовой словарь без ощущения «зубрёжки»."
+                  },
+                  {
+                        "id": "s4_3",
+                        "tag": "ШКОЛА MEXT",
+                        "done": false,
+                        "title": "Выбрать языковую школу на окт. 2028 СТРОГО из реестра MEXT (認定校)",
+                        "guide": "КРИТИЧЕСКИЙ ФИЛЬТР 2026–2029:\n• Старые школы (法務省告示校) теряют право обучать студентов 31 марта 2029 — прямо посреди твоего курса.\n• Проверяй выбранную школу (Токио при 200к+ / шеахаус-UR или Осака при жёстком курсе) строго в официальном реестре аккредитованных учреждений MEXT: nihongokyouiku.mext.go.jp (статус 認定日本語教育機関).\n• Уточни у школы банк-получатель и принимает ли она оплату из SBI Bank / АТБ (или через агента)."
+                  },
+                  {
+                        "id": "s4_4",
+                        "tag": "БАНКИ",
+                        "done": false,
+                        "title": "Открыть счёт в SBI Bank (курьер во Владивосток) и проработать зарубежную карту",
+                        "guide": "1) SBI Bank (ООО «Эс-Би-Ай Банк»): заявка онлайн или на info@sbibankllc.ru — курьер приедет во Владивосток. Тариф перевода в Японию за учёбу: ¥5 000 до ¥3M (дешевле и надёжнее обычного SWIFT).\n2) Резерв: уточнить в офисе АТБ во Владивостоке актуальные тарифы и прохождение JPY-платежей в банк выбранной школы.\n3) Продумать карту/счёт в банке Казахстана или Кыргызстана для безопасного вывоза капитала сверх наличного лимита $10 000."
+                  },
+                  {
+                        "id": "s4_5",
+                        "tag": "清潔感",
+                        "done": false,
+                        "title": "Закрыть стоматологию во Владивостоке и базу 清潔感 (опрятность)",
+                        "guide": "В Японии сложная стоматология стоит в разы дороже — вылечи все зубы заранее в 2027–2028 во Владивостоке.\nПараллельно зафиксируй 3 опоры быта: базовый уход за кожей, стабильная опрятная стрижка, чистый базовый гардероб по размеру (City Boy / Uniqlo / MUJI) и 2–3 тренировки в неделю."
+                  }
+            ]
+      },
+      {
+            "code": "05",
+            "date": "Янв–Апр 28",
+            "title": "Подача на CoE и экзамен ITPEC FE в Улан-Баторе",
+            "summary": "Главный визовый рубеж: подача автономного пакета на CoE (Мир Б) и сдача госэкзамена FE для права на рабочую визу без бакалавра.",
+            "unlockRule": "Откроется после закрытия Этапа 04.",
+            "steps": [
+                  {
+                        "id": "s5_1",
+                        "tag": "ITPEC FE",
+                        "done": false,
+                        "title": "Набрать 100 ч подготовки к ITPEC FE (3 утра/нед + пробники ≥70/100)",
+                        "guide": "С января по апрель 2028 переключи 3 утренних слота в неделю на прогон прошлых вариантов экзамена ITPEC FE (англ.):\n• Проходной балл — 60/100 по обеим частям (утренняя теория + дневные алгоритмы/псевдокод/БД/сети).\n• Цель на пробниках — стабильно ≥70/100."
+                  },
+                  {
+                        "id": "s5_2",
+                        "tag": "МОНГОЛИЯ",
+                        "done": false,
+                        "title": "Зарегистрироваться в начале марта и сдать ITPEC FE в Улан-Баторе (апр. 2028)",
+                        "guide": "1) Регистрация в National IT Park (Улан-Батор) открывается в начале марта и закрывается за 1–3 недели до апрельской сессии.\n2) Заранее напиши организаторам и согласуй оплату взноса 180 000 MNT (~$50) наличными в день экзамена.\n3) Бюджет поездки ~50 000 ₽. Сертификат FE даёт юридическое право на рабочую визу 技人国 без диплома вуза (правило IT-告示) + 5 баллов HSP."
+                  },
+                  {
+                        "id": "s5_3",
+                        "tag": "CoE ПАКЕТ",
+                        "done": false,
+                        "title": "Подать автономный пакет на CoE (апрель 2028, Self-sponsorship)",
+                        "guide": "Четыре обязательных элемента самоспонсорства без документов родителей:\n1) Оригинал банковской справки об остатке ≥¥2,0 млн (у тебя будет ¥3,0–4,5 млн).\n2) Выписка движения средств за 12 месяцев (доказывает плавное накопление с зарплаты, а не внезапный займ).\n3) Справка с места работы с окладом + официальная 2-НДФЛ за 2027 год.\n4) Бумажный сертификат JLPT N4 (закрывает языковой фильтр A1)."
+                  },
+                  {
+                        "id": "s5_4",
+                        "tag": "МИР Б",
+                        "done": false,
+                        "title": "Жёсткая сверка «Мира Б» в анкетах CoE и сохранение копий",
+                        "guide": "СТРОГО по ст. 70 Закона об иммиграции Японии (ложные сведения = уголовная статья и депортация):\n• В анкете школы и на CoE пишется ТОЛЬКО 100% белая хронология: 09.2024–06.2028 колледж СПО (09.02.07) + 04.2027–н.в. реальная официальная работа .NET Developer.\n• Сохрани скан КАЖДОЙ анкеты и 履歴書 в архив — при смене визы на рабочую ISA сверяет даты с исходным пакетом CoE до месяца."
+                  },
+                  {
+                        "id": "s5_5",
+                        "tag": "JLPT N3",
+                        "done": false,
+                        "title": "Конец марта 2028: регистрация на JLPT N3 + переход на Quartet I / SKM N3",
+                        "guide": "1) Подай заявление в Генконсульство в 5-дневное окно конца марта (1 000 ₽ наличными без сдачи) на сессию 2 июля 2028.\n2) Чтобы не застрять на плато N4→N3: переходи на Quartet I (или Tobira), серию Shin Kanzen Master N3 (грамматика, чтение на время, аудирование), подкасты (Nihongo con Teppei, YUYU) и 1 разговорный урок/нед с носителем."
+                  }
+            ]
+      },
+      {
+            "code": "06",
+            "date": "Май–Июн 28",
+            "title": "Диплом СПО и правовой щит от летнего призыва",
+            "summary": "Закрытие самого опасного коридора (25 июня – 25 сентября 2028) в условиях круглогодичного призыва и реестра электронных повесток.",
+            "unlockRule": "Откроется после закрытия Этапа 05.",
+            "steps": [
+                  {
+                        "id": "s6_1",
+                        "tag": "КАНИКУЛЫ",
+                        "done": false,
+                        "title": "До 15 мая 2028 подать заявление на последипломные каникулы",
+                        "guide": "По ч. 17 ст. 59 ФЗ-273 и приказу Минпросвещения № 762 студент СПО имеет право на последипломные каникулы, продлевающие статус студента и отсрочку до 31 августа 2028.\nПодай письменное заявление директору колледжа ДО 15 мая 2028 (в двух экземплярах с отметкой о принятии)."
+                  },
+                  {
+                        "id": "s6_2",
+                        "tag": "ДИПЛОМ",
+                        "done": false,
+                        "title": "Защитить диплом СПО (09.02.07) и забрать оригинал + приложение",
+                        "guide": "Успешно закрыть защиту диплома, сразу проверить отсутствие опечаток в ФИО и датах в дипломе и выписке оценок (понадобятся для переводов и японского найма)."
+                  },
+                  {
+                        "id": "s6_3",
+                        "tag": "ВОЕНКОМАТ",
+                        "done": false,
+                        "title": "До 30 июня 2028 письменно приобщить справку о каникулах к делу",
+                        "guide": "1) Передай бумажную справку с новой датой отчисления (31.08.2028) в военкомат с заявлением о приобщении к личному делу до 30 июня.\n2) Если договор колледжа жёстко закрывается 30.06 и был отказ, действуй строго по заранее проработанному плану с военным юристом (при незаконном решении призывной комиссии жалоба в краевую комиссию по ст. 28 ФЗ-53 приостанавливает его исполнение)."
+                  },
+                  {
+                        "id": "s6_4",
+                        "tag": "НОТАРИУС",
+                        "done": false,
+                        "title": "Оформить нотариальную доверенность на снятие с воинского учёта",
+                        "guide": "До вылета оформи у нотариуса во Владивостоке доверенность на родителя/представителя с ТОЧНОЙ формулировкой:\n«представлять интересы доверителя в военкоматах по вопросам постановки и снятия с воинского учёта, в том числе с правом подавать заявление о снятии с воинского учёта» (п. 8 ст. 8.2 ФЗ-53).\nСразу сделай нотариальную копию паспорта РФ и оставь представителю оригинал приписного."
+                  }
+            ]
+      },
+      {
+            "code": "07",
+            "date": "Июл–Сен 28",
+            "title": "JLPT N3, оплата школы, виза и вылет до 1 октября",
+            "summary": "Финальный экзамен дома, оплата 1-го года школы, получение бесплатной визы, грамотный вывоз капитала и чистый разрыв с удалёнкой РФ.",
+            "unlockRule": "Откроется после закрытия Этапа 06.",
+            "steps": [
+                  {
+                        "id": "s7_1",
+                        "tag": "JLPT N3",
+                        "done": false,
+                        "title": "2 июля 2028 сдать JLPT N3 в ДВФУ (цель ≥110/180 при проходном 95)",
+                        "guide": "Главная языковая веха до вылета: уверенный N3 даёт возможность дожать N2 за первые 6–9 месяцев в языковой школе и сразу комфортно жить и общаться в Японии."
+                  },
+                  {
+                        "id": "s7_2",
+                        "tag": "ОПЛАТА",
+                        "done": false,
+                        "title": "Август 2028: получить CoE и оплатить инвойс школы (~¥840–920к)",
+                        "guide": "После выхода электронного CoE в августе переведи оплату за 1-й год обучения в школу через SBI Bank (¥5 000 комиссия) или проверенный канал АТБ / зарубежный счёт. Сохрани SWIFT-подтверждение платежа."
+                  },
+                  {
+                        "id": "s7_3",
+                        "tag": "ВИЗА",
+                        "done": false,
+                        "title": "Подать CoE на бесплатную визу в Генконсульство во Владивостоке",
+                        "guide": "Для граждан РФ с пропиской в Приморье въездная виза по CoE подаётся напрямую в Генконсульство во Владивостоке (без сервисного сбора VFS и БЕСПЛАТНО). Срок оформления — 4–5 рабочих дней."
+                  },
+                  {
+                        "id": "s7_4",
+                        "tag": "КАПИТАЛ",
+                        "done": false,
+                        "title": "Разложить капитал по правилам границ: кэш ≤$10 000 + карта СНГ",
+                        "guide": "1) Вывоз наличной иностранной валюты из РФ жёстко ограничен эквивалентом $10 000 на человека по курсу ЦБ (Указ № 81, декларация лимит не увеличивает). Безопасный потолок с буфером — ¥1,45–1,50 млн наличными иенами.\n2) В аэропорту Японии при ввозе >¥1 000 000 обязательно заполни декларацию (Declaration of Carrying of Means of Payment, 2 экз.) — пошлины НЕТ, за сокрытие конфискация.\n3) Оставшиеся ¥1,5–3,5 млн заранее переведи на свою карту Казахстана/Кыргызстана."
+                  },
+                  {
+                        "id": "s7_5",
+                        "tag": "ВЫЛЕТ",
+                        "done": false,
+                        "title": "Завершить удалёнку РФ и вылететь во 2-й половине сентября (до 1 октября)",
+                        "guide": "1) Официально уволься с российской удалёнки до вылета (получи финальную 2-НДФЛ и СТД-Р). Совмещать удалёнку РФ со студвизой в Японии НЕЛЬЗЯ: квартальные аудиты школ, лимит 28ч, фактическое двойное налогообложение из-за Указа 585.\n2) Билет бери строго на вторую половину сентября 2028 — ДО 1 октября (начала осенней отправки в войска)."
+                  },
+                  {
+                        "id": "s7_6",
+                        "tag": "УЧЁТ РФ",
+                        "done": false,
+                        "title": "После прилёта: консульский учёт МИД и дистанционное снятие с воинского учёта",
+                        "guide": "1) Сразу после заселения встань онлайн на консульский учёт РФ в Японии (сайт МИД РФ).\n2) Отправь представителю сканы штампа выезда, японской визы, Zairyu Card, письма о зачислении >6 мес и справки о консульском учёте (сделать нотариальный перевод).\n3) Представитель подаёт заявление о снятии с учёта (в течение 2 недель от выезда) по доверенности + дубль через Госуслуги и заказное письмо Почтой РФ с описью. При отказе «требуется личная явка» — обжалование в прокуратуру (справка обычно выдаётся за ~1 неделю)."
+                  }
+            ]
+      },
+      {
+            "code": "08",
+            "date": "Окт 28–29",
+            "title": "Старт в Японии, JLPT N2 и рабочая виза 技人国",
+            "summary": "Обустройство без ошибок первых 6 месяцев, дожим до N2, верификация FE, переход на японский IT-рынок и безопасная личная жизнь.",
+            "unlockRule": "Откроется после закрытия Этапа 07 (вылета в Японию).",
+            "steps": [
+                  {
+                        "id": "s8_1",
+                        "tag": "НЕДЕЛЯ 1",
+                        "done": false,
+                        "title": "Регистрация адреса в 区役所, SIM-карта и счёт в Japan Post Bank",
+                        "guide": "1) Зарегистрировать адрес в мэрии (区役所) на карте резидента (在留カード) + оформить медстраховку NHI.\n2) Подключить японскую SIM с номером (IIJmio или LINEMO).\n3) Открыть базовый счёт в Japan Post Bank (ゆうちょ銀行 / Yucho Tetsuzuki App) — печать hanko не нужна, мегабанки первые 6 мес всё равно откажут нерезиденту."
+                  },
+                  {
+                        "id": "s8_2",
+                        "tag": "6 МЕСЯЦЕВ",
+                        "done": false,
+                        "title": "Через 6 мес снять статус нерезидента и открыть Sony / Rakuten Bank",
+                        "guide": "Ровно через полгода проживания явиться в отделение Japan Post Bank для смены статуса на «резидент» (снимаются ограничения) и открыть полноценный онлайн-банк (Sony Bank, Rakuten Bank или SBI Shinsei) с нормальной дебетовой картой."
+                  },
+                  {
+                        "id": "s8_3",
+                        "tag": "JLPT N2",
+                        "done": false,
+                        "title": "Дожать японский с N3 до N2 (дек. 2028 или июль 2029) + второй стек",
+                        "guide": "1) С твоей базой N3 до N2 остаётся 300–400 ч интенсивной языковой среды — закрывается за 6–9 месяцев в школе.\n2) Для расширения воронки в Токио к C#/.NET полезно подтянуть на базовом продакшен-уровне Go, TypeScript или AWS."
+                  },
+                  {
+                        "id": "s8_4",
+                        "tag": "FE / ISA",
+                        "done": false,
+                        "title": "Проверить сертификат ITPEC FE у 行政書士 (страховка: IPA FE за ¥7 500)",
+                        "guide": "Перед началом финальных интервью покажи монгольский сертификат ITPEC FE японскому административному юристу (行政書士), чтобы убедиться, что местное отделение ISA примет его без лишних вопросов.\nПри малейшем сомнении — за 2 месяца и ¥7 500 сдаёшь круглогодичный японский IPA FE CBT на месте (100% железная страховка)."
+                  },
+                  {
+                        "id": "s8_5",
+                        "tag": "IT-НАЙМ",
+                        "done": false,
+                        "title": "Выйти на японский IT-рынок и сменить статус на 技人国",
+                        "guide": "1) Площадки: TokyoDev, JapanDev, Wantedly, Green, LinkedIn.\n2) Профиль: 100% честная биография (1,5 года белого Middle .NET + диплом СПО + FE + N2).\n3) Бюджет пошлины: с окт. 2026 действуют новые прогрессивные пошлины ISA за смену статуса (¥27–65к в зависимости от срока визы — заложить ¥35–65к)."
+                  },
+                  {
+                        "id": "s8_6",
+                        "tag": "ЖИЗНЬ",
+                        "done": false,
+                        "title": "Личная жизнь на визе: Pairs / with / Omiai и 3 красные линии закона",
+                        "guide": "• Подключай после живого N3+/N2 и получения Zairyu Card (ID-проверка обязательна, подписка ~¥3 600–3 900/мес). Исключи Tinder.\n• Профиль: дневные аккуратные фото в городской одежде (без зала/торса/машин), текст на чистом японском с указанием планов жить в Японии надолго.\n• 3 красные линии: (1) ноль конкафе/уличных зазывал/переводов денег; (2) поправки закона о сталкинге 2025–2026 — ноль скрытых AirTag/геометок, геолокация только по явному письменному согласию; (3) мгновенный спокойный выход при угрозах самоповреждением или попытках изолировать от учёбы/работы."
+                  }
+            ]
+      }
+];
 
     const defaultState = {
       version: 3,
       updatedAt: Date.now(),
       activeView: 'view-deck',
       activeRoadmap: 0,
+      hideOzonDebt: false,
+      planStages: structuredClone(defaultPlanStages),
+      stageOverrides: { unlocked: [], completed: [] },
       sim: { scenario: 'B', startMonths: 18, fxRate: 0.64, housing: '1k' },
       shifts: [],
       debtPayments: defaultDebts,
@@ -1300,6 +1759,18 @@
       if (Array.isArray(rawObj.freezeItems)) s.freezeItems = rawObj.freezeItems;
       s.freezeSavedRub = Number(rawObj.freezeSavedRub) || 0;
       if (rawObj.activityLog && typeof rawObj.activityLog === 'object') s.activityLog = rawObj.activityLog;
+      s.hideOzonDebt = Boolean(rawObj.hideOzonDebt);
+      if (rawObj.stageOverrides && typeof rawObj.stageOverrides === 'object') {
+        s.stageOverrides = {
+          unlocked: Array.isArray(rawObj.stageOverrides.unlocked) ? rawObj.stageOverrides.unlocked : [],
+          completed: Array.isArray(rawObj.stageOverrides.completed) ? rawObj.stageOverrides.completed : []
+        };
+      }
+      if (Array.isArray(rawObj.planStages) && rawObj.planStages.length === defaultPlanStages.length) {
+        s.planStages = rawObj.planStages;
+      } else {
+        s.planStages = structuredClone(defaultPlanStages);
+      }
       s.updatedAt = rawObj.updatedAt || Date.now();
       return s;
     }
@@ -1321,6 +1792,8 @@
     let syncCfg = loadSyncCfg();
     let quickDateMode = 'today';
     let selectedHmDate = isoDate(0);
+    let peekLockedStages = false;
+    let expandedStepIds = new Set();
 
     function logActivity(dateKey, type, val = 1) {
       if (!state.activityLog[dateKey]) state.activityLog[dateKey] = { jp: 0, net: 0, shift: 0, check: false };
@@ -1585,6 +2058,57 @@
       document.getElementById('fin-cap-jpy').textContent = `¥${capY.toLocaleString('ru-RU')}`;
       document.getElementById('fin-cap-coe').textContent = `CoE ¥2.0M: ${coePct}%`;
       document.getElementById('fin-fx-display').textContent = fx;
+
+      const feH = Number(state.feHours) || 0;
+      const fePct = Math.min(100, Math.round((feH / 100) * 100));
+      const feVal = document.getElementById('kpi-fe-val');
+      if (feVal) {
+        feVal.textContent = `${feH.toFixed(1)} / 100ч`;
+        document.getElementById('kpi-fe-pct').textContent = `${fePct}%`;
+        document.getElementById('kpi-fe-bar').style.width = `${fePct}%`;
+      }
+
+      const curIdx = getCurrentActiveStageIdx();
+      const curSt = state.planStages[curIdx] || state.planStages[0];
+      const stDone = curSt.steps.filter(x => x.done).length;
+      const stPct = curSt.steps.length ? Math.round((stDone / curSt.steps.length) * 100) : 100;
+      const stVal = document.getElementById('kpi-stage-val');
+      if (stVal) {
+        stVal.textContent = `${curSt.code} / 08`;
+        document.getElementById('kpi-stage-pct').textContent = `${stPct}%`;
+        document.getElementById('kpi-stage-bar').style.width = `${stPct}%`;
+        document.getElementById('kpi-stage-sub').textContent = curSt.title;
+      }
+
+      applyOzonArchiveUI();
+    }
+
+    function applyOzonArchiveUI() {
+      const archived = Boolean(state.hideOzonDebt);
+      const toggleEl = (id, hide) => { const el = document.getElementById(id); if (el) el.classList.toggle('hidden', hide); };
+      toggleEl('qa-shift', archived);
+      toggleEl('qa-fe', !archived);
+      toggleEl('kpi-debt-card', archived);
+      toggleEl('kpi-shift-card', archived);
+      toggleEl('kpi-stage-card', !archived);
+      toggleEl('kpi-fe-card', !archived);
+      toggleEl('deck-debts-card', archived);
+      const snapGrid = document.getElementById('deck-snap-grid');
+      if (snapGrid) snapGrid.className = archived ? 'grid grid-cols-1 gap-4' : 'grid grid-cols-1 lg:grid-cols-2 gap-4';
+
+      toggleEl('fin-archived-banner', !archived);
+      toggleEl('fin-shifts-panel', archived);
+      toggleEl('fin-debt-panel', archived);
+      const finLeft = document.getElementById('fin-left-col');
+      if (finLeft) finLeft.className = archived ? 'lg:col-span-12 space-y-4' : 'lg:col-span-5 space-y-4';
+
+      const archBtn = document.getElementById('btn-toggle-ozon-archive');
+      if (archBtn) {
+        archBtn.textContent = archived ? 'ПОКАЗАТЬ OZON / ДОЛГИ' : 'СКРЫТЬ OZON / ДОЛГИ';
+        archBtn.classList.toggle('border-[#A3CCA8]', archived);
+      }
+      const cb = document.getElementById('hide-ozon-cb');
+      if (cb) cb.checked = archived;
     }
 
     function renderDeckPreviews() {
@@ -1623,9 +2147,23 @@
             <span class="font-mono-num font-semibold text-[#A3CCA8]">+${Number(s.amount).toLocaleString('ru-RU')} ₽</span>
             <span class="text-[#9EA49C] truncate">${esc(s.note)}</span>
           </div>
-          <button type="button" data-dels="${s.id}" class="text-[#868C84] hover:text-[#DF9B94] font-mono-num px-1">×</button>
+          <div class="flex items-center gap-1 shrink-0">
+            <button type="button" data-edits="${s.id}" title="Редактировать" class="text-[#868C84] hover:text-[#E8ECF4] font-mono-num text-[11px] px-1">✎</button>
+            <button type="button" data-dels="${s.id}" class="text-[#868C84] hover:text-[#DF9B94] font-mono-num px-1">×</button>
+          </div>
         </div>
       `).join('') : `<div class="text-xs text-[#868C84] font-mono-num py-2">Смен пока нет.</div>`;
+      sBox.querySelectorAll('[data-edits]').forEach(b => b.addEventListener('click', () => {
+        const s = state.shifts.find(x => x.id === b.dataset.edits); if (!s) return;
+        const na = prompt('Сумма смены (₽):', String(s.amount));
+        if (na === null) return;
+        const nn = prompt('Заметка:', s.note || '');
+        if (nn === null) return;
+        const num = Number(na);
+        if (!isNaN(num) && num > 0) s.amount = num;
+        s.note = nn.trim() || 'Смена Ozon';
+        save(); renderAll();
+      }));
       sBox.querySelectorAll('[data-dels]').forEach(b => b.addEventListener('click', () => {
         state.shifts = state.shifts.filter(x => x.id !== b.dataset.dels); save(); renderAll();
       }));
@@ -1640,14 +2178,26 @@
               <div class="font-mono-num text-[10px] text-[#868C84]">${esc(d.deadline)}</div>
             </div>
           </label>
-          <div class="flex items-center gap-2 shrink-0">
-            <span class="font-mono-num font-semibold ${d.paid ? 'text-[#A3CCA8]' : 'text-[#DF9B94]'}">${Number(d.amount).toLocaleString('ru-RU')} ₽</span>
-            <button type="button" data-deldebt="${d.id}" class="text-[#5D645C] hover:text-[#DF9B94] font-mono-num px-1">×</button>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <span class="font-mono-num font-semibold ${d.paid ? 'text-[#A3CCA8]' : 'text-[#DF9B94]'} whitespace-nowrap">${Number(d.amount).toLocaleString('ru-RU')} ₽</span>
+            <button type="button" data-editdebt="${d.id}" title="Редактировать" class="text-[#868C84] hover:text-[#E8ECF4] font-mono-num text-[11px] px-1">✎</button>
+            <button type="button" data-deldebt="${d.id}" class="text-[#5D645C] hover:text-[#DF9B94] font-mono-num px-1.5">×</button>
           </div>
         </div>
       `).join('');
       dBox.querySelectorAll('[data-debtcb]').forEach(cb => cb.addEventListener('change', () => {
         const d = state.debtPayments.find(x => x.id === cb.dataset.debtcb); if (d) d.paid = cb.checked; save(); renderAll();
+      }));
+      dBox.querySelectorAll('[data-editdebt]').forEach(b => b.addEventListener('click', () => {
+        const d = state.debtPayments.find(x => x.id === b.dataset.editdebt); if (!d) return;
+        const nt = prompt('Название платежа:', d.title); if (nt === null) return;
+        const nd = prompt('Срок (например, до 09.01.2027):', d.deadline); if (nd === null) return;
+        const na = prompt('Сумма (₽):', String(d.amount)); if (na === null) return;
+        if (nt.trim()) d.title = nt.trim();
+        if (nd.trim()) d.deadline = nd.trim();
+        const num = Number(na);
+        if (!isNaN(num) && num >= 0) d.amount = num;
+        save(); renderAll();
       }));
       dBox.querySelectorAll('[data-deldebt]').forEach(b => b.addEventListener('click', () => {
         state.debtPayments = state.debtPayments.filter(x => x.id !== b.dataset.deldebt); save(); renderAll();
@@ -1921,23 +2471,371 @@
       }
     }
 
-    function renderRoadmap() {
-      const btns = document.getElementById('roadmap-btns');
-      btns.innerHTML = roadmapNodes.map((n, i) => `
-        <button type="button" data-rm="${i}" class="p-2 text-left rounded border font-mono-num transition cursor-pointer ${i === state.activeRoadmap ? 'bg-[rgba(163,204,168,0.14)] border-[#A3CCA8] text-[#E8ECF4]' : 'bg-[rgba(10,12,11,0.7)] border-[rgba(163,204,168,0.12)] text-[#868C84] hover:border-[rgba(163,204,168,0.3)]'}">
-          <div class="text-[9px] text-[#A3CCA8]">${n.code}</div>
-          <div class="text-[11px] font-semibold mt-0.5">${n.date}</div>
-        </button>
+    function getDebtLeft() {
+      const tot = state.debtPayments.reduce((a, d) => a + Number(d.amount), 0);
+      const paid = state.debtPayments.filter(d => d.paid).reduce((a, d) => a + Number(d.amount), 0);
+      return Math.max(0, tot - paid);
+    }
+
+    function getStageGates(idx) {
+      const stage = state.planStages[idx];
+      if (!stage) return [];
+      const stepsDone = stage.steps.filter(s => s.done).length;
+      const stepsTotal = stage.steps.length;
+      const gates = [
+        { label: `Шаги этапа: ${stepsDone}/${stepsTotal}`, ok: stepsTotal === 0 || stepsDone >= stepsTotal, required: true }
+      ];
+      const debtLeft = getDebtLeft();
+      const hasOffer = state.crmRows.some(r => r.stage === 'Оффер');
+      const jp = Number(state.jpHours) || 0;
+      const fe = Number(state.feHours) || 0;
+      const cap = Number(state.capitalRub) || 0;
+
+      if (idx === 0) {
+        const bCount = (state.bnplChecked || []).length;
+        gates.push({ label: `Замки Т-Банк: ${bCount}/2+`, ok: bCount >= 2, required: false });
+      } else if (idx === 1) {
+        gates.push({ label: debtLeft === 0 ? 'Долг Т-Банк = 0 ₽' : `Долг: ${debtLeft.toLocaleString('ru-RU')} ₽`, ok: debtLeft === 0, required: true });
+        gates.push({ label: hasOffer ? 'Оффер в CRM ✓' : 'Оффер Middle .NET', ok: hasOffer, required: false });
+      } else if (idx === 2) {
+        gates.push({ label: `Японский: ${jp.toFixed(0)}/325ч (N5)`, ok: jp >= 325, required: false });
+        gates.push({ label: `Капитал: ${Math.round(cap/1000)}к/450к ₽`, ok: cap >= 450000, required: false });
+      } else if (idx === 3) {
+        gates.push({ label: `Японский: ${jp.toFixed(0)}/600ч (N4)`, ok: jp >= 600, required: false });
+        gates.push({ label: `Капитал: ${Math.round(cap/1000)}к/1300к ₽`, ok: cap >= 1300000, required: false });
+      } else if (idx === 4) {
+        gates.push({ label: `ITPEC FE: ${fe.toFixed(0)}/100ч`, ok: fe >= 100, required: false });
+        gates.push({ label: `Капитал: ${Math.round(cap/1000)}к/2000к ₽`, ok: cap >= 2000000, required: false });
+      } else if (idx === 6) {
+        gates.push({ label: `Японский: ${jp.toFixed(0)}/950ч (N3)`, ok: jp >= 950, required: false });
+      }
+      return gates;
+    }
+
+    function isStageComplete(idx) {
+      if ((state.stageOverrides?.completed || []).includes(idx)) return true;
+      const gates = getStageGates(idx);
+      return gates.filter(g => g.required).every(g => g.ok);
+    }
+
+    function isStageUnlocked(idx) {
+      if (idx === 0) return true;
+      if ((state.stageOverrides?.unlocked || []).includes(idx)) return true;
+      return isStageComplete(idx - 1);
+    }
+
+    function getCurrentActiveStageIdx() {
+      for (let i = 0; i < state.planStages.length; i++) {
+        if (isStageUnlocked(i) && !isStageComplete(i)) return i;
+      }
+      return state.planStages.length - 1;
+    }
+
+    function renderDeckStageCard() {
+      const curIdx = getCurrentActiveStageIdx();
+      const st = state.planStages[curIdx] || state.planStages[0];
+      const badge = document.getElementById('deck-stage-badge');
+      const title = document.getElementById('deck-stage-title');
+      const gatesEl = document.getElementById('deck-stage-gates');
+      const stepsEl = document.getElementById('deck-stage-steps');
+      if (!badge || !st) return;
+
+      badge.textContent = `ЭТАП ${st.code} · ${st.date.toUpperCase()}`;
+      title.textContent = st.title;
+
+      const gates = getStageGates(curIdx);
+      gatesEl.innerHTML = gates.map(g => `
+        <span class="font-mono-num text-[10px] px-2 py-0.5 rounded border ${g.ok ? 'bg-[rgba(163,204,168,0.14)] border-[rgba(163,204,168,0.4)] text-[#A3CCA8]' : 'bg-[rgba(10,12,11,0.6)] border-[rgba(163,204,168,0.12)] text-[#868C84]'}">${g.ok ? '✓ ' : '○ '}${esc(g.label)}</span>
       `).join('');
-      const cur = roadmapNodes[state.activeRoadmap] || roadmapNodes[0];
-      document.getElementById('roadmap-box').innerHTML = `
-        <div class="font-mono-num text-xs text-[#A3CCA8]">УЗЕЛ ${cur.code} · ${cur.date}</div>
-        <div class="font-mincho text-base font-semibold text-[#E8ECF4]">${cur.title}</div>
-        <p class="text-xs text-[#A5ABA2] leading-relaxed">${cur.text}</p>
-      `;
+
+      const nextSteps = st.steps.filter(s => !s.done).slice(0, 3);
+      if (!nextSteps.length) {
+        stepsEl.innerHTML = `<div class="panel-recessed px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <span class="font-mono-num text-[#A3CCA8]">Все шаги этапа выполнены!</span>
+          <button type="button" data-jump="view-plan" class="btn btn-primary py-1 px-2.5 text-[10px]">ОТКРЫТЬ СЛЕДУЮЩИЙ →</button>
+        </div>`;
+        stepsEl.querySelectorAll('[data-jump]').forEach(b => b.addEventListener('click', () => {
+          state.activeRoadmap = Math.min(state.planStages.length - 1, curIdx + 1);
+          switchView('view-plan');
+        }));
+      } else {
+        stepsEl.innerHTML = nextSteps.map(s => `
+          <div class="panel-recessed px-3 py-2 flex items-center justify-between gap-2 text-xs">
+            <label class="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0">
+              <input type="checkbox" class="chk" data-deckstep="${curIdx}:${s.id}" />
+              <span class="font-mono-num text-[9px] px-1.5 py-0.5 rounded bg-[rgba(163,204,168,0.1)] text-[#A3CCA8] shrink-0">${esc(s.tag)}</span>
+              <span class="text-[#DFDDD4] truncate">${esc(s.title)}</span>
+            </label>
+            <button type="button" data-openstep="${curIdx}:${s.id}" class="font-mono-num text-[10px] text-[#868C84] hover:text-[#A3CCA8] shrink-0 px-1">ГАЙД →</button>
+          </div>
+        `).join('');
+
+        stepsEl.querySelectorAll('[data-deckstep]').forEach(cb => cb.addEventListener('change', () => {
+          const [si, sid] = cb.dataset.deckstep.split(':');
+          const step = state.planStages[Number(si)]?.steps.find(x => x.id === sid);
+          if (step) {
+            step.done = cb.checked;
+            if (cb.checked) logActivity(isoDate(0), 'check');
+            save(true);
+            renderAll();
+            toast('Шаг этапа выполнен ✓');
+          }
+        }));
+        stepsEl.querySelectorAll('[data-openstep]').forEach(btn => btn.addEventListener('click', () => {
+          const [si, sid] = btn.dataset.openstep.split(':');
+          state.activeRoadmap = Number(si);
+          expandedStepIds.add(sid);
+          switchView('view-plan');
+          renderRoadmap();
+        }));
+      }
+    }
+
+    function renderRoadmap() {
+      const stages = state.planStages;
+      let totalSteps = 0, totalDone = 0;
+      stages.forEach(st => { totalSteps += st.steps.length; totalDone += st.steps.filter(s => s.done).length; });
+      const activeIdx = getCurrentActiveStageIdx();
+      const globalPct = totalSteps ? Math.round((totalDone / totalSteps) * 100) : 0;
+
+      const gpEl = document.getElementById('plan-global-progress');
+      const gbEl = document.getElementById('plan-global-bar');
+      if (gpEl) gpEl.textContent = `Текущий этап: ${activeIdx + 1} из ${stages.length} · Выполнено шагов: ${totalDone} / ${totalSteps} (${globalPct}%)`;
+      if (gbEl) gbEl.style.width = `${globalPct}%`;
+
+      const btns = document.getElementById('roadmap-btns');
+      btns.innerHTML = stages.map((st, i) => {
+        const unlocked = isStageUnlocked(i);
+        const done = isStageComplete(i);
+        const selected = i === state.activeRoadmap;
+        const stDone = st.steps.filter(x => x.done).length;
+        let cls = 'bg-[rgba(10,12,11,0.7)] border-[rgba(163,204,168,0.14)] text-[#868C84] hover:border-[rgba(163,204,168,0.35)]';
+        if (selected) cls = 'stage-pill-active';
+        else if (done) cls = 'stage-pill-done';
+        else if (!unlocked) cls = 'stage-pill-locked';
+
+        const icon = done ? '✓' : (unlocked ? `${stDone}/${st.steps.length}` : '🔒');
+        return `
+          <button type="button" data-rm="${i}" class="p-2 text-left rounded border font-mono-num transition cursor-pointer ${cls}">
+            <div class="flex items-center justify-between text-[9px]">
+              <span class="${unlocked ? 'text-[#A3CCA8]' : 'text-[#6B726A]'}">${st.code}</span>
+              <span>${icon}</span>
+            </div>
+            <div class="text-[11px] font-semibold mt-0.5 truncate">${esc(st.date)}</div>
+          </button>
+        `;
+      }).join('');
+
       btns.querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', () => {
-        state.activeRoadmap = Number(b.dataset.rm); save(true); renderRoadmap();
+        state.activeRoadmap = Number(b.dataset.rm);
+        save(true);
+        renderRoadmap();
       }));
+
+      const idx = Math.min(stages.length - 1, Math.max(0, Number(state.activeRoadmap) || 0));
+      const cur = stages[idx];
+      const unlocked = isStageUnlocked(idx);
+      const done = isStageComplete(idx);
+      const gates = getStageGates(idx);
+      const box = document.getElementById('roadmap-box');
+
+      const stDoneCount = cur.steps.filter(x => x.done).length;
+      const stPct = cur.steps.length ? Math.round((stDoneCount / cur.steps.length) * 100) : 100;
+
+      const headerHtml = `
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div class="space-y-1 min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2 font-mono-num text-[11px]">
+              <span class="px-2 py-0.5 rounded bg-[rgba(163,204,168,0.14)] border border-[rgba(163,204,168,0.35)] text-[#A3CCA8]">ЭТАП ${cur.code} · ${esc(cur.date)}</span>
+              ${done ? '<span class="text-[#A3CCA8]">✓ ЗАВЕРШЁН</span>' : (unlocked ? '<span class="text-[#C8C1AE]">● АКТИВЕН</span>' : '<span class="text-[#DF9B94]">🔒 ЗАКРЫТ ДО ВЫПОЛНЕНИЯ ПРЕДЫДУЩЕГО</span>')}
+            </div>
+            <div class="font-mincho text-base sm:text-lg font-semibold text-[#E8ECF4]">${esc(cur.title)}</div>
+            <p class="text-xs text-[#9EA49C] leading-relaxed">${esc(cur.summary)}</p>
+          </div>
+          <div class="font-mono-num text-right shrink-0">
+            <div class="text-lg font-semibold text-[#E8ECF4]">${stDoneCount} / ${cur.steps.length}</div>
+            <div class="text-[10px] text-[#868C84]">шагов (${stPct}%)</div>
+          </div>
+        </div>
+        <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div class="h-full bg-[#A3CCA8] transition-all" style="width:${stPct}%"></div></div>
+        <div class="flex flex-wrap gap-1.5">
+          ${gates.map(g => `
+            <span class="font-mono-num text-[10px] px-2 py-0.5 rounded border ${g.ok ? 'bg-[rgba(163,204,168,0.14)] border-[rgba(163,204,168,0.4)] text-[#A3CCA8]' : 'bg-[rgba(10,12,11,0.7)] border-[rgba(163,204,168,0.14)] text-[#9EA49C]'}">${g.ok ? '✓ ' : '○ '}${esc(g.label)}</span>
+          `).join('')}
+        </div>
+      `;
+
+      if (!unlocked && !peekLockedStages) {
+        const prev = stages[idx - 1];
+        const prevRem = prev ? prev.steps.filter(s => !s.done).length : 0;
+        box.innerHTML = headerHtml + `
+          <div class="panel p-4 space-y-3 border-[rgba(201,112,103,0.28)]">
+            <div class="font-mono-num text-xs text-[#DF9B94]">🔒 ЭТАП ${cur.code} ПОКА ЗАКРЫТ</div>
+            <div class="text-xs text-[#A5ABA2] leading-relaxed">
+              ${esc(cur.unlockRule)}<br/>
+              В Этапе ${prev.code} («${esc(prev.title)}») осталось невыполненных шагов: <strong class="text-[#E8ECF4]">${prevRem}</strong>${idx === 2 && getDebtLeft() > 0 ? ` · Остаток долга Т-Банка: <strong class="text-[#DF9B94]">${getDebtLeft().toLocaleString('ru-RU')} ₽</strong>` : ''}.
+            </div>
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button type="button" id="btn-go-active-stage" class="btn btn-primary">← К ЭТАПУ ${stages[activeIdx].code}</button>
+              <button type="button" id="btn-peek-now" class="btn btn-ghost">ПОДСМОТРЕТЬ ИНСТРУКЦИИ</button>
+              <button type="button" id="btn-force-unlock" class="btn btn-ghost text-[#C8C1AE]">ОТКРЫТЬ ВРУЧНУЮ</button>
+            </div>
+          </div>
+        `;
+        document.getElementById('btn-go-active-stage').addEventListener('click', () => {
+          state.activeRoadmap = activeIdx; save(true); renderRoadmap();
+        });
+        document.getElementById('btn-peek-now').addEventListener('click', () => {
+          peekLockedStages = true;
+          document.getElementById('cb-peek-locked').checked = true;
+          renderRoadmap();
+        });
+        document.getElementById('btn-force-unlock').addEventListener('click', () => {
+          if (!state.stageOverrides.unlocked.includes(idx)) state.stageOverrides.unlocked.push(idx);
+          save(true); renderAll(); toast(`Этап ${cur.code} открыт вручную`);
+        });
+        return;
+      }
+
+      const peekBanner = !unlocked ? `
+        <div class="px-3 py-2 rounded border border-[rgba(200,193,174,0.28)] bg-[rgba(200,193,174,0.08)] flex flex-wrap items-center justify-between gap-2 text-xs">
+          <span class="font-mono-num text-[#C8C1AE]">👁 Режим предпросмотра: читай инструкции заранее, но отметки откроются после Этапа ${stages[idx-1].code}.</span>
+          <button type="button" id="btn-force-unlock-peek" class="btn btn-ghost py-1 px-2 text-[10px]">ОТКРЫТЬ ДЛЯ РАБОТЫ</button>
+        </div>
+      ` : '';
+
+      const stepsHtml = cur.steps.map(s => {
+        const isOpen = expandedStepIds.has(s.id);
+        return `
+          <div class="panel p-3 transition ${s.done ? 'opacity-65' : ''}">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-start gap-2.5 flex-1 min-w-0">
+                <input type="checkbox" class="chk mt-0.5" data-pstep="${idx}:${s.id}" ${s.done ? 'checked' : ''} ${!unlocked ? 'disabled' : ''} />
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="font-mono-num text-[9px] px-1.5 py-0.5 rounded bg-[rgba(163,204,168,0.12)] text-[#A3CCA8]">${esc(s.tag || 'ШАГ')}</span>
+                    <button type="button" data-toggle-guide="${s.id}" class="text-left text-xs sm:text-[13px] font-medium ${s.done ? 'line-through text-[#868C84]' : 'text-[#E8ECF4]'} hover:text-[#A3CCA8] cursor-pointer">${esc(s.title)}</button>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <button type="button" data-toggle-guide="${s.id}" class="btn btn-ghost py-1 px-2 text-[10px]">${isOpen ? 'СКРЫТЬ ▴' : 'ГАЙД ▾'}</button>
+                <button type="button" data-edit-pstep="${idx}:${s.id}" title="Редактировать шаг" class="text-[#868C84] hover:text-[#E8ECF4] font-mono-num text-xs px-1">✎</button>
+                <button type="button" data-del-pstep="${idx}:${s.id}" title="Удалить шаг" class="text-[#5D645C] hover:text-[#DF9B94] font-mono-num text-xs px-1">×</button>
+              </div>
+            </div>
+            ${isOpen ? `<div class="step-guide">${esc(s.guide || 'Инструкция не заполнена — нажми ✎ чтобы дописать.')}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+
+      const ozonRewardHtml = (idx === 1 && (done || getDebtLeft() === 0) && !state.hideOzonDebt) ? `
+        <div class="panel p-3 border-[#A3CCA8] flex flex-wrap items-center justify-between gap-2 text-xs">
+          <span class="font-mono-num text-[#A3CCA8]">🎉 Долги закрыты — можно убрать блоки Ozon и Долгов в архив!</span>
+          <button type="button" id="btn-archive-after-s2" class="btn btn-primary py-1.5">СКРЫТЬ OZON И ДОЛГИ</button>
+        </div>
+      ` : '';
+
+      const footerActions = unlocked ? `
+        <div class="pt-3 border-t border-[rgba(163,204,168,0.12)] space-y-2.5">
+          <div class="font-mono-num text-[10px] text-[#868C84]">ДОБАВИТЬ СВОЙ ШАГ В ЭТАП ${cur.code}</div>
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+            <input id="new-pstep-tag" type="text" placeholder="Тег (КОД / БАНК)" class="inp font-mono-num sm:col-span-3" />
+            <input id="new-pstep-title" type="text" placeholder="Заголовок шага *" class="inp sm:col-span-9" />
+            <input id="new-pstep-guide" type="text" placeholder="Подробная инструкция к действию..." class="inp sm:col-span-9" />
+            <button type="button" id="btn-add-pstep" class="btn btn-primary sm:col-span-3">+ ДОБАВИТЬ ШАГ</button>
+          </div>
+          ${idx < stages.length - 1 ? `
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
+              <span class="font-mono-num text-[10px] text-[#868C84]">${done ? `Этап ${cur.code} закрыт — Этап ${stages[idx+1].code} открыт!` : `Закрой шаги выше, чтобы открыть Этап ${stages[idx+1].code}`}</span>
+              ${done ? `<button type="button" id="btn-next-stage" class="btn btn-primary">ПЕРЕЙТИ К ЭТАПУ ${stages[idx+1].code} →</button>` : `<button type="button" id="btn-complete-stage-manual" class="btn btn-ghost text-[10px]">ЗАВЕРШИТЬ ЭТАП ВРУЧНУЮ →</button>`}
+            </div>
+          ` : ''}
+        </div>
+      ` : '';
+
+      box.innerHTML = headerHtml + peekBanner + `<div class="space-y-2">${stepsHtml}</div>` + ozonRewardHtml + footerActions;
+
+      // Bind events inside roadmap-box
+      const fuPeek = document.getElementById('btn-force-unlock-peek');
+      if (fuPeek) fuPeek.addEventListener('click', () => {
+        if (!state.stageOverrides.unlocked.includes(idx)) state.stageOverrides.unlocked.push(idx);
+        save(true); renderAll(); toast(`Этап ${cur.code} открыт`);
+      });
+
+      const archS2 = document.getElementById('btn-archive-after-s2');
+      if (archS2) archS2.addEventListener('click', () => {
+        state.hideOzonDebt = true; save(true); renderAll(); toast('Ozon и Долги убраны в архив');
+      });
+
+      box.querySelectorAll('[data-toggle-guide]').forEach(btn => btn.addEventListener('click', () => {
+        const sid = btn.dataset.toggleGuide;
+        if (expandedStepIds.has(sid)) expandedStepIds.delete(sid); else expandedStepIds.add(sid);
+        renderRoadmap();
+      }));
+
+      box.querySelectorAll('[data-pstep]').forEach(cb => cb.addEventListener('change', () => {
+        const [si, sid] = cb.dataset.pstep.split(':');
+        const stIdx = Number(si);
+        const step = state.planStages[stIdx]?.steps.find(x => x.id === sid);
+        if (!step) return;
+        const wasDone = isStageComplete(stIdx);
+        step.done = cb.checked;
+        if (cb.checked) logActivity(isoDate(0), 'check');
+        save(true);
+        renderAll();
+        if (!wasDone && isStageComplete(stIdx) && stIdx < state.planStages.length - 1) {
+          toast(`Этап ${state.planStages[stIdx].code} закрыт! Открыт Этап ${state.planStages[stIdx+1].code} 🎉`);
+        }
+      }));
+
+      box.querySelectorAll('[data-edit-pstep]').forEach(btn => btn.addEventListener('click', () => {
+        const [si, sid] = btn.dataset.editPstep.split(':');
+        const step = state.planStages[Number(si)]?.steps.find(x => x.id === sid);
+        if (!step) return;
+        const nt = prompt('Название шага:', step.title); if (nt === null) return;
+        const ng = prompt('Подробная инструкция (перенос строки через \\n):', (step.guide || '').replace(/\n/g, '\\n')); if (ng === null) return;
+        if (nt.trim()) step.title = nt.trim();
+        step.guide = ng.replace(/\\n/g, '\n').trim();
+        save(); renderAll();
+      }));
+
+      box.querySelectorAll('[data-del-pstep]').forEach(btn => btn.addEventListener('click', () => {
+        const [si, sid] = btn.dataset.delPstep.split(':');
+        const stObj = state.planStages[Number(si)];
+        if (!stObj) return;
+        if (confirm('Удалить этот шаг из этапа?')) {
+          stObj.steps = stObj.steps.filter(x => x.id !== sid);
+          save(); renderAll();
+        }
+      }));
+
+      const btnAddStep = document.getElementById('btn-add-pstep');
+      if (btnAddStep) btnAddStep.addEventListener('click', () => {
+        const title = document.getElementById('new-pstep-title').value.trim();
+        if (!title) return;
+        const tag = document.getElementById('new-pstep-tag').value.trim().toUpperCase() || 'ШАГ';
+        const guide = document.getElementById('new-pstep-guide').value.trim() || 'Добавь детали через кнопку ✎';
+        const newId = 'custom_' + Date.now();
+        cur.steps.push({ id: newId, tag, title, guide, done: false });
+        expandedStepIds.add(newId);
+        save(); renderAll();
+      });
+
+      const btnNext = document.getElementById('btn-next-stage');
+      if (btnNext) btnNext.addEventListener('click', () => {
+        state.activeRoadmap = idx + 1; save(true); renderRoadmap();
+      });
+
+      const btnManualDone = document.getElementById('btn-complete-stage-manual');
+      if (btnManualDone) btnManualDone.addEventListener('click', () => {
+        if (confirm(`Отметить Этап ${cur.code} завершённым и открыть Этап ${stages[idx+1].code}?`)) {
+          if (!state.stageOverrides.completed.includes(idx)) state.stageOverrides.completed.push(idx);
+          if (!state.stageOverrides.unlocked.includes(idx + 1)) state.stageOverrides.unlocked.push(idx + 1);
+          state.activeRoadmap = idx + 1;
+          save(true); renderAll(); toast(`Открыт Этап ${stages[idx+1].code}`);
+        }
+      });
     }
 
     function renderAll() {
@@ -1945,6 +2843,7 @@
       renderKPIs();
       renderHeatmap();
       renderDeckPreviews();
+      renderDeckStageCard();
       renderFinance();
       renderCareer();
       renderStudy();
@@ -2014,6 +2913,24 @@
         logActivity(dKey, 'shift', 1); save(true); renderAll();
         toast(`+1 смена (+4 000 ₽ · ${fmtShortDate(dKey)})`);
       });
+      document.getElementById('qa-fe').addEventListener('click', () => {
+        const dKey = quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0);
+        state.feHours = Number(((Number(state.feHours) || 0) + 1).toFixed(2));
+        logActivity(dKey, 'net', 1); save(true); renderAll();
+        toast(`+1 ч ITPEC FE (${fmtShortDate(dKey)})`);
+      });
+      document.getElementById('cb-peek-locked').addEventListener('change', (e) => {
+        peekLockedStages = e.target.checked; renderRoadmap();
+      });
+      const toggleOzonArchive = (forceVal) => {
+        state.hideOzonDebt = typeof forceVal === 'boolean' ? forceVal : !state.hideOzonDebt;
+        save(true); renderAll();
+        toast(state.hideOzonDebt ? 'Ozon и Долги убраны в архив' : 'Блоки Ozon и Долгов показаны');
+      };
+      document.getElementById('btn-toggle-ozon-archive').addEventListener('click', () => toggleOzonArchive());
+      document.getElementById('btn-restore-ozon').addEventListener('click', () => toggleOzonArchive(false));
+      document.getElementById('hide-ozon-cb').addEventListener('change', (e) => toggleOzonArchive(e.target.checked));
+
       document.getElementById('qa-jp').addEventListener('click', () => {
         const dKey = quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0);
         state.jpHours = Number(((Number(state.jpHours) || 0) + 0.75).toFixed(2));
@@ -2174,6 +3091,19 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a'); a.href = url; a.download = `jp28_backup_${isoDate(0)}.json`; a.click();
         URL.revokeObjectURL(url); toast('JSON скачан');
+      });
+      document.getElementById('btn-csv-export').addEventListener('click', () => {
+        const q = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+        const rows = [['Раздел', 'Дата / Этап', 'Название', 'Сумма / Вилка', 'Статус', 'Детали']];
+        state.debtPayments.forEach(d => rows.push(['Долг Т-Банк', d.deadline, d.title, d.amount, d.paid ? 'Оплачено' : 'Остаток', '']));
+        state.shifts.forEach(s => rows.push(['Смена Ozon', s.date, s.note, s.amount, 'Закрыто', '']));
+        state.crmRows.forEach(r => rows.push(['CRM Middle', r.date, r.company, r.salary, r.stage, `${r.channel} | ${r.notes}`]));
+        state.planStages.forEach(st => st.steps.forEach(p => rows.push(['План', `Этап ${st.code} (${st.date})`, p.title, p.tag, p.done ? 'Готово' : 'В работе', (p.guide || '').replace(/\r?\n/g, ' ')])));
+        const csv = '\uFEFF' + rows.map(r => r.map(q).join(';')).join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `jp28_export_${isoDate(0)}.csv`; a.click();
+        URL.revokeObjectURL(url); toast('CSV выгружен (откроется в Excel)');
       });
       const fIn = document.getElementById('json-file-in');
       document.getElementById('btn-json-import').addEventListener('click', () => fIn.click());
