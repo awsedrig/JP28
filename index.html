@@ -337,7 +337,45 @@
     .hm-2 { background: #3D694F; }
     .hm-3 { background: #649B78; }
     .hm-4 { background: #A3CCA8; box-shadow: 0 0 6px rgba(163, 204, 168, 0.45); }
-    .hm-selected { outline: 1px solid var(--fog) !important; }
+    .hm-selected { outline: 1px solid var(--fog) !important; outline-offset: 1px; }
+
+    /* Floating Heatmap Hover Tooltip (PC) */
+    #hm-tooltip {
+      position: fixed;
+      z-index: 65;
+      pointer-events: none;
+      width: 268px;
+      max-width: calc(100vw - 24px);
+      background: rgba(14, 17, 15, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(163, 204, 168, 0.34);
+      border-radius: 6px;
+      padding: 9px 11px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.58), 0 0 18px rgba(163, 204, 168, 0.08);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+    #hm-tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .hm-tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      line-height: 1;
+      padding: 2px 5px;
+      border-radius: 3px;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .hm-tag-jp { background: rgba(163, 204, 168, 0.16); color: #A3CCA8; border: 1px solid rgba(163, 204, 168, 0.3); }
+    .hm-tag-net { background: rgba(200, 193, 174, 0.15); color: #DCD6C4; border: 1px solid rgba(200, 193, 174, 0.28); }
+    .hm-tag-fe { background: rgba(148, 184, 200, 0.16); color: #A8CCDC; border: 1px solid rgba(148, 184, 200, 0.3); }
+    .hm-tag-shift { background: rgba(201, 112, 103, 0.16); color: #E5A49D; border: 1px solid rgba(201, 112, 103, 0.32); }
+    .hm-tag-other { background: rgba(163, 204, 168, 0.09); color: #B4BCB2; border: 1px solid rgba(163, 204, 168, 0.16); }
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -697,9 +735,22 @@
               <div id="heatmap-grid" class="inline-grid grid-rows-7 grid-flow-col gap-[3px]"></div>
             </div>
 
-            <div id="heatmap-inspector" class="panel-recessed px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs font-mono-num">
-              <span id="hm-sel-info" class="text-[#868C84]">Кликни на любой день для просмотра или отметки</span>
-              <button type="button" id="btn-hm-toggle" class="btn btn-ghost py-1 px-2 text-[10px]">+ ОТМЕТИТЬ ДЕНЬ</button>
+            <div id="heatmap-inspector" class="panel-recessed p-3 space-y-2.5 text-xs">
+              <div class="flex flex-wrap items-center justify-between gap-2 font-mono-num">
+                <div id="hm-sel-info" class="text-[#868C84] min-w-0">Наведи на день или тапни для расшифровки</div>
+                <button type="button" id="btn-hm-toggle" class="btn btn-ghost py-1 px-2 text-[10px]">+ ОТМЕТИТЬ ДЕНЬ</button>
+              </div>
+              <div id="hm-day-items" class="space-y-1 max-h-40 overflow-y-auto pr-0.5"></div>
+              <div class="flex items-center gap-1.5 pt-2 border-t border-[rgba(163,204,168,0.09)]">
+                <select id="hm-note-cat" class="inp py-1 px-1.5 text-[10px] font-mono-num shrink-0" title="Категория записи">
+                  <option value="net">КОД</option>
+                  <option value="jp">JP</option>
+                  <option value="fe">FE</option>
+                  <option value="note">ДЕНЬ</option>
+                </select>
+                <input id="hm-note-in" type="text" placeholder="Записать, что сделал в этот день (Enter)..." class="inp py-1 px-2 text-[11px] flex-1" />
+                <button type="button" id="btn-hm-add-note" class="btn py-1 px-2.5 text-[10px]">+</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1461,12 +1512,15 @@
     </div>
   </div>
 
+  <div id="hm-tooltip" aria-hidden="true"></div>
+
   <div id="toast" class="toast">Сохранено</div>
 
   <script>
     const STATE_KEY = 'jp28_os_state_v3';
     const SYNC_KEY = 'jp28_os_sync_cfg';
     const UI_KEY = 'jp28_os_ui_v5';
+    const TIMER_KEY = 'jp28_os_timer_v1';
 
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => {
@@ -2304,7 +2358,19 @@
       if (Array.isArray(rawObj.orderChecked)) s.orderChecked = rawObj.orderChecked;
       if (Array.isArray(rawObj.freezeItems)) s.freezeItems = rawObj.freezeItems;
       s.freezeSavedRub = Number(rawObj.freezeSavedRub) || 0;
-      if (rawObj.activityLog && typeof rawObj.activityLog === 'object') s.activityLog = rawObj.activityLog;
+      if (rawObj.activityLog && typeof rawObj.activityLog === 'object') {
+        s.activityLog = {};
+        for (const [dk, rec] of Object.entries(rawObj.activityLog)) {
+          if (!rec || typeof rec !== 'object') continue;
+          s.activityLog[dk] = {
+            jp: Number(rec.jp) || 0,
+            net: Number(rec.net) || 0,
+            shift: Number(rec.shift) || 0,
+            check: Boolean(rec.check),
+            items: Array.isArray(rec.items) ? rec.items.filter(x => x && typeof x === 'object') : []
+          };
+        }
+      }
       s.hideOzonDebt = Boolean(rawObj.hideOzonDebt);
       if (rawObj.stageOverrides && typeof rawObj.stageOverrides === 'object') {
         s.stageOverrides = {
@@ -2378,10 +2444,225 @@
     let peekLockedStages = false;
     let expandedStepIds = new Set();
 
-    function logActivity(dateKey, type, val = 1) {
-      if (!state.activityLog[dateKey]) state.activityLog[dateKey] = { jp: 0, net: 0, shift: 0, check: false };
-      if (type === 'check') state.activityLog[dateKey].check = !state.activityLog[dateKey].check;
-      else state.activityLog[dateKey][type] = Number(((state.activityLog[dateKey][type] || 0) + val).toFixed(2));
+    const RU_MONTHS_SHORT = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+    const RU_WEEKDAYS_SHORT = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+
+    function fmtHumanDate(iso) {
+      if (!iso || iso.length < 10) return iso || '';
+      const d = new Date(iso + 'T12:00:00');
+      if (isNaN(d.getTime())) return iso;
+      const day = d.getDate();
+      const mon = RU_MONTHS_SHORT[d.getMonth()];
+      const wd = RU_WEEKDAYS_SHORT[d.getDay()];
+      return `${day} ${mon} · ${wd}`;
+    }
+
+    function nowTimeHM(dateKey) {
+      if (dateKey && dateKey !== isoDate(0)) return '—';
+      const d = new Date();
+      return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    }
+
+    function ensureDayLog(dateKey) {
+      if (!state.activityLog[dateKey] || typeof state.activityLog[dateKey] !== 'object') {
+        state.activityLog[dateKey] = { jp: 0, net: 0, shift: 0, check: false, items: [] };
+      }
+      if (!Array.isArray(state.activityLog[dateKey].items)) state.activityLog[dateKey].items = [];
+      return state.activityLog[dateKey];
+    }
+
+    function cleanupDayLogIfEmpty(dateKey) {
+      const rec = state.activityLog[dateKey];
+      if (!rec) return;
+      const items = Array.isArray(rec.items) ? rec.items : [];
+      if ((Number(rec.jp) || 0) <= 0 && (Number(rec.net) || 0) <= 0 && (Number(rec.shift) || 0) <= 0 && !rec.check && items.length === 0) {
+        delete state.activityLog[dateKey];
+      }
+    }
+
+    function getLegacyRemainder(rec) {
+      if (!rec) return { jp: 0, net: 0, shift: 0, check: false, hasAny: false };
+      const items = Array.isArray(rec.items) ? rec.items : [];
+      let iJp = 0, iNet = 0, iShift = 0, iCheck = false;
+      for (const it of items) {
+        if (it.type === 'jp') iJp += Number(it.val) || 0;
+        else if (it.type === 'net') iNet += Number(it.val) || 0;
+        else if (it.type === 'shift') iShift += Number(it.val) || 0;
+        else if (it.type === 'check') iCheck = true;
+      }
+      const jp = Math.max(0, Number(((Number(rec.jp) || 0) - iJp).toFixed(2)));
+      const net = Math.max(0, Number(((Number(rec.net) || 0) - iNet).toFixed(2)));
+      const shift = Math.max(0, Number(((Number(rec.shift) || 0) - iShift).toFixed(2)));
+      const check = Boolean(rec.check && !iCheck);
+      return { jp, net, shift, check, hasAny: jp > 0 || net > 0 || shift > 0 || check };
+    }
+
+    function getDayScore(rec) {
+      if (!rec) return 0;
+      let pts = 0;
+      if ((Number(rec.jp) || 0) > 0) pts += rec.jp >= 1.2 ? 2 : 1;
+      if ((Number(rec.net) || 0) > 0) pts += 1;
+      if ((Number(rec.shift) || 0) > 0) pts += 2;
+      if (rec.check) pts += 1;
+      if (pts === 0 && Array.isArray(rec.items) && rec.items.length > 0) pts = 1;
+      return pts;
+    }
+
+    function fmtHrsReadable(hrs) {
+      const h = Number(hrs) || 0;
+      if (h <= 0) return '0м';
+      const mins = Math.round(h * 60);
+      if (mins < 60) return `${mins}м`;
+      return `${Number(h.toFixed(2))}ч`;
+    }
+
+    function getDaySummaryChips(rec) {
+      if (!rec) return [];
+      const chips = [];
+      const items = Array.isArray(rec.items) ? rec.items : [];
+      const leg = getLegacyRemainder(rec);
+
+      if ((Number(rec.jp) || 0) > 0) {
+        chips.push({ cls: 'hm-tag-jp', text: `JP ${fmtHrsReadable(rec.jp)}` });
+      }
+      if ((Number(rec.net) || 0) > 0) {
+        let netMins = 0, netTasks = 0;
+        for (const it of items) {
+          if (it.type === 'net') {
+            if (Number(it.mins) > 0) netMins += Number(it.mins);
+            else netTasks += 1;
+          }
+        }
+        let netText = `Код ${Number(rec.net.toFixed(2))}`;
+        if (leg.net === 0) {
+          if (netMins > 0 && netTasks === 0) netText = `.NET ${netMins >= 60 ? fmtHrsReadable(netMins / 60) : netMins + 'м'}`;
+          else if (netMins > 0 && netTasks > 0) netText = `.NET ${netMins}м + ${netTasks}`;
+          else if (netTasks > 0) netText = `Код ×${netTasks}`;
+        }
+        chips.push({ cls: 'hm-tag-net', text: netText });
+      }
+      if ((Number(rec.shift) || 0) > 0) {
+        chips.push({ cls: 'hm-tag-shift', text: `Смены ×${rec.shift}` });
+      }
+      if (rec.check) {
+        chips.push({ cls: 'hm-tag-other', text: 'Минимум ✓' });
+      }
+      if (!chips.length && items.length > 0) {
+        chips.push({ cls: 'hm-tag-other', text: `Записей: ${items.length}` });
+      }
+      return chips;
+    }
+
+    function getTagClass(item) {
+      const t = String(item.tag || '').toUpperCase();
+      if (item.type === 'jp' || t === 'JP') return 'hm-tag-jp';
+      if (t === 'FE') return 'hm-tag-fe';
+      if (item.type === 'shift' || t === 'OZON') return 'hm-tag-shift';
+      if (item.type === 'net' || t === '.NET' || t === 'КОД' || t === 'CR') return 'hm-tag-net';
+      return 'hm-tag-other';
+    }
+
+    function logActivity(dateKey, type, val = 1, meta = {}) {
+      const rec = ensureDayLog(dateKey);
+      const time = meta.time || nowTimeHM(dateKey);
+
+      if (type === 'check') {
+        if (meta.toggleCheck) {
+          if (rec.check) {
+            rec.check = false;
+            rec.items = rec.items.filter(it => !(it.type === 'check' && it.manual));
+            cleanupDayLogIfEmpty(dateKey);
+          } else {
+            rec.check = true;
+            rec.items.push({
+              id: 'ev_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+              time, type: 'check', val: 0, manual: true,
+              tag: meta.tag || 'ДЕНЬ',
+              label: meta.label || 'Отмечен минимум дня'
+            });
+          }
+          return;
+        }
+        rec.check = true;
+        if (meta.label) {
+          rec.items.push({
+            id: 'ev_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+            time, type: 'check', val: 0,
+            tag: meta.tag || 'ШАГ',
+            label: meta.label
+          });
+        }
+        return;
+      }
+
+      if (type === 'note') {
+        if (!meta.label) return;
+        rec.items.push({
+          id: 'ev_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+          time, type: 'note', val: 0,
+          tag: meta.tag || 'ДЕНЬ',
+          label: meta.label
+        });
+        return;
+      }
+
+      const numVal = Number(val) || 0;
+      rec[type] = Number(((Number(rec[type]) || 0) + numVal).toFixed(2));
+      const defaultTag = type === 'jp' ? 'JP' : (type === 'shift' ? 'OZON' : '.NET');
+      const defaultLabel = type === 'jp' ? `Японский · +${fmtHrsReadable(numVal)}` : (type === 'shift' ? 'Смена Ozon' : 'Блок .NET / код');
+      rec.items.push({
+        id: 'ev_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        time, type, val: numVal,
+        tag: meta.tag || defaultTag,
+        label: meta.label || defaultLabel,
+        mins: Number(meta.mins) || 0,
+        affectsTotal: meta.affectsTotal || null,
+        refId: meta.refId || null
+      });
+    }
+
+    function removeActivityItem(dateKey, itemId) {
+      const rec = state.activityLog[dateKey];
+      if (!rec || !Array.isArray(rec.items)) return;
+      const idx = rec.items.findIndex(it => it.id === itemId);
+      if (idx === -1) return;
+      const [item] = rec.items.splice(idx, 1);
+      if (item.type === 'jp' || item.type === 'net' || item.type === 'shift') {
+        rec[item.type] = Math.max(0, Number(((Number(rec[item.type]) || 0) - (Number(item.val) || 0)).toFixed(2)));
+      }
+      if (item.affectsTotal === 'jp') {
+        state.jpHours = Math.max(0, Number(((Number(state.jpHours) || 0) - (Number(item.val) || 0)).toFixed(2)));
+      } else if (item.affectsTotal === 'fe') {
+        state.feHours = Math.max(0, Number(((Number(state.feHours) || 0) - (Number(item.val) || 0)).toFixed(2)));
+      }
+      if (item.type === 'check' && !rec.items.some(it => it.type === 'check')) {
+        rec.check = false;
+      }
+      cleanupDayLogIfEmpty(dateKey);
+      save(true);
+      renderAll();
+      toast('Запись удалена');
+    }
+
+    function clearLegacyActivity(dateKey) {
+      const rec = state.activityLog[dateKey];
+      if (!rec) return;
+      const items = Array.isArray(rec.items) ? rec.items : [];
+      let iJp = 0, iNet = 0, iShift = 0, iCheck = false;
+      for (const it of items) {
+        if (it.type === 'jp') iJp += Number(it.val) || 0;
+        else if (it.type === 'net') iNet += Number(it.val) || 0;
+        else if (it.type === 'shift') iShift += Number(it.val) || 0;
+        else if (it.type === 'check') iCheck = true;
+      }
+      rec.jp = Number(iJp.toFixed(2));
+      rec.net = Number(iNet.toFixed(2));
+      rec.shift = Number(iShift.toFixed(2));
+      rec.check = iCheck;
+      cleanupDayLogIfEmpty(dateKey);
+      save(true);
+      renderAll();
+      toast('Ранние счётчики очищены');
     }
 
     let autoPushTimer = null;
@@ -2480,7 +2761,63 @@
     }
 
     /* ==================== FOCUS TIMER ==================== */
-    const timer = { mode: 'jp', presetMin: 45, remainingMs: 45 * 60000, running: false, endTime: null, interval: null };
+    const timer = { mode: 'jp', presetMin: 45, remainingMs: 45 * 60000, running: false, endTime: null, startedDateKey: null, interval: null };
+
+    function persistTimer() {
+      try {
+        localStorage.setItem(TIMER_KEY, JSON.stringify({
+          mode: timer.mode,
+          presetMin: timer.presetMin,
+          remainingMs: timer.remainingMs,
+          running: timer.running,
+          endTime: timer.endTime,
+          startedDateKey: timer.startedDateKey
+        }));
+      } catch {}
+    }
+
+    function syncTimerPresetUI() {
+      const key = `${timer.mode}:${timer.presetMin}`;
+      document.querySelectorAll('.tpreset-btn').forEach(x => {
+        x.className = x.dataset.tpreset === key
+          ? 'tpreset-btn btn py-1.5 text-[10px] border-[#A3CCA8]'
+          : 'tpreset-btn btn btn-ghost py-1.5 text-[10px]';
+      });
+    }
+
+    function restoreTimer() {
+      try {
+        const raw = localStorage.getItem(TIMER_KEY);
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (!saved || typeof saved !== 'object') return;
+        if (saved.mode) timer.mode = saved.mode;
+        if (Number(saved.presetMin) > 0) timer.presetMin = Number(saved.presetMin);
+        timer.startedDateKey = saved.startedDateKey || isoDate(0);
+        syncTimerPresetUI();
+        if (saved.running && saved.endTime) {
+          timer.running = true;
+          timer.endTime = Number(saved.endTime);
+          timer.remainingMs = Math.max(0, timer.endTime - Date.now());
+          document.getElementById('timer-status').textContent = 'Идёт фокус-блок...';
+          if (timer.remainingMs <= 0) {
+            updateTimerUI();
+          } else {
+            timer.interval = setInterval(updateTimerUI, 500);
+            updateTimerUI();
+          }
+        } else {
+          timer.running = false;
+          timer.endTime = null;
+          const rem = Number(saved.remainingMs);
+          timer.remainingMs = (rem > 0 && rem <= timer.presetMin * 60000) ? rem : timer.presetMin * 60000;
+          if (timer.remainingMs < timer.presetMin * 60000) {
+            document.getElementById('timer-status').textContent = 'На паузе';
+          }
+          updateTimerUI();
+        }
+      } catch {}
+    }
 
     function playChime() {
       try {
@@ -2514,6 +2851,8 @@
         clearInterval(timer.interval);
         timer.running = false;
         timer.remainingMs = 0;
+        timer.endTime = null;
+        persistTimer();
         playChime();
         fireTimerNotification(labels[timer.mode] || 'Фокус', timer.presetMin);
         logTimerElapsed(true);
@@ -2525,14 +2864,22 @@
       const mins = Math.round(elapsedMs / 60000);
       if (mins < 1) { toast('Прошло меньше минуты', true); return; }
       const hrs = Number((mins / 60).toFixed(2));
-      const dKey = quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0);
-      if (timer.mode === 'jp') { state.jpHours = Number((state.jpHours + hrs).toFixed(2)); logActivity(dKey, 'jp', hrs); }
-      else if (timer.mode === 'fe') { state.feHours = Number((state.feHours + hrs).toFixed(2)); logActivity(dKey, 'net', hrs); }
-      else { logActivity(dKey, 'net', hrs); }
+      const dKey = (full && timer.startedDateKey) ? timer.startedDateKey : (quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0));
+      const modeName = timer.mode;
+      if (modeName === 'jp') {
+        state.jpHours = Number((state.jpHours + hrs).toFixed(2));
+        logActivity(dKey, 'jp', hrs, { tag: 'JP', label: `Таймер JP · ${mins} мин`, mins, affectsTotal: 'jp' });
+      } else if (modeName === 'fe') {
+        state.feHours = Number((state.feHours + hrs).toFixed(2));
+        logActivity(dKey, 'net', hrs, { tag: 'FE', label: `Таймер ITPEC FE · ${mins} мин`, mins, affectsTotal: 'fe' });
+      } else {
+        logActivity(dKey, 'net', hrs, { tag: '.NET', label: `Таймер .NET · ${mins} мин`, mins });
+      }
+      selectedHmDate = dKey;
       resetTimer();
       save(true);
       renderAll();
-      toast(`Записано +${mins} мин (${timer.mode.toUpperCase()})`);
+      toast(`Записано +${mins} мин (${modeName.toUpperCase()})`);
     }
 
     function resetTimer() {
@@ -2540,6 +2887,8 @@
       timer.running = false;
       timer.remainingMs = timer.presetMin * 60000;
       timer.endTime = null;
+      timer.startedDateKey = null;
+      persistTimer();
       document.getElementById('timer-status').textContent = 'Готов · автозапись в статистику';
       updateTimerUI();
     }
@@ -2576,6 +2925,86 @@
       }).join('');
     }
 
+    function buildDayTooltipHtml(dateKey) {
+      const rec = state.activityLog[dateKey];
+      const todayKey = isoDate(0);
+      const yestKey = isoDate(-1);
+      const rel = dateKey === todayKey ? 'сегодня' : (dateKey === yestKey ? 'вчера' : '');
+      const chips = getDaySummaryChips(rec);
+      const items = rec && Array.isArray(rec.items) ? rec.items : [];
+      const leg = getLegacyRemainder(rec);
+
+      const header = `
+        <div class="flex items-center justify-between gap-2 font-mono-num">
+          <span class="text-[11px] font-semibold text-[#E8ECF4]">${esc(fmtHumanDate(dateKey))}${rel ? ` <span class="text-[#A3CCA8] font-normal">(${rel})</span>` : ''}</span>
+          <span class="text-[9px] text-[#6B726A]">${dateKey}</span>
+        </div>
+      `;
+
+      const chipsHtml = chips.length
+        ? `<div class="flex flex-wrap gap-1 mt-1.5">${chips.map(c => `<span class="hm-tag ${c.cls}">${esc(c.text)}</span>`).join('')}</div>`
+        : '';
+
+      let bodyHtml = '';
+      if (items.length > 0) {
+        const shown = items.slice(0, 6);
+        const rest = items.length - shown.length;
+        bodyHtml = `
+          <div class="mt-2 pt-2 border-t border-[rgba(163,204,168,0.12)] space-y-1">
+            ${shown.map(it => `
+              <div class="flex items-start gap-1.5 text-[11px] leading-snug">
+                <span class="font-mono-num text-[9px] text-[#6B726A] pt-0.5 shrink-0">${esc(it.time || '—')}</span>
+                <span class="hm-tag ${getTagClass(it)} mt-0.5">${esc(it.tag || 'ДЕЛО')}</span>
+                <span class="text-[#D4D8D1] break-words min-w-0">${esc(it.label)}</span>
+              </div>
+            `).join('')}
+            ${rest > 0 ? `<div class="font-mono-num text-[9px] text-[#868C84] pt-0.5">+ ещё ${rest} запис. (кликни, чтобы открыть всё)</div>` : ''}
+          </div>
+        `;
+      }
+
+      if (leg.hasAny) {
+        const lParts = [];
+        if (leg.jp > 0) lParts.push(`JP ${fmtHrsReadable(leg.jp)}`);
+        if (leg.net > 0) lParts.push(`Код ${leg.net}`);
+        if (leg.shift > 0) lParts.push(`Смены ${leg.shift}`);
+        if (leg.check) lParts.push('Минимум ✓');
+        bodyHtml += `
+          <div class="mt-1.5 pt-1.5 border-t border-dashed border-[rgba(163,204,168,0.12)] font-mono-num text-[10px] text-[#868C84]">
+            Ранние отметки (до v12): ${esc(lParts.join(' · '))}
+          </div>
+        `;
+      }
+
+      if (!items.length && !leg.hasAny) {
+        bodyHtml = `<div class="mt-1.5 text-[11px] text-[#868C84]">Тихий день — записей нет</div>`;
+      }
+
+      return header + chipsHtml + bodyHtml + `<div class="mt-2 font-mono-num text-[9px] text-[#5D645C]">Клик — закрепить ленту дня внизу</div>`;
+    }
+
+    function showHmTooltip(cell, dateKey) {
+      const tip = document.getElementById('hm-tooltip');
+      if (!tip) return;
+      tip.innerHTML = buildDayTooltipHtml(dateKey);
+      tip.classList.add('visible');
+      const rect = cell.getBoundingClientRect();
+      const tipW = tip.offsetWidth || 268;
+      const tipH = tip.offsetHeight || 110;
+      let left = rect.left + rect.width / 2 - tipW / 2;
+      left = Math.max(10, Math.min(window.innerWidth - tipW - 10, left));
+      let top = rect.top - tipH - 10;
+      if (top < 10) top = rect.bottom + 10;
+      if (top + tipH > window.innerHeight - 10) top = Math.max(10, window.innerHeight - tipH - 10);
+      tip.style.left = `${Math.round(left)}px`;
+      tip.style.top = `${Math.round(top)}px`;
+    }
+
+    function hideHmTooltip() {
+      const tip = document.getElementById('hm-tooltip');
+      if (tip) tip.classList.remove('visible');
+    }
+
     function renderHeatmap() {
       const grid = document.getElementById('heatmap-grid');
       const days = [];
@@ -2585,33 +3014,94 @@
 
       grid.innerHTML = days.map(d => {
         const rec = state.activityLog[d];
-        let pts = 0;
-        if (rec) {
-          if (rec.jp > 0) pts += rec.jp >= 1.2 ? 2 : 1;
-          if (rec.net > 0) pts += 1;
-          if (rec.shift > 0) pts += 2;
-          if (rec.check) pts += 1;
-        }
+        const pts = getDayScore(rec);
         if (pts > 0 && last30.has(d)) active30++;
-        return `<div class="hm-cell hm-${Math.min(4, pts)} ${d === selectedHmDate ? 'hm-selected' : ''}" data-hdate="${d}" title="${d}"></div>`;
+        return `<div class="hm-cell hm-${Math.min(4, pts)} ${d === selectedHmDate ? 'hm-selected' : ''}" data-hdate="${d}" role="button" tabindex="0" aria-label="${d}"></div>`;
       }).join('');
 
       document.getElementById('stability-30d').textContent = `${Math.round((active30 / 30) * 100)}%`;
-      grid.querySelectorAll('.hm-cell').forEach(cell => cell.addEventListener('click', () => {
-        selectedHmDate = cell.dataset.hdate; renderHeatmap();
-      }));
+
+      const canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      grid.querySelectorAll('.hm-cell').forEach(cell => {
+        cell.addEventListener('click', () => {
+          selectedHmDate = cell.dataset.hdate;
+          hideHmTooltip();
+          renderHeatmap();
+        });
+        if (canHover) {
+          cell.addEventListener('pointerenter', (e) => {
+            if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
+              showHmTooltip(cell, cell.dataset.hdate);
+            }
+          });
+          cell.addEventListener('pointerleave', () => hideHmTooltip());
+        }
+      });
 
       const selRec = state.activityLog[selectedHmDate];
       const info = document.getElementById('hm-sel-info');
-      if (!selRec) {
-        info.innerHTML = `<span class="text-[#E8ECF4]">${selectedHmDate}</span> · тихий день`;
-      } else {
-        const parts = [];
-        if (selRec.jp > 0) parts.push(`JP ${selRec.jp}ч`);
-        if (selRec.net > 0) parts.push(`Код ${selRec.net}`);
-        if (selRec.shift > 0) parts.push(`Смены ${selRec.shift}`);
-        if (selRec.check) parts.push('Минимум ✓');
-        info.innerHTML = `<span class="text-[#E8ECF4]">${selectedHmDate}</span> · ${parts.join(' / ') || 'тихий день'}`;
+      const toggleBtn = document.getElementById('btn-hm-toggle');
+      const itemsBox = document.getElementById('hm-day-items');
+      const rel = selectedHmDate === isoDate(0) ? 'сегодня' : (selectedHmDate === isoDate(-1) ? 'вчера' : '');
+      const chips = getDaySummaryChips(selRec);
+
+      info.innerHTML = `
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-[#E8ECF4] font-semibold">${esc(fmtHumanDate(selectedHmDate))}</span>
+          ${rel ? `<span class="text-[10px] text-[#A3CCA8]">(${rel})</span>` : `<span class="text-[10px] text-[#6B726A]">${selectedHmDate}</span>`}
+          ${chips.length ? chips.map(c => `<span class="hm-tag ${c.cls}">${esc(c.text)}</span>`).join('') : '<span class="text-[#6B726A]">· тихий день</span>'}
+        </div>
+      `;
+
+      if (toggleBtn) {
+        const isChecked = Boolean(selRec && selRec.check);
+        toggleBtn.textContent = isChecked ? 'МИНИМУМ ✓' : '+ ОТМЕТИТЬ ДЕНЬ';
+        toggleBtn.classList.toggle('border-[#A3CCA8]', isChecked);
+        toggleBtn.classList.toggle('text-[#A3CCA8]', isChecked);
+      }
+
+      if (itemsBox) {
+        const items = selRec && Array.isArray(selRec.items) ? selRec.items : [];
+        const leg = getLegacyRemainder(selRec);
+        let rowsHtml = '';
+
+        if (items.length) {
+          rowsHtml += items.map(it => `
+            <div class="flex items-center justify-between gap-2 px-2 py-1 rounded bg-[rgba(18,22,19,0.7)] border border-[rgba(163,204,168,0.08)] text-[11px]">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="font-mono-num text-[10px] text-[#6B726A] shrink-0">${esc(it.time || '—')}</span>
+                <span class="hm-tag ${getTagClass(it)}">${esc(it.tag || 'ДЕЛО')}</span>
+                <span class="text-[#DFDDD4] truncate" title="${esc(it.label)}">${esc(it.label)}</span>
+              </div>
+              <button type="button" data-del-hitem="${it.id}" title="Удалить запись" class="text-[#6B726A] hover:text-[#DF9B94] font-mono-num text-xs px-1 shrink-0 cursor-pointer">×</button>
+            </div>
+          `).join('');
+        }
+
+        if (leg.hasAny) {
+          const lParts = [];
+          if (leg.jp > 0) lParts.push(`JP ${fmtHrsReadable(leg.jp)}`);
+          if (leg.net > 0) lParts.push(`Код ${leg.net}`);
+          if (leg.shift > 0) lParts.push(`Смены ${leg.shift}`);
+          if (leg.check) lParts.push('Минимум ✓');
+          rowsHtml += `
+            <div class="flex items-center justify-between gap-2 px-2 py-1 rounded bg-[rgba(18,22,19,0.45)] border border-dashed border-[rgba(163,204,168,0.14)] text-[11px]">
+              <div class="font-mono-num text-[10px] text-[#868C84] truncate">Ранние отметки (до v12): <span class="text-[#C8C1AE]">${esc(lParts.join(' · '))}</span></div>
+              <button type="button" id="btn-hm-clear-legacy" class="font-mono-num text-[10px] text-[#DF9B94] hover:underline shrink-0 cursor-pointer px-1">Очистить</button>
+            </div>
+          `;
+        }
+
+        if (!rowsHtml) {
+          rowsHtml = `<div class="font-mono-num text-[10px] text-[#6B726A] py-0.5">Пока без записей — всё, что сделаешь в таймере, чеклистах или ниже, появится здесь.</div>`;
+        }
+
+        itemsBox.innerHTML = rowsHtml;
+        itemsBox.querySelectorAll('[data-del-hitem]').forEach(b => b.addEventListener('click', () => {
+          removeActivityItem(selectedHmDate, b.dataset.delHitem);
+        }));
+        const clrLeg = document.getElementById('btn-hm-clear-legacy');
+        if (clrLeg) clrLeg.addEventListener('click', () => clearLegacyActivity(selectedHmDate));
       }
     }
 
@@ -2736,7 +3226,7 @@
 
       tBox.querySelectorAll('[data-decktask]').forEach(cb => cb.addEventListener('change', () => {
         const item = state.tasks.find(x => x.id === cb.dataset.decktask);
-        if (item) { item.done = true; logActivity(isoDate(0), 'net', 1); save(); renderAll(); }
+        if (item) { item.done = true; logActivity(isoDate(0), 'net', 1, { tag: 'КОД', label: `Задача: ${item.title}` }); save(); renderAll(); }
       }));
     }
 
@@ -2767,7 +3257,14 @@
         save(); renderAll();
       }));
       sBox.querySelectorAll('[data-dels]').forEach(b => b.addEventListener('click', () => {
-        state.shifts = state.shifts.filter(x => x.id !== b.dataset.dels); save(); renderAll();
+        const shId = b.dataset.dels;
+        const sh = state.shifts.find(x => x.id === shId);
+        state.shifts = state.shifts.filter(x => x.id !== shId);
+        if (sh && sh.date && state.activityLog[sh.date] && Array.isArray(state.activityLog[sh.date].items)) {
+          const ev = state.activityLog[sh.date].items.find(it => it.refId === shId);
+          if (ev) { removeActivityItem(sh.date, ev.id); return; }
+        }
+        save(); renderAll();
       }));
 
       const dBox = document.getElementById('debt-list');
@@ -2963,7 +3460,7 @@
       `).join('');
       tBox.querySelectorAll('[data-tcb]').forEach(cb => cb.addEventListener('change', () => {
         const t = state.tasks.find(x => x.id === cb.dataset.tcb);
-        if (t) { t.done = cb.checked; if (cb.checked) logActivity(isoDate(0), 'net', 1); }
+        if (t) { t.done = cb.checked; if (cb.checked) logActivity(isoDate(0), 'net', 1, { tag: 'КОД', label: `Задача: ${t.title}` }); }
         save(); renderAll();
       }));
       tBox.querySelectorAll('[data-tedit]').forEach(b => b.addEventListener('click', () => {
@@ -3188,10 +3685,11 @@
 
         stepsEl.querySelectorAll('[data-deckstep]').forEach(cb => cb.addEventListener('change', () => {
           const [si, sid] = cb.dataset.deckstep.split(':');
-          const step = state.planStages[Number(si)]?.steps.find(x => x.id === sid);
+          const stObj = state.planStages[Number(si)];
+          const step = stObj?.steps.find(x => x.id === sid);
           if (step) {
             step.done = cb.checked;
-            if (cb.checked) logActivity(isoDate(0), 'check');
+            if (cb.checked) logActivity(isoDate(0), 'check', 1, { tag: step.tag || 'ПЛАН', label: `Этап ${stObj.code}: ${step.title}` });
             save(true);
             renderAll();
             toast('Шаг этапа выполнен ✓');
@@ -3397,11 +3895,12 @@
       box.querySelectorAll('[data-pstep]').forEach(cb => cb.addEventListener('change', () => {
         const [si, sid] = cb.dataset.pstep.split(':');
         const stIdx = Number(si);
-        const step = state.planStages[stIdx]?.steps.find(x => x.id === sid);
+        const stObj = state.planStages[stIdx];
+        const step = stObj?.steps.find(x => x.id === sid);
         if (!step) return;
         const wasDone = isStageComplete(stIdx);
         step.done = cb.checked;
-        if (cb.checked) logActivity(isoDate(0), 'check');
+        if (cb.checked) logActivity(isoDate(0), 'check', 1, { tag: step.tag || 'ПЛАН', label: `Этап ${stObj.code}: ${step.title}` });
         save(true);
         renderAll();
         if (!wasDone && isStageComplete(stIdx) && stIdx < state.planStages.length - 1) {
@@ -3564,7 +4063,10 @@
         const s = new Set(state.dailyState.done || []);
         cb.checked ? s.add(cb.dataset.dtask) : s.delete(cb.dataset.dtask);
         state.dailyState.done = Array.from(s);
-        if (cb.checked) logActivity(isoDate(0), 'check');
+        if (cb.checked) {
+          const tObj = curTpl.tasks.find(x => x.id === cb.dataset.dtask);
+          logActivity(isoDate(0), 'check', 1, { tag: 'ДЕНЬ', label: tObj ? tObj.text : 'Пункт командира дня' });
+        }
         save(true); renderDailyCommander(); renderHeatmap();
       }));
     }
@@ -3615,7 +4117,8 @@
         const st = state.actionQueues[k]?.steps.find(x => x.id === sid);
         if (st) {
           st.done = cb.checked;
-          if (cb.checked) logActivity(isoDate(0), k === 'jp' ? 'jp' : 'net', k === 'jp' ? 0.5 : 1);
+          const br = state.actionQueues[k];
+          if (cb.checked) logActivity(isoDate(0), k === 'jp' ? 'jp' : 'net', k === 'jp' ? 0.5 : 1, { tag: br ? br.short : 'ШАГ', label: st.title });
           save(true); renderAll(); toast('Шаг закрыт → загружен следующий ✓');
         }
       }));
@@ -3660,7 +4163,12 @@
       listEl.querySelectorAll('[data-fqdone]').forEach(cb => cb.addEventListener('change', () => {
         const [k, sid] = cb.dataset.fqdone.split(':');
         const st = state.actionQueues[k]?.steps.find(x => x.id === sid);
-        if (st) { st.done = cb.checked; save(true); renderAll(); }
+        if (st) {
+          st.done = cb.checked;
+          const br = state.actionQueues[k];
+          if (cb.checked) logActivity(isoDate(0), k === 'jp' ? 'jp' : 'net', k === 'jp' ? 0.5 : 1, { tag: br ? br.short : 'ШАГ', label: st.title });
+          save(true); renderAll();
+        }
       }));
       listEl.querySelectorAll('[data-fqguide]').forEach(b => b.addEventListener('click', () => {
         const sid = b.dataset.fqguide;
@@ -3683,7 +4191,7 @@
         if (!rec) continue;
         jp7 += Number(rec.jp) || 0;
         shifts7 += Number(rec.shift) || 0;
-        if ((rec.jp || 0) > 0 || (rec.net || 0) > 0 || (rec.shift || 0) > 0 || rec.check) activeDays++;
+        if (getDayScore(rec) > 0) activeDays++;
       }
       line.textContent = `За 7 дней: активных дней ${activeDays}/7 · Японский ${jp7.toFixed(1)}ч · Смен ${shifts7}${isSunday ? ' · Сегодня воскресенье — зафиксируй фокус!' : ''}`;
 
@@ -3914,7 +4422,7 @@
         const s = new Set(state.codeReviewDone || []);
         e.target.checked ? s.add(cur.id) : s.delete(cur.id);
         state.codeReviewDone = Array.from(s);
-        if (e.target.checked) logActivity(isoDate(0), 'net', 1);
+        if (e.target.checked) logActivity(isoDate(0), 'net', 1, { tag: 'CR', label: `Live Code Review: ${cur.title}` });
         save(true); renderCodeReview(); renderHeatmap();
       });
     }
@@ -4035,6 +4543,7 @@
       document.getElementById('sync-auto').checked = Boolean(syncCfg.auto);
 
       renderAll();
+      restoreTimer();
       switchView(state.activeView || 'view-deck');
 
       // Auto-Pull from GitHub Gist on startup when auto-sync enabled
@@ -4317,14 +4826,17 @@
       // Quick actions
       document.getElementById('qa-shift').addEventListener('click', () => {
         const dKey = quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0);
-        state.shifts.push({ id: 'sh_' + Date.now(), date: dKey, amount: 4000, note: 'Быстрая смена' });
-        logActivity(dKey, 'shift', 1); save(true); renderAll();
+        const shId = 'sh_' + Date.now();
+        state.shifts.push({ id: shId, date: dKey, amount: 4000, note: 'Быстрая смена' });
+        logActivity(dKey, 'shift', 1, { tag: 'OZON', label: 'Смена Ozon · +4 000 ₽', refId: shId });
+        selectedHmDate = dKey; save(true); renderAll();
         toast(`+1 смена (+4 000 ₽ · ${fmtShortDate(dKey)})`);
       });
       document.getElementById('qa-fe').addEventListener('click', () => {
         const dKey = quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0);
         state.feHours = Number(((Number(state.feHours) || 0) + 1).toFixed(2));
-        logActivity(dKey, 'net', 1); save(true); renderAll();
+        logActivity(dKey, 'net', 1, { tag: 'FE', label: 'ITPEC FE · +1 ч', mins: 60, affectsTotal: 'fe' });
+        selectedHmDate = dKey; save(true); renderAll();
         toast(`+1 ч ITPEC FE (${fmtShortDate(dKey)})`);
       });
       document.getElementById('cb-peek-locked').addEventListener('change', (e) => {
@@ -4342,12 +4854,14 @@
       document.getElementById('qa-jp').addEventListener('click', () => {
         const dKey = quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0);
         state.jpHours = Number(((Number(state.jpHours) || 0) + 0.75).toFixed(2));
-        logActivity(dKey, 'jp', 0.75); save(true); renderAll();
+        logActivity(dKey, 'jp', 0.75, { tag: 'JP', label: 'Японский · +45 мин', mins: 45, affectsTotal: 'jp' });
+        selectedHmDate = dKey; save(true); renderAll();
         toast(`+45 мин японский (${fmtShortDate(dKey)})`);
       });
       document.getElementById('qa-net').addEventListener('click', () => {
         const dKey = quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0);
-        logActivity(dKey, 'net', 1); save(true); renderAll();
+        logActivity(dKey, 'net', 1, { tag: '.NET', label: 'Блок .NET / код' });
+        selectedHmDate = dKey; save(true); renderAll();
         toast(`Блок .NET отмечен (${fmtShortDate(dKey)})`);
       });
       document.getElementById('qa-freeze').addEventListener('click', () => {
@@ -4355,31 +4869,53 @@
       });
 
       document.getElementById('btn-hm-toggle').addEventListener('click', () => {
-        logActivity(selectedHmDate, 'check'); save(true); renderHeatmap();
-        toast(`Обновлён день ${selectedHmDate}`);
+        logActivity(selectedHmDate, 'check', 1, { toggleCheck: true, tag: 'ДЕНЬ', label: 'Отмечен минимум дня' });
+        save(true); renderHeatmap(); renderWeeklyCheckin();
+        toast(`Обновлён день ${fmtHumanDate(selectedHmDate)}`);
+      });
+      const addHmNote = () => {
+        const inp = document.getElementById('hm-note-in');
+        const cat = document.getElementById('hm-note-cat').value;
+        const txt = inp.value.trim();
+        if (!txt) return;
+        if (cat === 'jp') logActivity(selectedHmDate, 'note', 0, { tag: 'JP', label: txt });
+        else if (cat === 'fe') logActivity(selectedHmDate, 'net', 1, { tag: 'FE', label: txt });
+        else if (cat === 'net') logActivity(selectedHmDate, 'net', 1, { tag: '.NET', label: txt });
+        else logActivity(selectedHmDate, 'note', 0, { tag: 'ДЕНЬ', label: txt });
+        inp.value = '';
+        save(true); renderHeatmap(); renderWeeklyCheckin();
+        toast(`Записано в ${fmtHumanDate(selectedHmDate)}`);
+      };
+      document.getElementById('btn-hm-add-note').addEventListener('click', addHmNote);
+      document.getElementById('hm-note-in').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); addHmNote(); }
       });
 
       // Timer
       document.querySelectorAll('.tpreset-btn').forEach(b => b.addEventListener('click', () => {
         const [m, mins] = b.dataset.tpreset.split(':');
         timer.mode = m; timer.presetMin = Number(mins); resetTimer();
-        document.querySelectorAll('.tpreset-btn').forEach(x => {
-          x.className = x === b ? 'tpreset-btn btn py-1.5 text-[10px] border-[#A3CCA8]' : 'tpreset-btn btn btn-ghost py-1.5 text-[10px]';
-        });
+        syncTimerPresetUI();
       }));
       document.getElementById('btn-timer-toggle').addEventListener('click', () => {
         if (timer.running) {
           timer.remainingMs = Math.max(0, timer.endTime - Date.now());
-          clearInterval(timer.interval); timer.running = false;
+          clearInterval(timer.interval); timer.running = false; timer.endTime = null;
           document.getElementById('timer-status').textContent = 'На паузе';
         } else {
           if (timer.remainingMs <= 0) timer.remainingMs = timer.presetMin * 60000;
           timer.endTime = Date.now() + timer.remainingMs; timer.running = true;
+          timer.startedDateKey = quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0);
           document.getElementById('timer-status').textContent = 'Идёт фокус-блок...';
           timer.interval = setInterval(updateTimerUI, 500);
         }
+        persistTimer();
         updateTimerUI();
       });
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && timer.running) updateTimerUI();
+      });
+      window.addEventListener('scroll', hideHmTooltip, { passive: true });
       document.getElementById('btn-timer-log').addEventListener('click', () => logTimerElapsed(false));
       document.getElementById('btn-timer-reset').addEventListener('click', resetTimer);
 
@@ -4389,8 +4925,10 @@
         const dKey = document.getElementById('shift-date-in').value || isoDate(0);
         const note = document.getElementById('shift-note-in').value.trim() || 'Смена Ozon';
         if (amt <= 0) return;
-        state.shifts.push({ id: 'sh_' + Date.now(), date: dKey, amount: amt, note });
-        logActivity(dKey, 'shift', 1); document.getElementById('shift-note-in').value = ''; save(); renderAll();
+        const shId = 'sh_' + Date.now();
+        state.shifts.push({ id: shId, date: dKey, amount: amt, note });
+        logActivity(dKey, 'shift', 1, { tag: 'OZON', label: `${note} · +${amt.toLocaleString('ru-RU')} ₽`, refId: shId });
+        document.getElementById('shift-note-in').value = ''; save(); renderAll();
       });
       document.getElementById('btn-cap-add').addEventListener('click', () => {
         const v = Number(document.getElementById('cap-amt-in').value); if (!v) return;
@@ -4417,8 +4955,9 @@
         const price = Number(document.getElementById('fr-price').value) || 0;
         if (!name || price <= 0) return;
         state.freezeItems.push({ id: 'fr_' + Date.now(), name, price, createdAt: Date.now() });
+        logActivity(isoDate(0), 'note', 0, { tag: '72Ч', label: `Карантин: ${name} (${price.toLocaleString('ru-RU')} ₽)` });
         document.getElementById('fr-name').value = ''; document.getElementById('fr-price').value = ''; document.getElementById('fr-convert-preview').classList.add('hidden');
-        save(true); renderFinance(); toast('Заморожено на 72ч');
+        save(true); renderFinance(); renderHeatmap(); toast('Заморожено на 72ч');
       });
 
       // Career
@@ -4431,8 +4970,10 @@
           stage: document.getElementById('crm-stg').value,
           notes: document.getElementById('crm-note').value.trim()
         });
+        const stgVal = document.getElementById('crm-stg').value;
+        logActivity(isoDate(0), 'note', 0, { tag: 'CRM', label: `${stgVal}: ${company}` });
         document.getElementById('crm-comp').value = ''; document.getElementById('crm-sal').value = ''; document.getElementById('crm-note').value = '';
-        save(); renderCareer();
+        save(); renderCareer(); renderHeatmap();
       });
       document.getElementById('btn-gap-add').addEventListener('click', () => {
         const text = document.getElementById('gap-in').value.trim(); if (!text) return;
@@ -4451,14 +4992,14 @@
         const delta = Number(b.dataset.jpadd);
         const dKey = document.getElementById('jp-date-in').value || isoDate(0);
         state.jpHours = Math.max(0, Number(((Number(state.jpHours) || 0) + delta).toFixed(2)));
-        if (delta > 0) logActivity(dKey, 'jp', delta);
+        if (delta > 0) logActivity(dKey, 'jp', delta, { tag: 'JP', label: `Японский · +${fmtHrsReadable(delta)}`, mins: Math.round(delta * 60), affectsTotal: 'jp' });
         save(); renderAll();
       }));
       document.querySelectorAll('.fe-add-btn').forEach(b => b.addEventListener('click', () => {
         const delta = Number(b.dataset.feadd);
         const dKey = document.getElementById('jp-date-in').value || isoDate(0);
         state.feHours = Math.max(0, Number(((Number(state.feHours) || 0) + delta).toFixed(2)));
-        if (delta > 0) logActivity(dKey, 'net', delta);
+        if (delta > 0) logActivity(dKey, 'net', delta, { tag: 'FE', label: `ITPEC FE · +${fmtHrsReadable(delta)}`, mins: Math.round(delta * 60), affectsTotal: 'fe' });
         save(); renderAll();
       }));
       document.getElementById('btn-add-task').addEventListener('click', () => {
@@ -4508,6 +5049,12 @@
         state.expenses.forEach(e => rows.push(['Расход', e.date, e.note, -Math.abs(Number(e.amount)||0), e.cat, '']));
         state.crmRows.forEach(r => rows.push(['CRM Middle', r.date, r.company, r.salary, r.stage, `${r.channel} | ${r.notes}`]));
         state.planStages.forEach(st => st.steps.forEach(p => rows.push(['План', `Этап ${st.code} (${st.date})`, p.title, p.tag, p.done ? 'Готово' : 'В работе', (p.guide || '').replace(/\r?\n/g, ' ')])));
+        Object.keys(state.activityLog || {}).sort().forEach(dk => {
+          const rec = state.activityLog[dk];
+          if (rec && Array.isArray(rec.items)) {
+            rec.items.forEach(it => rows.push(['Дневник дня', dk, it.label, it.val || '', it.tag || '', it.time || '']));
+          }
+        });
         const csv = '\uFEFF' + rows.map(r => r.map(q).join(';')).join('\r\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
