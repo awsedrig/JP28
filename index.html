@@ -337,7 +337,35 @@
     .hm-2 { background: #3D694F; }
     .hm-3 { background: #649B78; }
     .hm-4 { background: #A3CCA8; box-shadow: 0 0 6px rgba(163, 204, 168, 0.45); }
+    .hm-future { background: rgba(18, 21, 19, 0.35); border: 1px dashed rgba(163, 204, 168, 0.09); opacity: 0.55; }
+    .hm-today { box-shadow: inset 0 0 0 1px rgba(232, 236, 244, 0.72); }
     .hm-selected { outline: 1px solid var(--fog) !important; outline-offset: 1px; }
+    .hm-wd-col {
+      display: grid;
+      grid-template-rows: repeat(7, 12px);
+      gap: 3px;
+      font-family: var(--mono);
+      font-size: 9px;
+      line-height: 12px;
+      color: #6B726A;
+      user-select: none;
+      padding-right: 4px;
+    }
+    .hm-months-row {
+      display: grid;
+      grid-template-columns: repeat(16, 12px);
+      gap: 3px;
+      font-family: var(--mono);
+      font-size: 9px;
+      line-height: 12px;
+      height: 14px;
+      color: #868C84;
+      user-select: none;
+    }
+    .hm-month-lbl {
+      overflow: visible;
+      white-space: nowrap;
+    }
 
     /* Floating Heatmap Hover Tooltip (PC) */
     #hm-tooltip {
@@ -373,6 +401,10 @@
     }
     .hm-tag-jp { background: rgba(163, 204, 168, 0.16); color: #A3CCA8; border: 1px solid rgba(163, 204, 168, 0.3); }
     .hm-tag-net { background: rgba(200, 193, 174, 0.15); color: #DCD6C4; border: 1px solid rgba(200, 193, 174, 0.28); }
+    .hm-tag-study { background: rgba(142, 180, 204, 0.15); color: #9EC0D4; border: 1px solid rgba(142, 180, 204, 0.28); }
+    .hm-tag-interview { background: rgba(216, 182, 122, 0.15); color: #DFC28D; border: 1px solid rgba(216, 182, 122, 0.3); }
+    .hm-tag-tasks { background: rgba(163, 186, 172, 0.12); color: #B8C7BC; border: 1px solid rgba(163, 186, 172, 0.24); }
+    .hm-tag-life { background: rgba(188, 162, 196, 0.14); color: #C9B2CE; border: 1px solid rgba(188, 162, 196, 0.28); }
     .hm-tag-fe { background: rgba(148, 184, 200, 0.16); color: #A8CCDC; border: 1px solid rgba(148, 184, 200, 0.3); }
     .hm-tag-shift { background: rgba(201, 112, 103, 0.16); color: #E5A49D; border: 1px solid rgba(201, 112, 103, 0.32); }
     .hm-tag-other { background: rgba(163, 204, 168, 0.09); color: #B4BCB2; border: 1px solid rgba(163, 204, 168, 0.16); }
@@ -718,12 +750,12 @@
             </div>
           </div>
 
-          <!-- 16-Week Stability Heatmap -->
+          <!-- 16-Week Stability Heatmap (Weekday-Aligned + Multi-Year Archive) -->
           <div class="lg:col-span-7 panel p-4 flex flex-col justify-between space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap items-start justify-between gap-2">
               <div>
-                <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">РИТМ И СТАБИЛЬНОСТЬ · 112 ДНЕЙ</div>
-                <div class="text-xs text-[#868C84] mt-0.5">Один пропущенный день ничего не обнуляет — важна общая плотность за 30 дней.</div>
+                <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">КАЛЕНДАРЬ И РИТМ · ПН–ВС</div>
+                <div class="text-xs text-[#868C84] mt-0.5">Вся история хранится по датам — можно листать и спустя годы.</div>
               </div>
               <div class="text-right">
                 <div id="stability-30d" class="font-mono-num text-lg font-semibold text-[#A3CCA8]">0%</div>
@@ -731,8 +763,37 @@
               </div>
             </div>
 
+            <div class="flex flex-wrap items-center justify-between gap-2 font-mono-num text-[10px]">
+              <div class="flex items-center gap-1">
+                <button type="button" id="btn-hm-prev" title="Назад на 12 недель" class="btn btn-ghost py-0.5 px-2 text-[11px]">‹</button>
+                <span id="hm-range-lbl" class="px-2 py-0.5 rounded bg-[rgba(11,13,12,0.55)] border border-[rgba(163,204,168,0.12)] text-[#DFDDD4]">—</span>
+                <button type="button" id="btn-hm-next" title="Вперёд на 12 недель" class="btn btn-ghost py-0.5 px-2 text-[11px]">›</button>
+                <button type="button" id="btn-hm-today" class="hidden btn py-0.5 px-2 text-[10px] border-[#A3CCA8] text-[#A3CCA8]">СЕГОДНЯ</button>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <select id="hm-archive-jump" class="inp py-0.5 px-2 text-[10px] font-mono-num" title="Быстрый переход к любому месяцу в архиве">
+                  <option value="">АРХИВ ▾</option>
+                </select>
+                <input id="hm-date-jump" type="date" class="inp py-0.5 px-1.5 text-[10px] font-mono-num w-[112px]" title="Перейти к точной дате" />
+              </div>
+            </div>
+
             <div class="overflow-x-auto no-scrollbar py-1">
-              <div id="heatmap-grid" class="inline-grid grid-rows-7 grid-flow-col gap-[3px]"></div>
+              <div class="inline-flex items-end gap-1">
+                <div class="hm-wd-col">
+                  <span class="text-[#868C84]">Пн</span>
+                  <span>Вт</span>
+                  <span class="text-[#868C84]">Ср</span>
+                  <span>Чт</span>
+                  <span class="text-[#868C84]">Пт</span>
+                  <span>Сб</span>
+                  <span class="text-[#868C84]">Вс</span>
+                </div>
+                <div class="inline-flex flex-col gap-1">
+                  <div id="heatmap-months" class="hm-months-row"></div>
+                  <div id="heatmap-grid" class="inline-grid grid-rows-7 grid-flow-col gap-[3px]"></div>
+                </div>
+              </div>
             </div>
 
             <div id="heatmap-inspector" class="panel-recessed p-3 space-y-2.5 text-xs">
@@ -745,10 +806,12 @@
                 <select id="hm-note-cat" class="inp py-1 px-1.5 text-[10px] font-mono-num shrink-0" title="Категория записи">
                   <option value="net">КОД</option>
                   <option value="jp">JP</option>
-                  <option value="fe">FE</option>
-                  <option value="note">ДЕНЬ</option>
+                  <option value="study">УЧЁБА</option>
+                  <option value="interview">СОБЕС</option>
+                  <option value="tasks">ДЕЛА</option>
+                  <option value="life">ЖИЗНЬ</option>
                 </select>
-                <input id="hm-note-in" type="text" placeholder="Записать, что сделал в этот день (Enter)..." class="inp py-1 px-2 text-[11px] flex-1" />
+                <input id="hm-note-in" type="text" placeholder="Записать важное за этот день (Enter)..." class="inp py-1 px-2 text-[11px] flex-1" />
                 <button type="button" id="btn-hm-add-note" class="btn py-1 px-2.5 text-[10px]">+</button>
               </div>
             </div>
@@ -2441,11 +2504,35 @@
     let syncCfg = loadSyncCfg();
     let quickDateMode = 'today';
     let selectedHmDate = isoDate(0);
+    let hmWeekOffset = 0;
     let peekLockedStages = false;
     let expandedStepIds = new Set();
 
     const RU_MONTHS_SHORT = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
     const RU_WEEKDAYS_SHORT = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+
+    function addDaysIso(iso, delta) {
+      const d = new Date(iso + 'T12:00:00');
+      d.setDate(d.getDate() + delta);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function getWeekSundayIso(iso) {
+      const d = new Date(iso + 'T12:00:00');
+      const monIdx = (d.getDay() + 6) % 7; // Mon=0 .. Sun=6
+      return addDaysIso(iso, 6 - monIdx);
+    }
+
+    function jumpHeatmapToDate(targetIso) {
+      if (!targetIso || targetIso.length < 10) return;
+      const curSun = getWeekSundayIso(isoDate(0));
+      const tgtSun = getWeekSundayIso(targetIso);
+      const diffWeeks = Math.round((new Date(curSun + 'T12:00:00') - new Date(tgtSun + 'T12:00:00')) / (7 * 86400000));
+      // Place target week comfortably inside the 16-week window (around right third)
+      hmWeekOffset = Math.max(0, diffWeeks > 0 ? Math.max(0, diffWeeks - 4) : 0);
+      selectedHmDate = targetIso;
+      renderHeatmap();
+    }
 
     function fmtHumanDate(iso) {
       if (!iso || iso.length < 10) return iso || '';
@@ -2454,7 +2541,9 @@
       const day = d.getDate();
       const mon = RU_MONTHS_SHORT[d.getMonth()];
       const wd = RU_WEEKDAYS_SHORT[d.getDay()];
-      return `${day} ${mon} · ${wd}`;
+      const curYr = new Date().getFullYear();
+      const yrPart = d.getFullYear() !== curYr ? ` ${d.getFullYear()}` : '';
+      return `${day} ${mon}${yrPart} · ${wd}`;
     }
 
     function nowTimeHM(dateKey) {
@@ -2504,7 +2593,9 @@
       if ((Number(rec.net) || 0) > 0) pts += 1;
       if ((Number(rec.shift) || 0) > 0) pts += 2;
       if (rec.check) pts += 1;
-      if (pts === 0 && Array.isArray(rec.items) && rec.items.length > 0) pts = 1;
+      if (pts === 0 && Array.isArray(rec.items) && rec.items.length > 0) {
+        pts = rec.items.length >= 3 ? 2 : 1;
+      }
       return pts;
     }
 
@@ -2544,8 +2635,18 @@
       if ((Number(rec.shift) || 0) > 0) {
         chips.push({ cls: 'hm-tag-shift', text: `Смены ×${rec.shift}` });
       }
+      const noteCounts = {};
+      for (const it of items) {
+        if (it.type === 'note') {
+          const tg = String(it.tag || 'ДЕЛА').toUpperCase();
+          noteCounts[tg] = (noteCounts[tg] || 0) + 1;
+        }
+      }
+      for (const [tg, cnt] of Object.entries(noteCounts)) {
+        chips.push({ cls: getTagClass({ type: 'note', tag: tg }), text: cnt > 1 ? `${tg} ×${cnt}` : tg });
+      }
       if (rec.check) {
-        chips.push({ cls: 'hm-tag-other', text: 'Минимум ✓' });
+        chips.push({ cls: 'hm-tag-tasks', text: 'Минимум ✓' });
       }
       if (!chips.length && items.length > 0) {
         chips.push({ cls: 'hm-tag-other', text: `Записей: ${items.length}` });
@@ -2557,7 +2658,11 @@
       const t = String(item.tag || '').toUpperCase();
       if (item.type === 'jp' || t === 'JP') return 'hm-tag-jp';
       if (t === 'FE') return 'hm-tag-fe';
-      if (item.type === 'shift' || t === 'OZON') return 'hm-tag-shift';
+      if (t === 'УЧЁБА' || t === 'УЧЕБА' || t === 'КОЛЛЕДЖ') return 'hm-tag-study';
+      if (t === 'СОБЕС' || t === 'CRM') return 'hm-tag-interview';
+      if (t === 'ЖИЗНЬ' || t === 'ЛИЧНОЕ') return 'hm-tag-life';
+      if (t === 'ДЕЛА' || t === 'ДЕНЬ' || t === 'ПЛАН' || t === 'ШАГ') return 'hm-tag-tasks';
+      if (item.type === 'shift' || t === 'OZON' || t === '72Ч') return 'hm-tag-shift';
       if (item.type === 'net' || t === '.NET' || t === 'КОД' || t === 'CR') return 'hm-tag-net';
       return 'hm-tag-other';
     }
@@ -2977,7 +3082,9 @@
       }
 
       if (!items.length && !leg.hasAny) {
-        bodyHtml = `<div class="mt-1.5 text-[11px] text-[#868C84]">Тихий день — записей нет</div>`;
+        bodyHtml = dateKey > todayKey
+          ? `<div class="mt-1.5 text-[11px] text-[#868C84]">Будущий день — можно заранее записать план</div>`
+          : `<div class="mt-1.5 text-[11px] text-[#868C84]">Тихий день — записей нет</div>`;
       }
 
       return header + chipsHtml + bodyHtml + `<div class="mt-2 font-mono-num text-[9px] text-[#5D645C]">Клик — закрепить ленту дня внизу</div>`;
@@ -3007,19 +3114,105 @@
 
     function renderHeatmap() {
       const grid = document.getElementById('heatmap-grid');
-      const days = [];
-      for (let i = 111; i >= 0; i--) days.push(isoDate(-i));
+      const monthsRow = document.getElementById('heatmap-months');
+      const todayIso = isoDate(0);
+      const currentWeekSun = getWeekSundayIso(todayIso);
+      const windowEndSun = addDaysIso(currentWeekSun, -hmWeekOffset * 7);
+      const windowStartMon = addDaysIso(windowEndSun, -111); // 16 full Mon-Sun weeks
+
+      // Real last 30 days stability (independent of archive scrolling)
       let active30 = 0;
-      const last30 = new Set(days.slice(-30));
+      for (let i = 0; i < 30; i++) {
+        if (getDayScore(state.activityLog[isoDate(-i)]) > 0) active30++;
+      }
+      document.getElementById('stability-30d').textContent = `${Math.round((active30 / 30) * 100)}%`;
+
+      // Update range header and nav controls
+      const startD = new Date(windowStartMon + 'T12:00:00');
+      const endD = new Date(windowEndSun + 'T12:00:00');
+      const sMon = RU_MONTHS_SHORT[startD.getMonth()].toUpperCase();
+      const eMon = RU_MONTHS_SHORT[endD.getMonth()].toUpperCase();
+      const rangeStr = startD.getFullYear() === endD.getFullYear()
+        ? `${sMon} – ${eMon} ${endD.getFullYear()}`
+        : `${sMon} ${String(startD.getFullYear()).slice(2)} – ${eMon} ${String(endD.getFullYear()).slice(2)}`;
+      const rangeLbl = document.getElementById('hm-range-lbl');
+      if (rangeLbl) rangeLbl.textContent = rangeStr;
+
+      const btnNext = document.getElementById('btn-hm-next');
+      const btnToday = document.getElementById('btn-hm-today');
+      if (btnNext) {
+        btnNext.disabled = hmWeekOffset === 0;
+        btnNext.style.opacity = hmWeekOffset === 0 ? '0.35' : '1';
+      }
+      if (btnToday) btnToday.classList.toggle('hidden', hmWeekOffset === 0);
+
+      const dateJump = document.getElementById('hm-date-jump');
+      if (dateJump) dateJump.value = selectedHmDate;
+
+      // Populate archive month dropdown from all recorded dates in activityLog
+      const archSel = document.getElementById('hm-archive-jump');
+      if (archSel) {
+        const monthMap = new Map();
+        for (const [dk, rec] of Object.entries(state.activityLog || {})) {
+          if (dk.length < 7 || getDayScore(rec) <= 0) continue;
+          const ym = dk.slice(0, 7);
+          const cur = monthMap.get(ym) || { count: 0, lastDate: dk };
+          cur.count += 1;
+          if (dk > cur.lastDate) cur.lastDate = dk;
+          monthMap.set(ym, cur);
+        }
+        const sortedMonths = Array.from(monthMap.entries()).sort((a, b) => b[0].localeCompare(a[0]));
+        archSel.innerHTML = `<option value="">АРХИВ (${sortedMonths.length}) ▾</option>` + sortedMonths.map(([ym, info]) => {
+          const [yr, mo] = ym.split('-');
+          const lbl = `${RU_MONTHS_SHORT[Number(mo) - 1]} ${yr} · ${info.count} дн.`;
+          return `<option value="${info.lastDate}">${lbl}</option>`;
+        }).join('');
+      }
+
+      // Build 16 month column headers
+      if (monthsRow) {
+        const colLabels = Array(16).fill('');
+        let lastLabelCol = -99;
+        for (let w = 0; w < 16; w++) {
+          const wMon = addDaysIso(windowStartMon, w * 7);
+          let label = '';
+          if (w === 0) {
+            const d0 = new Date(wMon + 'T12:00:00');
+            label = RU_MONTHS_SHORT[d0.getMonth()];
+          } else {
+            for (let dayOff = 0; dayOff < 7; dayOff++) {
+              const d = new Date(addDaysIso(wMon, dayOff) + 'T12:00:00');
+              if (d.getDate() === 1) {
+                label = RU_MONTHS_SHORT[d.getMonth()];
+                if (d.getMonth() === 0) label += ' ' + String(d.getFullYear()).slice(2);
+                break;
+              }
+            }
+          }
+          if (label && (w - lastLabelCol) >= 2) {
+            colLabels[w] = label;
+            lastLabelCol = w;
+          } else if (label && w === 1 && lastLabelCol === 0) {
+            colLabels[0] = '';
+            colLabels[1] = label;
+            lastLabelCol = 1;
+          }
+        }
+        monthsRow.innerHTML = colLabels.map(l => `<span class="hm-month-lbl">${l}</span>`).join('');
+      }
+
+      // Build 112 cells in Mon->Sun column order
+      const days = [];
+      for (let i = 0; i < 112; i++) days.push(addDaysIso(windowStartMon, i));
 
       grid.innerHTML = days.map(d => {
         const rec = state.activityLog[d];
         const pts = getDayScore(rec);
-        if (pts > 0 && last30.has(d)) active30++;
-        return `<div class="hm-cell hm-${Math.min(4, pts)} ${d === selectedHmDate ? 'hm-selected' : ''}" data-hdate="${d}" role="button" tabindex="0" aria-label="${d}"></div>`;
+        const isFuture = d > todayIso;
+        const isToday = d === todayIso;
+        const cls = isFuture && pts === 0 ? 'hm-future' : `hm-${Math.min(4, pts)}`;
+        return `<div class="hm-cell ${cls} ${isToday ? 'hm-today' : ''} ${d === selectedHmDate ? 'hm-selected' : ''}" data-hdate="${d}" role="button" tabindex="0" aria-label="${d}"></div>`;
       }).join('');
-
-      document.getElementById('stability-30d').textContent = `${Math.round((active30 / 30) * 100)}%`;
 
       const canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
       grid.querySelectorAll('.hm-cell').forEach(cell => {
@@ -3201,6 +3394,19 @@
       }
       const cb = document.getElementById('hide-ozon-cb');
       if (cb) cb.checked = archived;
+      const catSel = document.getElementById('hm-note-cat');
+      if (catSel) {
+        const feOpt = catSel.querySelector('option[value="fe"]');
+        if (archived && !feOpt) {
+          const opt = document.createElement('option');
+          opt.value = 'fe'; opt.textContent = 'FE';
+          const studyOpt = catSel.querySelector('option[value="study"]');
+          if (studyOpt) catSel.insertBefore(opt, studyOpt); else catSel.appendChild(opt);
+        } else if (!archived && feOpt) {
+          if (catSel.value === 'fe') catSel.value = 'net';
+          feOpt.remove();
+        }
+      }
     }
 
     function renderDeckPreviews() {
@@ -3226,7 +3432,7 @@
 
       tBox.querySelectorAll('[data-decktask]').forEach(cb => cb.addEventListener('change', () => {
         const item = state.tasks.find(x => x.id === cb.dataset.decktask);
-        if (item) { item.done = true; logActivity(isoDate(0), 'net', 1, { tag: 'КОД', label: `Задача: ${item.title}` }); save(); renderAll(); }
+        if (item) { item.done = true; logActivity(isoDate(0), 'net', 1, { tag: 'УЧЁБА', label: item.title }); save(); renderAll(); }
       }));
     }
 
@@ -3460,7 +3666,7 @@
       `).join('');
       tBox.querySelectorAll('[data-tcb]').forEach(cb => cb.addEventListener('change', () => {
         const t = state.tasks.find(x => x.id === cb.dataset.tcb);
-        if (t) { t.done = cb.checked; if (cb.checked) logActivity(isoDate(0), 'net', 1, { tag: 'КОД', label: `Задача: ${t.title}` }); }
+        if (t) { t.done = cb.checked; if (cb.checked) logActivity(isoDate(0), 'net', 1, { tag: 'УЧЁБА', label: t.title }); }
         save(); renderAll();
       }));
       tBox.querySelectorAll('[data-tedit]').forEach(b => b.addEventListener('click', () => {
@@ -4065,7 +4271,7 @@
         state.dailyState.done = Array.from(s);
         if (cb.checked) {
           const tObj = curTpl.tasks.find(x => x.id === cb.dataset.dtask);
-          logActivity(isoDate(0), 'check', 1, { tag: 'ДЕНЬ', label: tObj ? tObj.text : 'Пункт командира дня' });
+          logActivity(isoDate(0), 'check', 1, { tag: 'ДЕЛА', label: tObj ? tObj.text : 'Пункт командира дня' });
         }
         save(true); renderDailyCommander(); renderHeatmap();
       }));
@@ -4868,8 +5074,32 @@
         switchView('view-finance'); setTimeout(() => document.getElementById('fr-name').focus(), 100);
       });
 
+      document.getElementById('btn-hm-prev').addEventListener('click', () => {
+        hmWeekOffset += 12;
+        hideHmTooltip();
+        renderHeatmap();
+      });
+      document.getElementById('btn-hm-next').addEventListener('click', () => {
+        hmWeekOffset = Math.max(0, hmWeekOffset - 12);
+        hideHmTooltip();
+        renderHeatmap();
+      });
+      document.getElementById('btn-hm-today').addEventListener('click', () => {
+        hmWeekOffset = 0;
+        selectedHmDate = isoDate(0);
+        hideHmTooltip();
+        renderHeatmap();
+      });
+      document.getElementById('hm-archive-jump').addEventListener('change', (e) => {
+        const dt = e.target.value;
+        if (dt) jumpHeatmapToDate(dt);
+      });
+      document.getElementById('hm-date-jump').addEventListener('change', (e) => {
+        const dt = e.target.value;
+        if (dt) jumpHeatmapToDate(dt);
+      });
       document.getElementById('btn-hm-toggle').addEventListener('click', () => {
-        logActivity(selectedHmDate, 'check', 1, { toggleCheck: true, tag: 'ДЕНЬ', label: 'Отмечен минимум дня' });
+        logActivity(selectedHmDate, 'check', 1, { toggleCheck: true, tag: 'ДЕЛА', label: 'Отмечен минимум дня' });
         save(true); renderHeatmap(); renderWeeklyCheckin();
         toast(`Обновлён день ${fmtHumanDate(selectedHmDate)}`);
       });
@@ -4878,10 +5108,13 @@
         const cat = document.getElementById('hm-note-cat').value;
         const txt = inp.value.trim();
         if (!txt) return;
-        if (cat === 'jp') logActivity(selectedHmDate, 'note', 0, { tag: 'JP', label: txt });
+        if (cat === 'net') logActivity(selectedHmDate, 'net', 1, { tag: '.NET', label: txt });
         else if (cat === 'fe') logActivity(selectedHmDate, 'net', 1, { tag: 'FE', label: txt });
-        else if (cat === 'net') logActivity(selectedHmDate, 'net', 1, { tag: '.NET', label: txt });
-        else logActivity(selectedHmDate, 'note', 0, { tag: 'ДЕНЬ', label: txt });
+        else if (cat === 'jp') logActivity(selectedHmDate, 'note', 0, { tag: 'JP', label: txt });
+        else if (cat === 'study') logActivity(selectedHmDate, 'note', 0, { tag: 'УЧЁБА', label: txt });
+        else if (cat === 'interview') logActivity(selectedHmDate, 'note', 0, { tag: 'СОБЕС', label: txt });
+        else if (cat === 'life') logActivity(selectedHmDate, 'note', 0, { tag: 'ЖИЗНЬ', label: txt });
+        else logActivity(selectedHmDate, 'note', 0, { tag: 'ДЕЛА', label: txt });
         inp.value = '';
         save(true); renderHeatmap(); renderWeeklyCheckin();
         toast(`Записано в ${fmtHumanDate(selectedHmDate)}`);
@@ -4971,7 +5204,7 @@
           notes: document.getElementById('crm-note').value.trim()
         });
         const stgVal = document.getElementById('crm-stg').value;
-        logActivity(isoDate(0), 'note', 0, { tag: 'CRM', label: `${stgVal}: ${company}` });
+        logActivity(isoDate(0), 'note', 0, { tag: 'СОБЕС', label: `${stgVal}: ${company}` });
         document.getElementById('crm-comp').value = ''; document.getElementById('crm-sal').value = ''; document.getElementById('crm-note').value = '';
         save(); renderCareer(); renderHeatmap();
       });
