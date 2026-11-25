@@ -1,0 +1,73 @@
+name: JP28 Atmospheric Telegram Ping
+
+on:
+  schedule:
+    # 08:30 Владивосток (UTC+10) = 22:30 UTC накануне
+    - cron: '30 22 * * *'
+    # 21:30 Владивосток (UTC+10) = 11:30 UTC
+    - cron: '30 11 * * *'
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send atmospheric ping to Telegram
+        env:
+          TG_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: |
+          python3 - <<'EOF'
+          import os, json, urllib.request
+          from datetime import datetime, timezone, timedelta
+
+          tz_vvo = timezone(timedelta(hours=10))
+          now = datetime.now(tz_vvo)
+          today = now.date()
+          flight = datetime(2028, 9, 25, tzinfo=tz_vvo).date()
+          days_left = max(0, (flight - today).days)
+
+          windows = [
+            ("2027-01-09", "Грейс кредитки Т-Банка (до 09.01)"),
+            ("2027-03-23", "Окно регистрации JLPT N5 (Верхнепортовая, 46)"),
+            ("2027-09-07", "Окно регистрации JLPT N4 (Верхнепортовая, 46)"),
+            ("2028-03-01", "Регистрация ITPEC FE (Улан-Батор)"),
+            ("2028-03-23", "Окно регистрации JLPT N3 (Верхнепортовая, 46)"),
+            ("2028-05-15", "Заявление на последипломные каникулы СПО"),
+            ("2028-06-30", "Справка о каникулах в военкомат + доверенность"),
+          ]
+
+          alerts = []
+          for d_str, title in windows:
+            dt = datetime.strptime(d_str, "%Y-%m-%d").date()
+            diff = (dt - today).days
+            if -3 <= diff <= 14:
+              alerts.append(f"[!] {title} ({'через ' + str(diff) + ' дн.' if diff > 0 else 'СЕЙЧАС'})")
+
+          if now.hour < 15:
+            msg = (
+              f"静寂 · JP28 // Доброе утро ({now.strftime('%d.%m')})\n"
+              f"До вылета в Японию: {days_left} дн.\n\n"
+              f"Выбери тип дня в «Командире дня» и закрой один шаг без суеты:\n"
+              f"https://awsedrig.github.io/JP28/"
+            )
+          else:
+            msg = (
+              f"静寂 · JP28 // Вечерний чек ({now.strftime('%d.%m')})\n"
+              f"• Отметь смену / японский / .NET в карте стабильности\n"
+              f"• Ноль маркетплейсов после 22:00 (хотелки → Карантин 72ч)\n"
+              f"• Сон 7,5–8 часов — до вылета {days_left} дн.\n"
+              f"https://awsedrig.github.io/JP28/"
+            )
+
+          if alerts:
+            msg += "\n\n" + "\n".join(alerts)
+
+          payload = json.dumps({"chat_id": os.environ["TG_CHAT_ID"], "text": msg}).encode("utf-8")
+          req = urllib.request.Request(
+            f"https://api.telegram.org/bot{os.environ['TG_TOKEN']}/sendMessage",
+            data=payload,
+            headers={"Content-Type": "application/json"}
+          )
+          urllib.request.urlopen(req, timeout=15)
+          EOF
