@@ -488,6 +488,40 @@
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
     }
+    .cmd-sec-hdr {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #868C84;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 2px;
+    }
+    .cmd-chip {
+      font-family: var(--mono);
+      font-size: 9px;
+      line-height: 1;
+      padding: 2px 5px;
+      border-radius: 3px;
+      border: 1px solid rgba(163, 204, 168, 0.16);
+      background: rgba(18, 22, 19, 0.72);
+      color: #9EA49C;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .cmd-chip-hot {
+      border-color: rgba(201, 112, 103, 0.45);
+      background: rgba(201, 112, 103, 0.16);
+      color: #E5A49D;
+    }
+    .cmd-chip-roll {
+      border-color: rgba(216, 182, 122, 0.4);
+      background: rgba(216, 182, 122, 0.14);
+      color: #DFC28D;
+    }
     .stage-pill-active {
       background: rgba(163, 204, 168, 0.18);
       border-color: #A3CCA8;
@@ -548,9 +582,9 @@
       <!-- ==================== VIEW 01: ПУЛЬТ ==================== -->
       <section id="view-deck" class="app-view space-y-5">
 
-        <!-- Atmospheric Window Banner -->
+        <!-- Compact Atmospheric Window Banner -->
         <div class="window-banner">
-          <div class="window-banner-overlay p-4 sm:p-5 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div class="window-banner-overlay p-4 sm:px-5 sm:py-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div class="space-y-1">
               <div class="font-mono-num text-[10px] tracking-widest text-[#A3CCA8] flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#A3CCA8] inline-block"></span>
@@ -558,57 +592,109 @@
                 <span class="text-[#868C84]">//</span>
                 <span class="text-[#C8C1AE]">夜明けまで</span>
               </div>
-              <h1 class="font-mincho text-lg sm:text-xl font-semibold text-[#E8ECF4] tracking-wide">
-                Тихий выход из цикла — к своему окну в октябре 2028
+              <h1 class="font-mincho text-base sm:text-lg font-semibold text-[#E8ECF4] tracking-wide">
+                Тихий выход из цикла — один день, без лишнего шума
               </h1>
-              <p class="text-xs text-[#A5ABA2] max-w-xl">
-                Без спешки и без срывов. Один шаг за другим: 25 смен, удалённый Middle .NET, N3 и автономный вылет.
-              </p>
             </div>
             <div class="text-left sm:text-right font-mono-num shrink-0">
               <div class="text-[10px] text-[#868C84] tracking-widest">ДО ВЫЛЕТА</div>
-              <div id="hero-days-left" class="text-2xl sm:text-3xl font-semibold text-[#E8ECF4]">— дн.</div>
+              <div id="hero-days-left" class="text-xl sm:text-2xl font-semibold text-[#E8ECF4]">— дн.</div>
               <div class="text-[10px] text-[#A3CCA8]">25.09.2028 · AUTONOMOUS</div>
             </div>
           </div>
         </div>
 
-        <!-- Countdown Strip -->
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="countdown-strip"></div>
-
         <!-- Short-Window Critical Alert (auto-appears 14 days before 5-day windows) -->
         <div id="short-window-alert" class="hidden panel p-3.5 border-[rgba(201,112,103,0.55)] bg-[rgba(36,20,19,0.78)] space-y-1.5"></div>
 
-        <!-- Daily Commander (Командир дня) -->
-        <div class="panel p-4 space-y-3 border-[rgba(163,204,168,0.28)]">
-          <div class="flex flex-wrap items-center justify-between gap-2">
+        <!-- SMART DAILY COMMANDER (Интегрированный Командир дня по бюджету времени) -->
+        <div class="panel p-4 space-y-3.5 border-[rgba(163,204,168,0.34)] lamp-glow">
+          <div class="flex flex-wrap items-start justify-between gap-2">
             <div>
               <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#A3CCA8]">КОМАНДИР ДНЯ · <span id="daily-date-lbl">СЕГОДНЯ</span></div>
-              <div id="daily-mode-sub" class="text-[11px] text-[#868C84] mt-0.5">Выбери тип дня — трекер сам выдаст чеклист</div>
+              <div id="daily-mode-sub" class="text-[11px] text-[#868C84] mt-0.5">Сколько у тебя сегодня свободного времени? Подтяну самое важное из плана.</div>
             </div>
-            <span id="daily-progress-badge" class="font-mono-num text-xs font-semibold text-[#A3CCA8]">0 / 4</span>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button type="button" id="btn-cmd-unsnooze" class="hidden btn btn-ghost py-1 px-2 text-[10px] text-[#C8C1AE]" title="Вернуть отложенные сегодня задачи">ВЕРНУТЬ (0)</button>
+              <button type="button" id="btn-cmd-habits-cfg" class="btn btn-ghost py-1 px-2 text-[10px]" title="Настроить обязательные ежедневки">⚙ ЕЖЕДНЕВКИ</button>
+              <span id="daily-progress-badge" class="font-mono-num text-xs font-semibold text-[#A3CCA8] pl-1">0 / 0</span>
+            </div>
           </div>
-          <div id="daily-mode-btns" class="grid grid-cols-2 sm:grid-cols-4 gap-1.5"></div>
-          <div id="daily-tasks-list" class="space-y-1.5"></div>
-        </div>
 
-        <!-- 4 Linear Next-Action Queues (1 current micro-step per branch) -->
-        <div class="panel p-4 space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">СЛЕДУЮЩЕЕ ДЕЙСТВИЕ · 4 ВЕТКИ (БЕЗ МУСОРА)</div>
-            <button type="button" id="btn-toggle-full-queues" class="btn btn-ghost py-1 px-2 text-[10px]">ВСЕ ОЧЕРЕДИ ▾</button>
+          <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden">
+            <div id="daily-progress-bar" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div>
           </div>
-          <div id="next-actions-grid" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
-          <div id="full-queues-drawer" class="hidden pt-3 border-t border-[rgba(163,204,168,0.12)] space-y-3">
-            <div id="queue-branch-tabs" class="flex flex-wrap gap-1.5"></div>
-            <div id="queue-branch-list" class="space-y-1.5 max-h-80 overflow-y-auto pr-1"></div>
+
+          <!-- Time Budget Selector + Mobile Filter -->
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div id="daily-budget-btns" class="grid grid-cols-3 gap-1.5 flex-1 min-w-[230px]"></div>
+            <button type="button" id="btn-cmd-mobile-only" class="btn btn-ghost py-1.5 px-2.5 text-[10px]" title="Скрыть задачи, для которых нужен ПК / Visual Studio">ТЕЛ / В ДОРОГЕ</button>
+          </div>
+
+          <!-- Editable Dailies Drawer -->
+          <div id="cmd-habits-drawer" class="hidden panel-recessed p-3 space-y-2.5 border-[rgba(163,204,168,0.22)]">
+            <div class="flex items-center justify-between">
+              <span class="font-mono-num text-[10px] text-[#A3CCA8] uppercase tracking-wider">НАСТРОЙКА ОБЯЗАТЕЛЬНЫХ ЕЖЕДНЕВОК</span>
+              <button type="button" id="btn-cmd-habits-reset" class="font-mono-num text-[10px] text-[#868C84] hover:text-[#DF9B94] cursor-pointer">Сброс базы</button>
+            </div>
+            <div id="cmd-habits-editor" class="space-y-1.5"></div>
+            <div class="flex flex-wrap sm:flex-nowrap items-center gap-1.5 pt-2 border-t border-[rgba(163,204,168,0.1)]">
+              <select id="cmd-new-habit-tag" class="inp py-1 px-1.5 text-[10px] font-mono-num shrink-0">
+                <option value="JP">JP</option>
+                <option value=".NET">КОД</option>
+                <option value="УЧЁБА">УЧЁБА</option>
+                <option value="ДЕЛА">ДЕЛА</option>
+                <option value="ЖИЗНЬ">ЖИЗНЬ</option>
+              </select>
+              <input id="cmd-new-habit-title" type="text" placeholder="Новая ежедневка (напр. 15 мин чтения / сон до 00:30)..." class="inp py-1 px-2 text-[11px] flex-1 min-w-[140px]" />
+              <input id="cmd-new-habit-mins" type="number" min="5" max="180" step="5" value="15" title="Минут" class="inp py-1 px-2 text-[11px] font-mono-num w-16" />
+              <button type="button" id="btn-cmd-add-habit" class="btn btn-primary py-1 px-2.5 text-[10px]">+ ДОБАВИТЬ</button>
+            </div>
+          </div>
+
+          <!-- Layer 1: Mandatory Dailies -->
+          <div class="space-y-1.5">
+            <div class="cmd-sec-hdr">
+              <span>01 // БАЗА ДНЯ (ЕЖЕДНЕВКА)</span>
+              <span id="cmd-dailies-meta" class="text-[#6B726A]">—</span>
+            </div>
+            <div id="cmd-dailies-list" class="space-y-1.5"></div>
+          </div>
+
+          <!-- Layer 2: Auto-Pulled Plan Tasks -->
+          <div class="space-y-1.5 pt-1 border-t border-[rgba(163,204,168,0.09)]">
+            <div class="cmd-sec-hdr">
+              <span>02 // ИЗ ОБЩЕГО ПЛАНА · ПО ПРИОРИТЕТУ И ВРЕМЕНИ</span>
+              <span id="cmd-plan-meta" class="text-[#6B726A]">2-сторонняя синхронизация ✓</span>
+            </div>
+            <div id="cmd-plan-list" class="space-y-1.5"></div>
+          </div>
+
+          <!-- Layer 3: User's Own One-off Tasks Today (with auto-rollover) -->
+          <div class="space-y-1.5 pt-1 border-t border-[rgba(163,204,168,0.09)]">
+            <div class="cmd-sec-hdr">
+              <span>03 // СВОИ ДЕЛА НА СЕГОДНЯ (НЕЗАКРЫТЫЕ ПЕРЕНОСЯТСЯ)</span>
+              <span id="cmd-custom-meta" class="text-[#6B726A]">0</span>
+            </div>
+            <div id="cmd-custom-list" class="space-y-1.5"></div>
+            <div class="flex items-center gap-1.5 pt-1">
+              <select id="cmd-custom-tag" class="inp py-1.5 px-1.5 text-[10px] font-mono-num shrink-0">
+                <option value="ДЕЛА">ДЕЛА</option>
+                <option value="УЧЁБА">УЧЁБА</option>
+                <option value=".NET">КОД</option>
+                <option value="СОБЕС">СОБЕС</option>
+                <option value="ЖИЗНЬ">ЖИЗНЬ</option>
+              </select>
+              <input id="cmd-custom-in" type="text" placeholder="Добавить дело на сегодня (напр. узнать про субботу на практике)..." class="inp py-1.5 px-2.5 text-xs flex-1" />
+              <button type="button" id="btn-cmd-add-custom" class="btn btn-primary py-1.5 px-3 text-[11px]">+</button>
+            </div>
           </div>
         </div>
 
         <!-- 3-Second Quick Actions -->
         <div class="panel p-4 space-y-3">
           <div class="flex items-center justify-between">
-            <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">01 // БЫСТРАЯ ОТМЕТКА · 3 СЕК</div>
+            <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">БЫСТРАЯ ОТМЕТКА · 3 СЕК</div>
             <div class="flex items-center gap-1.5 font-mono-num text-[10px]">
               <button type="button" data-qdate="today" class="qdate-btn px-2.5 py-0.5 rounded bg-[rgba(163,204,168,0.16)] text-[#E8ECF4] border border-[rgba(163,204,168,0.3)]">СЕГОДНЯ</button>
               <button type="button" data-qdate="yesterday" class="qdate-btn px-2.5 py-0.5 rounded text-[#868C84] hover:text-[#E8ECF4]">ВЧЕРА</button>
@@ -617,7 +703,7 @@
           <div id="qa-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             <button type="button" id="qa-shift" class="panel-recessed p-3 text-left hover:border-[#A3CCA8] transition group cursor-pointer">
               <div class="font-mono-num text-[10px] text-[#868C84] group-hover:text-[#A3CCA8]">+1 СМЕНА OZON</div>
-              <div class="font-mono-num text-sm font-semibold text-[#E8ECF4] mt-1">+4 000 ₽</div>
+              <div class="font-mono-num text-sm font-semibold text-[#E8ECF4] mt-1">+5 000 ₽</div>
             </button>
             <button type="button" id="qa-fe" class="hidden panel-recessed p-3 text-left hover:border-[#A3CCA8] transition group cursor-pointer">
               <div class="font-mono-num text-[10px] text-[#868C84] group-hover:text-[#A3CCA8]">+1 ЧАС ITPEC FE</div>
@@ -636,85 +722,6 @@
               <div class="font-mono-num text-sm font-semibold text-[#DF9B94] mt-1">ЗАМОРОЗИТЬ</div>
             </button>
           </div>
-        </div>
-
-        <!-- 4 Main Numeric KPIs -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <div id="kpi-debt-card" class="panel p-4 space-y-2">
-            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
-              <span>ДОЛГ Т-БАНК · <span class="font-mincho">負債</span></span>
-              <div class="flex items-center gap-1.5">
-                <span id="kpi-debt-pct" class="text-[#A3CCA8]">0%</span>
-                <button type="button" id="btn-kpi-debt-edit" title="Изменить сумму долга" class="text-[#868C84] hover:text-[#E8ECF4] cursor-pointer px-0.5">✎</button>
-              </div>
-            </div>
-            <div id="kpi-debt-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#DF9B94]">74 564 ₽</div>
-            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-debt-bar" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div></div>
-            <div id="kpi-debt-sub" class="font-mono-num text-[10px] text-[#868C84]">Погашено: 0 ₽</div>
-          </div>
-
-          <div id="kpi-shift-card" class="panel p-4 space-y-2">
-            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
-              <span>СМЕНЫ · <span class="font-mincho">労働</span></span>
-              <span id="kpi-shift-pct" class="text-[#C8C1AE]">0%</span>
-            </div>
-            <div id="kpi-shift-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">0 / 25</div>
-            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-shift-bar" class="h-full bg-[#C8C1AE] transition-all" style="width:0%"></div></div>
-            <div id="kpi-shift-sub" class="font-mono-num text-[10px] text-[#A3CCA8]">Выручка: +0 ₽</div>
-          </div>
-
-          <div id="kpi-stage-card" class="hidden panel p-4 space-y-2">
-            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
-              <span>ЭТАП ПЛАНА · <span class="font-mincho">段階</span></span>
-              <span id="kpi-stage-pct" class="text-[#A3CCA8]">0%</span>
-            </div>
-            <div id="kpi-stage-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">03 / 08</div>
-            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-stage-bar" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div></div>
-            <div id="kpi-stage-sub" class="font-mono-num text-[10px] text-[#868C84] truncate">Текущий этап</div>
-          </div>
-
-          <div id="kpi-fe-card" class="hidden panel p-4 space-y-2">
-            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
-              <span>ITPEC FE · <span class="font-mincho">試験</span></span>
-              <span id="kpi-fe-pct" class="text-[#C8C1AE]">0%</span>
-            </div>
-            <div id="kpi-fe-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">0.0 / 100ч</div>
-            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-fe-bar" class="h-full bg-[#C8C1AE] transition-all" style="width:0%"></div></div>
-            <div class="font-mono-num text-[10px] text-[#868C84]">Допуск к визе 技人国</div>
-          </div>
-
-          <div class="panel p-4 space-y-2">
-            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
-              <span>ЯПОНСКИЙ · <span class="font-mincho">日本語</span></span>
-              <span id="kpi-jp-stage" class="text-[#C8C1AE]">→ N5</span>
-            </div>
-            <div id="kpi-jp-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">0.0 ч</div>
-            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-jp-bar" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div></div>
-            <div id="kpi-jp-sub" class="font-mono-num text-[10px] text-[#868C84]">0% к цели N3 (950ч)</div>
-          </div>
-
-          <div class="panel p-4 space-y-2">
-            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
-              <span>КАПИТАЛ · <span class="font-mincho">資産</span></span>
-              <span id="kpi-cap-jpy" class="text-[#A3CCA8]">¥0</span>
-            </div>
-            <div id="kpi-cap-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">0 ₽</div>
-            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-cap-bar" class="h-full bg-[#C8C1AE] transition-all" style="width:0%"></div></div>
-            <div id="kpi-cap-sub" class="font-mono-num text-[10px] text-[#868C84]">0% от порога CoE (¥2M)</div>
-          </div>
-        </div>
-
-        <!-- Active Stage Mission Card -->
-        <div class="panel p-4 space-y-3 border-[rgba(163,204,168,0.25)]">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2 min-w-0">
-              <span id="deck-stage-badge" class="font-mono-num text-[10px] px-2 py-0.5 rounded bg-[rgba(163,204,168,0.16)] border border-[rgba(163,204,168,0.35)] text-[#A3CCA8] shrink-0">ЭТАП 01</span>
-              <span id="deck-stage-title" class="font-mincho text-sm sm:text-base font-semibold text-[#E8ECF4] truncate">Антикризис и база</span>
-            </div>
-            <button type="button" data-jump="view-plan" class="font-mono-num text-[10px] text-[#A3CCA8] hover:underline cursor-pointer shrink-0">ПОЛНЫЙ ПЛАН И ИНСТРУКЦИИ →</button>
-          </div>
-          <div id="deck-stage-gates" class="flex flex-wrap gap-1.5"></div>
-          <div id="deck-stage-steps" class="space-y-1.5"></div>
         </div>
 
         <!-- Focus Timer + Activity Heatmap -->
@@ -818,39 +825,150 @@
           </div>
         </div>
 
-        <!-- Active Deadlines & Tasks Snapshot -->
-        <div id="deck-snap-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div id="deck-debts-card" class="panel p-4 space-y-3">
-            <div class="flex items-center justify-between">
-              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">БЛИЖАЙШИЕ ПЛАТЕЖИ (Т-БАНК)</div>
-              <button type="button" data-jump="view-finance" class="font-mono-num text-[10px] text-[#A3CCA8] hover:underline cursor-pointer">ВСЕ ФИНАНСЫ →</button>
+        <!-- 4 Main Numeric KPIs -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div id="kpi-debt-card" class="panel p-4 space-y-2">
+            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
+              <span>ДОЛГ Т-БАНК · <span class="font-mincho">負債</span></span>
+              <div class="flex items-center gap-1.5">
+                <span id="kpi-debt-pct" class="text-[#A3CCA8]">0%</span>
+                <button type="button" id="btn-kpi-debt-edit" title="Изменить сумму долга" class="text-[#868C84] hover:text-[#E8ECF4] cursor-pointer px-0.5">✎</button>
+              </div>
             </div>
-            <div id="deck-next-debts" class="space-y-1.5"></div>
+            <div id="kpi-debt-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#DF9B94]">74 564 ₽</div>
+            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-debt-bar" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div></div>
+            <div id="kpi-debt-sub" class="font-mono-num text-[10px] text-[#868C84]">Погашено: 0 ₽</div>
           </div>
 
-          <div class="panel p-4 space-y-3">
-            <div class="flex items-center justify-between">
-              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">КОЛЛЕДЖ &amp; ЗАДАЧИ</div>
-              <button type="button" data-jump="view-study" class="font-mono-num text-[10px] text-[#A3CCA8] hover:underline cursor-pointer">К СПИСКУ →</button>
+          <div id="kpi-shift-card" class="panel p-4 space-y-2">
+            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
+              <span>СМЕНЫ · <span class="font-mincho">労働</span></span>
+              <span id="kpi-shift-pct" class="text-[#C8C1AE]">0%</span>
             </div>
-            <div id="deck-next-tasks" class="space-y-1.5"></div>
+            <div id="kpi-shift-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">0 / 25</div>
+            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-shift-bar" class="h-full bg-[#C8C1AE] transition-all" style="width:0%"></div></div>
+            <div id="kpi-shift-sub" class="font-mono-num text-[10px] text-[#A3CCA8]">Выручка: +0 ₽</div>
+          </div>
+
+          <div id="kpi-stage-card" class="hidden panel p-4 space-y-2">
+            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
+              <span>ЭТАП ПЛАНА · <span class="font-mincho">段階</span></span>
+              <span id="kpi-stage-pct" class="text-[#A3CCA8]">0%</span>
+            </div>
+            <div id="kpi-stage-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">03 / 08</div>
+            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-stage-bar" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div></div>
+            <div id="kpi-stage-sub" class="font-mono-num text-[10px] text-[#868C84] truncate">Текущий этап</div>
+          </div>
+
+          <div id="kpi-fe-card" class="hidden panel p-4 space-y-2">
+            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
+              <span>ITPEC FE · <span class="font-mincho">試験</span></span>
+              <span id="kpi-fe-pct" class="text-[#C8C1AE]">0%</span>
+            </div>
+            <div id="kpi-fe-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">0.0 / 100ч</div>
+            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-fe-bar" class="h-full bg-[#C8C1AE] transition-all" style="width:0%"></div></div>
+            <div class="font-mono-num text-[10px] text-[#868C84]">Допуск к визе 技人国</div>
+          </div>
+
+          <div class="panel p-4 space-y-2">
+            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
+              <span>ЯПОНСКИЙ · <span class="font-mincho">日本語</span></span>
+              <span id="kpi-jp-stage" class="text-[#C8C1AE]">→ N5</span>
+            </div>
+            <div id="kpi-jp-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">0.0 ч</div>
+            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-jp-bar" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div></div>
+            <div id="kpi-jp-sub" class="font-mono-num text-[10px] text-[#868C84]">0% к цели N3 (950ч)</div>
+          </div>
+
+          <div class="panel p-4 space-y-2">
+            <div class="flex items-center justify-between font-mono-num text-[10px] text-[#868C84]">
+              <span>КАПИТАЛ · <span class="font-mincho">資産</span></span>
+              <span id="kpi-cap-jpy" class="text-[#A3CCA8]">¥0</span>
+            </div>
+            <div id="kpi-cap-val" class="font-mono-num text-xl sm:text-2xl font-semibold text-[#E8ECF4]">0 ₽</div>
+            <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="kpi-cap-bar" class="h-full bg-[#C8C1AE] transition-all" style="width:0%"></div></div>
+            <div id="kpi-cap-sub" class="font-mono-num text-[10px] text-[#868C84]">0% от порога CoE (¥2M)</div>
           </div>
         </div>
 
-        <!-- Sunday 30-Second Check-in -->
-        <div id="sunday-checkin-card" class="panel p-4 space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#C8C1AE]">ВОСКРЕСНЫЙ ЧЕКИН · 30 СЕК</div>
-              <div id="weekly-stats-line" class="font-mono-num text-xs text-[#A3CCA8] mt-0.5">За 7 дней: —</div>
+        <!-- Collapsible Strategy, Queues & Weekly Review Drawer (keeps everyday Deck clean!) -->
+        <div class="space-y-4">
+          <button type="button" id="btn-toggle-strategy-drawer" class="w-full panel px-4 py-3 flex items-center justify-between gap-2 text-left hover:border-[rgba(163,204,168,0.38)] transition cursor-pointer">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#C8C1AE] shrink-0"></span>
+              <div class="min-w-0">
+                <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#DFDDD4]">ОБЗОР СТРАТЕГИИ, ОЧЕРЕДИ И ВОСКРЕСНЫЙ ЧЕКИН</div>
+                <div id="strategy-drawer-sub" class="font-mono-num text-[10px] text-[#868C84] truncate mt-0.5">Свёрнуто, чтобы не перегружать день · отсчёты, 4 ветки, этап плана, платежи</div>
+              </div>
             </div>
-            <button type="button" id="btn-toggle-checkins" class="btn btn-ghost py-1 px-2 text-[10px]">АРХИВ НЕДЕЛЬ ▾</button>
+            <span id="strategy-drawer-arrow" class="font-mono-num text-[10px] text-[#A3CCA8] shrink-0">ПОКАЗАТЬ ▾</span>
+          </button>
+
+          <div id="strategy-drawer-body" class="hidden space-y-5">
+            <!-- Countdown Strip -->
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="countdown-strip"></div>
+
+            <!-- 4 Linear Next-Action Queues -->
+            <div class="panel p-4 space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">СЛЕДУЮЩЕЕ ДЕЙСТВИЕ · 4 ВЕТКИ</div>
+                <button type="button" id="btn-toggle-full-queues" class="btn btn-ghost py-1 px-2 text-[10px]">ВСЕ ОЧЕРЕДИ ▾</button>
+              </div>
+              <div id="next-actions-grid" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
+              <div id="full-queues-drawer" class="hidden pt-3 border-t border-[rgba(163,204,168,0.12)] space-y-3">
+                <div id="queue-branch-tabs" class="flex flex-wrap gap-1.5"></div>
+                <div id="queue-branch-list" class="space-y-1.5 max-h-80 overflow-y-auto pr-1"></div>
+              </div>
+            </div>
+
+            <!-- Active Stage Mission Card -->
+            <div class="panel p-4 space-y-3 border-[rgba(163,204,168,0.25)]">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span id="deck-stage-badge" class="font-mono-num text-[10px] px-2 py-0.5 rounded bg-[rgba(163,204,168,0.16)] border border-[rgba(163,204,168,0.35)] text-[#A3CCA8] shrink-0">ЭТАП 01</span>
+                  <span id="deck-stage-title" class="font-mincho text-sm sm:text-base font-semibold text-[#E8ECF4] truncate">Антикризис и база</span>
+                </div>
+                <button type="button" data-jump="view-plan" class="font-mono-num text-[10px] text-[#A3CCA8] hover:underline cursor-pointer shrink-0">ПОЛНЫЙ ПЛАН И ИНСТРУКЦИИ →</button>
+              </div>
+              <div id="deck-stage-gates" class="flex flex-wrap gap-1.5"></div>
+              <div id="deck-stage-steps" class="space-y-1.5"></div>
+            </div>
+
+            <!-- Active Deadlines & Tasks Snapshot -->
+            <div id="deck-snap-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div id="deck-debts-card" class="panel p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">БЛИЖАЙШИЕ ПЛАТЕЖИ (Т-БАНК)</div>
+                  <button type="button" data-jump="view-finance" class="font-mono-num text-[10px] text-[#A3CCA8] hover:underline cursor-pointer">ВСЕ ФИНАНСЫ →</button>
+                </div>
+                <div id="deck-next-debts" class="space-y-1.5"></div>
+              </div>
+
+              <div class="panel p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">КОЛЛЕДЖ &amp; ЗАДАЧИ</div>
+                  <button type="button" data-jump="view-study" class="font-mono-num text-[10px] text-[#A3CCA8] hover:underline cursor-pointer">К СПИСКУ →</button>
+                </div>
+                <div id="deck-next-tasks" class="space-y-1.5"></div>
+              </div>
+            </div>
+
+            <!-- Sunday 30-Second Check-in -->
+            <div id="sunday-checkin-card" class="panel p-4 space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#C8C1AE]">ВОСКРЕСНЫЙ ЧЕКИН · 30 СЕК</div>
+                  <div id="weekly-stats-line" class="font-mono-num text-xs text-[#A3CCA8] mt-0.5">За 7 дней: —</div>
+                </div>
+                <button type="button" id="btn-toggle-checkins" class="btn btn-ghost py-1 px-2 text-[10px]">АРХИВ НЕДЕЛЬ ▾</button>
+              </div>
+              <div class="flex flex-col sm:flex-row gap-2">
+                <input id="weekly-focus-in" type="text" placeholder="Главный фокус на ближайшие 7 дней (1 строка)..." class="inp flex-1" />
+                <button type="button" id="btn-save-weekly" class="btn btn-primary">ЗАФИКСИРОВАТЬ НЕДЕЛЮ</button>
+              </div>
+              <div id="weekly-history" class="hidden space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
+            </div>
           </div>
-          <div class="flex flex-col sm:flex-row gap-2">
-            <input id="weekly-focus-in" type="text" placeholder="Главный фокус на ближайшие 7 дней (1 строка)..." class="inp flex-1" />
-            <button type="button" id="btn-save-weekly" class="btn btn-primary">ЗАФИКСИРОВАТЬ НЕДЕЛЮ</button>
-          </div>
-          <div id="weekly-history" class="hidden space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
         </div>
       </section>
 
@@ -882,7 +1000,7 @@
               </div>
               <div class="grid grid-cols-2 gap-2">
                 <input id="shift-date-in" type="date" class="inp font-mono-num text-xs" />
-                <input id="shift-amt-in" type="number" step="100" value="4000" placeholder="Чистыми ₽" class="inp font-mono-num font-semibold" />
+                <input id="shift-amt-in" type="number" step="100" value="5000" placeholder="Чистыми ₽" class="inp font-mono-num font-semibold" />
               </div>
               <div class="flex gap-2">
                 <input id="shift-note-in" type="text" placeholder="Ночь / день / склад" class="inp flex-1" />
@@ -2359,6 +2477,18 @@
     const shortWindows = [{"id": "sw1", "start": "2027-01-09", "leadDays": 14, "title": "ГРЕЙС КРЕДИТКИ Т-БАНКА (09.01.2027)", "desc": "Внести обязательный платёж ~15–18 000 ₽ до 9 января, чтобы не слетел беспроцентный период."}, {"id": "sw2", "start": "2027-03-23", "leadDays": 14, "title": "ОКНО РЕГИСТРАЦИИ JLPT N5 (~23–27 МАРТА)", "desc": "5 рабочих дней! Лично в Генконсульство Японии (Владивосток, Верхнепортовая, 46, 6 эт., 14:00–17:00), ~800 ₽ наличными без сдачи."}, {"id": "sw3", "start": "2027-09-07", "leadDays": 14, "title": "ОКНО РЕГИСТРАЦИИ JLPT N4 (~7–11 СЕНТЯБРЯ)", "desc": "5 рабочих дней! Лично на Верхнепортовую, 46 (14:00–17:00), ~800 ₽ наличными. Этот сертификат пойдёт в пакет CoE."}, {"id": "sw4", "start": "2028-03-01", "leadDays": 14, "title": "РЕГИСТРАЦИЯ ITPEC FE (УЛАН-БАТОР, МАРТ 2028)", "desc": "Подать заявку в National IT Park (Монголия) и согласовать оплату взноса 180 000 MNT (~$50) наличными в день экзамена."}, {"id": "sw5", "start": "2028-03-23", "leadDays": 14, "title": "ОКНО РЕГИСТРАЦИИ JLPT N3 (~23–27 МАРТА 2028)", "desc": "5 рабочих дней! Лично в Генконсульство (Верхнепортовая, 46, 1 000 ₽ наличными без сдачи) на сессию 2 июля 2028."}, {"id": "sw6", "start": "2028-05-15", "leadDays": 14, "title": "ПОСЛЕДИПЛОМНЫЕ КАНИКУЛЫ (ДО 15.05.2028)", "desc": "Подать письменное заявление директору колледжа в 2 экз. (ч.17 ст.59 ФЗ-273) для продления отсрочки до 31 августа."}, {"id": "sw7", "start": "2028-06-30", "leadDays": 14, "title": "СПРАВКА О КАНИКУЛАХ В ВОЕНКОМАТ (ДО 30.06.2028)", "desc": "Письменно приобщить бумажную справку с датой отчисления 31.08.2028 к личному делу + оформить нотариальную доверенность."}];
     const dailyTemplates = {"ozon": {"label": "СМЕНА OZON", "sub": "Щадящий режим на 12ч склад", "tasks": [{"id": "do1", "text": "Дорога / перерыв: 15–20 мин кана или повторы в Anki (0 новых карт!)"}, {"id": "do2", "text": "Дорога / перерыв: прощёлкать 5 карточек .NET в «Режиме автобуса»"}, {"id": "do3", "text": "После смены: вбить смену в трекер (+4 000 ₽) и не открывать маркетплейсы"}, {"id": "do4", "text": "Ноль тяжёлого кода вечером — душ, еда и сон 7,5–8 часов"}]}, "middle": {"label": "РАБОТА 5/2", "sub": "Фаза 2 · Асинхрон 12:00–20:00 ВЛД", "tasks": [{"id": "dm1", "text": "08:00–09:30: 1,5 ч японского (или прогон ITPEC FE) на свежую голову"}, {"id": "dm2", "text": "09:30–11:30: колледж / зал / документы (загран, клиника, банк)"}, {"id": "dm3", "text": "12:00–20:00: фулл-тайм Middle .NET (15–20 ВЛД пересечение с МСК)"}, {"id": "dm4", "text": "21:00–22:30: быт и законные 45–60 мин Switch / New 3DS LL (JP)"}]}, "school": {"label": "ШКОЛА 21 / КОЛЛЕДЖ", "sub": "Кампус + CRUD + база", "tasks": [{"id": "ds1", "text": "Кампус: peer-to-peer ревью как тренировка Live Code Review (ищи edge cases)"}, {"id": "ds2", "text": "Колледж: продвинуть текущий CRUD-сайт (без перфекционизма)"}, {"id": "ds3", "text": "Вечер (45 мин): 1 таймер JP (кана / Anki + Genki)"}, {"id": "ds4", "text": "Перед сном: 5–10 карточек .NET и 45 мин Switch/3DS"}]}, "combat": {"label": "БОЕВОЙ ВЫХОДНОЙ", "sub": "Максимум прогресса без срыва", "tasks": [{"id": "dc1", "text": "Утро (1–2ч): 1 практический стенд .NET из очереди «Следующее действие»"}, {"id": "dc2", "text": "День (1ч): 1 кейс Live Code Review + 10 карточек .NET / 5–8 откликов в воронку"}, {"id": "dc3", "text": "Вечер (45–90м): японский (таймер JP + Anki + учебник)"}, {"id": "dc4", "text": "Награда после ядра: 45–60 мин Switch / 3DS + сон ≥7,5ч"}]}, "tired": {"label": "ВЫЖАТ (АНТИСРЫВ)", "sub": "Не порвать ритм, ноль вины", "tasks": [{"id": "dt1", "text": "10 минут повторов в Anki (новые карты = 0, только закрыть долг)"}, {"id": "dt2", "text": "Прочитать ровно 3 карточки .NET или 1 короткий шаг из плана"}, {"id": "dt3", "text": "Не открывать Ozon/WB/Т-Банк рассрочки — все хотелки в Карантин 72ч"}, {"id": "dt4", "text": "Лёгкий отдых и ранний отбой, завтра вернёшься в строй"}]}};
 
+    const COMMANDER_BUDGETS = {
+      lite: { label: '15–30 МИН', hint: 'Смена / выжат · база + 1 микро-шаг', maxPlanTasks: 1, maxTaskMins: 25, totalPlanMins: 25, preferMobile: true },
+      medium: { label: '1–2 ЧАСА', hint: 'Пары / практика · база + 2 важных шага', maxPlanTasks: 2, maxTaskMins: 70, totalPlanMins: 95, preferMobile: false },
+      deep: { label: '3–4+ ЧАСА', hint: 'Свободный день · база + 4 шага из плана', maxPlanTasks: 4, maxTaskMins: 120, totalPlanMins: 210, preferMobile: false }
+    };
+
+    const defaultDailyHabits = [
+      { id: 'dh_jp', title: 'Японский · 45 мин (кана / Anki + Genki)', liteTitle: 'Японский · 15 мин повторов Anki (0 новых карт)', tag: 'JP', mins: 45, liteMins: 15, enabled: true, timerPreset: 'jp:45', liteTimerPreset: 'jp:45' },
+      { id: 'dh_fc', title: 'Карточки .NET · 10 шт. («Режим автобуса»)', liteTitle: 'Карточки .NET · 5 шт. в дороге / перерыве', tag: '.NET', mins: 10, liteMins: 5, enabled: true, jumpView: 'view-career' },
+      { id: 'dh_code', title: 'Код руками без ИИ · 1 фокус-блок (25–50 мин)', liteTitle: '', tag: '.NET', mins: 30, liteMins: 0, enabled: true, timerPreset: 'net:25', skipInLite: true }
+    ];
+
     const defaultState = {
       version: 3,
       updatedAt: Date.now(),
@@ -2387,7 +2517,8 @@
       activityLog: {},
       monthlyLimitRub: 15000,
       expenses: [],
-      dailyState: { date: isoDate(0), mode: 'combat', done: [] },
+      dailyHabits: structuredClone(defaultDailyHabits),
+      dailyState: { date: isoDate(0), budget: 'medium', onlyMobile: false, doneDailies: [], snoozed: {}, donePoolToday: [], custom: [] },
       actionQueues: structuredClone(defaultActionQueues),
       customFlashcards: [],
       fcStatus: {},
@@ -2461,11 +2592,33 @@
       }
       s.monthlyLimitRub = Number(rawObj.monthlyLimitRub) || 15000;
       if (Array.isArray(rawObj.expenses)) s.expenses = rawObj.expenses;
+      if (Array.isArray(rawObj.dailyHabits) && rawObj.dailyHabits.length) {
+        s.dailyHabits = rawObj.dailyHabits.filter(h => h && typeof h === 'object' && h.title).map(h => ({
+          id: h.id || ('dh_' + Math.random().toString(36).slice(2, 7)),
+          title: String(h.title),
+          liteTitle: typeof h.liteTitle === 'string' ? h.liteTitle : String(h.title),
+          tag: h.tag || 'ДЕЛА',
+          mins: Number(h.mins) || 15,
+          liteMins: h.liteMins !== undefined ? Number(h.liteMins) : Math.min(15, Number(h.mins) || 15),
+          enabled: h.enabled !== false,
+          timerPreset: h.timerPreset || '',
+          jumpView: h.jumpView || '',
+          skipInLite: Boolean(h.skipInLite)
+        }));
+      }
       if (rawObj.dailyState && typeof rawObj.dailyState === 'object') {
+        const prevBudget = rawObj.dailyState.budget;
+        const mappedBudget = COMMANDER_BUDGETS[prevBudget]
+          ? prevBudget
+          : (rawObj.dailyState.mode === 'tired' || rawObj.dailyState.mode === 'ozon' ? 'lite' : (rawObj.dailyState.mode === 'combat' ? 'deep' : 'medium'));
         s.dailyState = {
           date: rawObj.dailyState.date || isoDate(0),
-          mode: rawObj.dailyState.mode || 'combat',
-          done: Array.isArray(rawObj.dailyState.done) ? rawObj.dailyState.done : []
+          budget: mappedBudget,
+          onlyMobile: Boolean(rawObj.dailyState.onlyMobile),
+          doneDailies: Array.isArray(rawObj.dailyState.doneDailies) ? rawObj.dailyState.doneDailies : [],
+          snoozed: (rawObj.dailyState.snoozed && typeof rawObj.dailyState.snoozed === 'object') ? rawObj.dailyState.snoozed : {},
+          donePoolToday: Array.isArray(rawObj.dailyState.donePoolToday) ? rawObj.dailyState.donePoolToday : [],
+          custom: Array.isArray(rawObj.dailyState.custom) ? rawObj.dailyState.custom.filter(x => x && x.text) : []
         };
       }
       if (rawObj.actionQueues && typeof rawObj.actionQueues === 'object') {
@@ -2979,6 +3132,11 @@
         logActivity(dKey, 'net', hrs, { tag: 'FE', label: `Таймер ITPEC FE · ${mins} мин`, mins, affectsTotal: 'fe' });
       } else {
         logActivity(dKey, 'net', hrs, { tag: '.NET', label: `Таймер .NET · ${mins} мин`, mins });
+      }
+      if (dKey === isoDate(0)) {
+        ensureDailyStateForToday();
+        if (modeName === 'jp' && !state.dailyState.doneDailies.includes('dh_jp')) state.dailyState.doneDailies.push('dh_jp');
+        if (modeName === 'net' && !state.dailyState.doneDailies.includes('dh_code')) state.dailyState.doneDailies.push('dh_code');
       }
       selectedHmDate = dKey;
       resetTimer();
@@ -4167,7 +4325,7 @@
     function formatWantConvert(rub) {
       const r = Number(rub) || 0;
       if (r <= 0) return '';
-      const shifts = (r / 4000).toFixed(1);
+      const shifts = (r / 5000).toFixed(1);
       const fx = Number(state.sim.fxRate) || 0.64;
       const jpy = Math.round(r / fx);
       const tyoDays = (jpy / 5166).toFixed(1); // ~¥155k/mo in Tokyo
@@ -4226,55 +4384,655 @@
       }).join('<div class="border-t border-[rgba(201,112,103,0.2)] my-2"></div>');
     }
 
+    let cmdExpandedGuides = new Set();
+
+    function ensureDailyStateForToday() {
+      const today = isoDate(0);
+      if (!state.dailyState || typeof state.dailyState !== 'object') {
+        state.dailyState = { date: today, budget: 'medium', onlyMobile: false, doneDailies: [], snoozed: {}, donePoolToday: [], custom: [] };
+      }
+      if (!Array.isArray(state.dailyHabits) || !state.dailyHabits.length) {
+        state.dailyHabits = structuredClone(defaultDailyHabits);
+      }
+      if (!COMMANDER_BUDGETS[state.dailyState.budget]) state.dailyState.budget = 'medium';
+      if (!Array.isArray(state.dailyState.doneDailies)) state.dailyState.doneDailies = [];
+      if (!state.dailyState.snoozed || typeof state.dailyState.snoozed !== 'object') state.dailyState.snoozed = {};
+      if (!Array.isArray(state.dailyState.donePoolToday)) state.dailyState.donePoolToday = [];
+      if (!Array.isArray(state.dailyState.custom)) state.dailyState.custom = [];
+
+      if (state.dailyState.date !== today) {
+        // New day rollover: clear completed dailies & yesterday's done pool, KEEP unchecked custom tasks as rollover!
+        const carriedCustom = state.dailyState.custom
+          .filter(c => !c.done)
+          .map(c => ({ ...c, rolled: true }));
+        state.dailyState = {
+          date: today,
+          budget: state.dailyState.budget || 'medium',
+          onlyMobile: Boolean(state.dailyState.onlyMobile),
+          doneDailies: [],
+          snoozed: {},
+          donePoolToday: [],
+          custom: carriedCustom
+        };
+      }
+    }
+
+    function parseRuDeadlineDate(str) {
+      const m = String(str || '').match(/(\d{2})\.(\d{2})\.(\d{4})/);
+      if (!m) return null;
+      return new Date(`${m[3]}-${m[2]}-${m[1]}T00:00:00`);
+    }
+
+    function estimateStepMeta(title, tag) {
+      const s = `${tag || ''} ${title || ''}`.toLowerCase();
+      const isPcHeavy = /crud|стенд|visual studio|docker|postgres|outbox|rabbit|kafka|middleware|компил|контроллер|live code/i.test(s);
+      if (/live code/i.test(s)) return { mins: 15, mobile: true };
+      if (/crud|стенд|блок [1-5]/i.test(s)) return { mins: 60, mobile: false };
+      if (/озон|ozon|смен/i.test(s)) return { mins: 60, mobile: true };
+      if (/самозапрет|долями|т-банк|договор|справк|доверенност|загран|виз|оплат|школа mext|реестр|банк|паспорт легенд/i.test(s)) return { mins: 20, mobile: true };
+      if (/воронк|отклик|собес|оффер/i.test(s)) return { mins: 30, mobile: true };
+      if (/хираган|катакан|anki|genki|jlpt|quartet/i.test(s)) return { mins: 30, mobile: true };
+      if (/школа 21|практик/i.test(s)) return { mins: 45, mobile: false };
+      return { mins: isPcHeavy ? 45 : 25, mobile: !isPcHeavy };
+    }
+
+    function buildCommanderPlanPool() {
+      const today = isoDate(0);
+      const now = new Date(); now.setHours(0, 0, 0, 0);
+      const pool = [];
+
+      // 1. Urgent upcoming T-Bank debts (<= 7 days or overdue)
+      if (!state.hideOzonDebt) {
+        for (const d of state.debtPayments || []) {
+          if (d.paid) continue;
+          const dt = parseRuDeadlineDate(d.deadline);
+          if (!dt) continue;
+          const diff = Math.ceil((dt - now) / 86400000);
+          if (diff <= 7) {
+            pool.push({
+              key: `debt:${d.id}`,
+              kind: 'debt',
+              refId: d.id,
+              group: 'urgent',
+              priority: 1000 - Math.max(-30, diff),
+              hot: true,
+              mins: 10,
+              mobile: true,
+              tag: 'Т-БАНК',
+              sourceLabel: diff < 0 ? 'ПРОСРОЧКА' : (diff === 0 ? 'СЕГОДНЯ' : `ЧЕРЕЗ ${diff}Д`),
+              title: `Оплатить: ${d.title} — ${Number(d.amount).toLocaleString('ru-RU')} ₽ (${d.deadline})`,
+              guide: 'Открой вкладку «02 ФИНАНСЫ» после оплаты — галочка здесь сразу отметит платёж оплаченным.',
+              jumpView: 'view-finance'
+            });
+          }
+        }
+      }
+
+      // 2. Active short-window alerts (within leadDays)
+      for (const w of shortWindows) {
+        const dt = new Date(w.start + 'T00:00:00');
+        const diff = Math.ceil((dt - now) / 86400000);
+        if (diff <= w.leadDays && diff >= -5) {
+          pool.push({
+            key: `sw:${w.id}`,
+            kind: 'sw',
+            refId: w.id,
+            group: 'urgent',
+            priority: 950 - Math.max(-5, diff),
+            hot: true,
+            mins: 20,
+            mobile: true,
+            tag: 'ДЕЛА',
+            sourceLabel: diff > 0 ? `ОКНО · ${diff}Д` : 'ОКНО СЕЙЧАС',
+            title: w.title,
+            guide: w.desc,
+            jumpView: 'view-plan'
+          });
+        }
+      }
+
+      // 3. Unresolved Tech Gaps (48h fix)
+      (state.techGaps || []).filter(g => !g.done).slice(0, 3).forEach((g, i) => {
+        pool.push({
+          key: `gap:${g.id}`,
+          kind: 'gap',
+          refId: g.id,
+          group: 'net',
+          priority: 825 - i * 18,
+          mins: 25,
+          mobile: true,
+          tag: '.NET',
+          sourceLabel: 'Техпробел 48ч',
+          title: `Закрыть пробел: ${g.text}`,
+          guide: 'Разбери тему в NotebookLM / документации, сформулируй ответ в 3 предложениях и закинь в колоду карточек на вкладке «03 .NET».',
+          jumpView: 'view-career'
+        });
+      });
+
+      // 4. T-Bank / Anti-debt Locks (quick mobile wins while debt stage active)
+      if (!state.hideOzonDebt) {
+        const bSet = new Set(state.bnplChecked || []);
+        bnplItems.filter(it => !bSet.has(it.id) && ['b1', 'b2', 'b3', 'b5'].includes(it.id)).slice(0, 2).forEach((it, i) => {
+          pool.push({
+            key: `bnpl:${it.id}`,
+            kind: 'bnpl',
+            refId: it.id,
+            group: 'money',
+            priority: 795 - i * 25,
+            mins: 10,
+            mobile: true,
+            tag: 'ДЕЛА',
+            sourceLabel: 'Замок Т-Банк',
+            title: it.title,
+            guide: it.desc,
+            jumpView: 'view-finance'
+          });
+        });
+      }
+
+      // 5. College & Custom Tasks (Shkola 21, 5 CRUDs)
+      (state.tasks || []).filter(t => !t.done).slice(0, 3).forEach((t, i) => {
+        const est = estimateStepMeta(t.title, 'УЧЁБА');
+        pool.push({
+          key: `task:${t.id}`,
+          kind: 'task',
+          refId: t.id,
+          group: 'study',
+          priority: 780 - i * 20,
+          mins: est.mins,
+          mobile: est.mobile,
+          tag: 'УЧЁБА',
+          sourceLabel: 'Колледж / Задачи',
+          title: t.title,
+          guide: 'Делай руками без генерации ИИ — достаточно рабочего каркаса и чистого CRUD без перфекционизма.',
+          jumpView: 'view-study'
+        });
+      });
+
+      // 6. Current Active Stage Steps (from 8-stage Playbook)
+      const curStageIdx = getCurrentActiveStageIdx();
+      const curStage = state.planStages[curStageIdx];
+      if (curStage) {
+        curStage.steps.filter(s => !s.done).slice(0, 4).forEach((s, i) => {
+          const est = estimateStepMeta(s.title, s.tag);
+          pool.push({
+            key: `stage:${curStageIdx}:${s.id}`,
+            kind: 'stage',
+            stageIdx: curStageIdx,
+            refId: s.id,
+            group: s.tag === 'ЯПОНСКИЙ' ? 'jp' : (s.tag === 'OZON' || s.tag === 'Т-БАНК' ? 'money' : 'stage'),
+            priority: 770 - i * 16,
+            mins: est.mins,
+            mobile: est.mobile,
+            tag: s.tag || 'ПЛАН',
+            sourceLabel: `Этап ${curStage.code}`,
+            title: s.title,
+            guide: s.guide,
+            jumpView: 'view-plan'
+          });
+        });
+      }
+
+      // 7. Next Action from each of the 4 Queues
+      const qPriority = { net: 755, money: 740, reloc: 715, jp: 695 };
+      ['net', 'money', 'reloc', 'jp'].forEach(k => {
+        const br = state.actionQueues?.[k];
+        if (!br) return;
+        const next = br.steps.find(s => !s.done);
+        if (!next) return;
+        const est = estimateStepMeta(next.title, br.short);
+        pool.push({
+          key: `queue:${k}:${next.id}`,
+          kind: 'queue',
+          branchKey: k,
+          refId: next.id,
+          group: k,
+          priority: qPriority[k] || 700,
+          mins: est.mins,
+          mobile: est.mobile,
+          tag: k === 'net' ? '.NET' : (k === 'jp' ? 'JP' : (k === 'money' ? 'ДЕЛА' : 'ПЛАН')),
+          sourceLabel: `Ветка · ${br.short}`,
+          title: next.title,
+          guide: next.guide,
+          jumpView: k === 'net' ? 'view-career' : (k === 'money' ? 'view-finance' : (k === 'jp' ? 'view-study' : 'view-plan'))
+        });
+      });
+
+      // 8. Next unsolved Live Code Review case (great for phone / 15m slots!)
+      const crDone = new Set(state.codeReviewDone || []);
+      const nextCrIdx = codeReviewCases.findIndex(c => !crDone.has(c.id));
+      if (nextCrIdx !== -1) {
+        const cr = codeReviewCases[nextCrIdx];
+        pool.push({
+          key: `cr:${cr.id}`,
+          kind: 'cr',
+          refId: cr.id,
+          crIdx: nextCrIdx,
+          group: 'cr',
+          priority: 735,
+          mins: 15,
+          mobile: true,
+          tag: 'CR',
+          sourceLabel: 'Live Code Review',
+          title: `Разобрать продовый баг: ${cr.title}`,
+          guide: 'Открой кейс на вкладке «03 MIDDLE .NET», сначала найди все баги сам, потом сравни с разбором.',
+          jumpView: 'view-career'
+        });
+      }
+
+      // 9. 30-day order current unchecked task (while in phase 1)
+      if (!state.hideOzonDebt) {
+        const oSet = new Set(state.orderChecked || []);
+        for (const w of order30Weeks) {
+          const open = w.tasks.find(t => !oSet.has(t.id));
+          if (open) {
+            const est = estimateStepMeta(open.text, 'ДЕЛА');
+            pool.push({
+              key: `o30:${open.id}`,
+              kind: 'o30',
+              refId: open.id,
+              group: 'order',
+              priority: 660,
+              mins: est.mins,
+              mobile: est.mobile,
+              tag: 'ДЕЛА',
+              sourceLabel: 'План 30д',
+              title: open.text,
+              guide: `${w.week} — закрывай шаг и отмечай галочкой.`,
+              jumpView: 'view-study'
+            });
+            break;
+          }
+        }
+      }
+
+      // Filter out snoozed-for-today items
+      const snoozed = state.dailyState.snoozed || {};
+      const available = pool.filter(it => snoozed[it.key] !== today);
+      available.sort((a, b) => b.priority - a.priority);
+      return { all: pool, available };
+    }
+
+    function selectCommanderTasks(available, budgetKey, onlyMobile) {
+      const cfg = COMMANDER_BUDGETS[budgetKey] || COMMANDER_BUDGETS.medium;
+      const doneTodayCount = (state.dailyState.donePoolToday || []).length;
+      const targetOpenSlots = Math.max(1, cfg.maxPlanTasks - Math.min(doneTodayCount, cfg.maxPlanTasks - 1));
+
+      let candidates = available.slice();
+      if (onlyMobile) {
+        candidates = candidates.filter(c => c.mobile);
+      }
+
+      const picked = [];
+      const usedGroups = new Set();
+      let usedMins = 0;
+
+      // Pass 1: always take urgent/hot items first (up to budget slots)
+      for (const c of candidates) {
+        if (picked.length >= targetOpenSlots) break;
+        if (!c.hot) continue;
+        picked.push(c);
+        usedGroups.add(c.group);
+        usedMins += c.mins;
+      }
+
+      // Pass 2: pick diverse items fitting the time budget
+      for (const c of candidates) {
+        if (picked.length >= targetOpenSlots) break;
+        if (picked.some(p => p.key === c.key)) continue;
+        if (cfg.preferMobile && !c.mobile && candidates.some(x => x.mobile && !picked.some(p => p.key === x.key))) continue;
+        if (c.mins > cfg.maxTaskMins && picked.length > 0) continue;
+        if (usedMins + c.mins > cfg.totalPlanMins && picked.length > 0) continue;
+        if (usedGroups.has(c.group) && picked.length < 2) continue;
+        picked.push(c);
+        usedGroups.add(c.group);
+        usedMins += c.mins;
+      }
+
+      // Pass 3: fill remaining slots if strict diversity/time left room
+      for (const c of candidates) {
+        if (picked.length >= targetOpenSlots) break;
+        if (picked.some(p => p.key === c.key)) continue;
+        if (budgetKey === 'lite' && c.mins > 30) continue;
+        picked.push(c);
+        usedMins += c.mins;
+      }
+
+      return picked;
+    }
+
+    function toggleCommanderPoolItem(item, checked) {
+      const today = isoDate(0);
+      ensureDailyStateForToday();
+
+      if (item.kind === 'debt') {
+        const d = state.debtPayments.find(x => x.id === item.refId);
+        if (d) d.paid = checked;
+      } else if (item.kind === 'gap') {
+        const g = state.techGaps.find(x => x.id === item.refId);
+        if (g) g.done = checked;
+      } else if (item.kind === 'bnpl') {
+        const s = new Set(state.bnplChecked || []);
+        checked ? s.add(item.refId) : s.delete(item.refId);
+        state.bnplChecked = Array.from(s);
+      } else if (item.kind === 'task') {
+        const t = state.tasks.find(x => x.id === item.refId);
+        if (t) t.done = checked;
+      } else if (item.kind === 'stage') {
+        const st = state.planStages[item.stageIdx]?.steps.find(x => x.id === item.refId);
+        if (st) st.done = checked;
+      } else if (item.kind === 'queue') {
+        const st = state.actionQueues[item.branchKey]?.steps.find(x => x.id === item.refId);
+        if (st) st.done = checked;
+      } else if (item.kind === 'cr') {
+        const s = new Set(state.codeReviewDone || []);
+        checked ? s.add(item.refId) : s.delete(item.refId);
+        state.codeReviewDone = Array.from(s);
+      } else if (item.kind === 'o30') {
+        const s = new Set(state.orderChecked || []);
+        checked ? s.add(item.refId) : s.delete(item.refId);
+        state.orderChecked = Array.from(s);
+      }
+
+      if (checked) {
+        if (!state.dailyState.donePoolToday.some(x => x.key === item.key)) {
+          state.dailyState.donePoolToday.push({
+            key: item.key, kind: item.kind, refId: item.refId, stageIdx: item.stageIdx, branchKey: item.branchKey,
+            title: item.title, tag: item.tag, sourceLabel: item.sourceLabel, mins: item.mins
+          });
+        }
+        const actType = (item.tag === 'JP') ? 'jp' : ((item.tag === '.NET' || item.tag === 'CR' || item.tag === 'УЧЁБА') ? 'net' : 'note');
+        const actVal = actType === 'jp' ? 0.5 : (actType === 'net' ? 1 : 0);
+        logActivity(today, actType, actVal, { tag: item.tag || 'ПЛАН', label: item.title });
+        toast(`Закрыто и синхронизировано (${item.sourceLabel}) ✓`);
+      } else {
+        state.dailyState.donePoolToday = state.dailyState.donePoolToday.filter(x => x.key !== item.key);
+        toast('Отметка снята');
+      }
+
+      save(true);
+      renderAll();
+    }
+
+    function launchTimerFromCommander(presetStr) {
+      if (!presetStr || !presetStr.includes(':')) return;
+      const [m, mins] = presetStr.split(':');
+      timer.mode = m;
+      timer.presetMin = Number(mins) || 25;
+      resetTimer();
+      syncTimerPresetUI();
+      timer.endTime = Date.now() + timer.remainingMs;
+      timer.running = true;
+      timer.startedDateKey = isoDate(0);
+      document.getElementById('timer-status').textContent = 'Идёт фокус-блок...';
+      timer.interval = setInterval(updateTimerUI, 500);
+      persistTimer();
+      updateTimerUI();
+      toast(`Таймер запущен: ${m.toUpperCase()} · ${timer.presetMin} мин`);
+      const td = document.getElementById('timer-display');
+      if (td) td.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
     function renderDailyCommander() {
       const today = isoDate(0);
-      if (!state.dailyState || state.dailyState.date !== today) {
-        const prevMode = state.dailyState?.mode || (state.hideOzonDebt ? 'middle' : 'combat');
-        state.dailyState = { date: today, mode: prevMode, done: [] };
-      }
-      const primaryKey = state.hideOzonDebt ? 'middle' : 'ozon';
-      const modes = [primaryKey, 'school', 'combat', 'tired'];
-      if (!modes.includes(state.dailyState.mode)) state.dailyState.mode = primaryKey;
+      ensureDailyStateForToday();
 
-      const curTpl = dailyTemplates[state.dailyState.mode] || dailyTemplates.combat;
-      const doneSet = new Set(state.dailyState.done || []);
-      const doneCount = curTpl.tasks.filter(t => doneSet.has(t.id)).length;
+      const budgetKey = state.dailyState.budget;
+      const cfg = COMMANDER_BUDGETS[budgetKey] || COMMANDER_BUDGETS.medium;
+      const isLite = budgetKey === 'lite';
+      const onlyMobile = Boolean(state.dailyState.onlyMobile);
 
-      document.getElementById('daily-date-lbl').textContent = fmtShortDate(today);
-      document.getElementById('daily-mode-sub').textContent = curTpl.sub;
-      document.getElementById('daily-progress-badge').textContent = `${doneCount} / ${curTpl.tasks.length}`;
-
-      const btnsEl = document.getElementById('daily-mode-btns');
-      btnsEl.innerHTML = modes.map(k => {
-        const t = dailyTemplates[k];
-        const on = state.dailyState.mode === k;
-        return `<button type="button" data-dmode="${k}" class="btn py-1.5 text-[10px] ${on ? 'btn-primary' : 'btn-ghost'}">${esc(t.label)}</button>`;
+      // Budget selector buttons
+      const budgetBtns = document.getElementById('daily-budget-btns');
+      budgetBtns.innerHTML = Object.entries(COMMANDER_BUDGETS).map(([k, b]) => {
+        const on = budgetKey === k;
+        return `<button type="button" data-dbudget="${k}" class="btn py-1.5 px-2 text-[10px] ${on ? 'btn-primary' : 'btn-ghost'}">${esc(b.label)}</button>`;
       }).join('');
-      btnsEl.querySelectorAll('[data-dmode]').forEach(b => b.addEventListener('click', () => {
-        state.dailyState.mode = b.dataset.dmode;
+      budgetBtns.querySelectorAll('[data-dbudget]').forEach(b => b.addEventListener('click', () => {
+        state.dailyState.budget = b.dataset.dbudget;
         save(true); renderDailyCommander();
       }));
 
-      const listEl = document.getElementById('daily-tasks-list');
-      listEl.innerHTML = curTpl.tasks.map(t => {
-        const on = doneSet.has(t.id);
+      // Mobile-only filter button
+      const mobBtn = document.getElementById('btn-cmd-mobile-only');
+      if (mobBtn) {
+        mobBtn.className = onlyMobile ? 'btn py-1.5 px-2.5 text-[10px] border-[#A3CCA8] text-[#A3CCA8]' : 'btn btn-ghost py-1.5 px-2.5 text-[10px]';
+        mobBtn.textContent = onlyMobile ? 'ТЕЛ / В ДОРОГЕ ✓' : 'ТЕЛ / В ДОРОГЕ';
+      }
+
+      // Snoozed count button
+      const snoozedCount = Object.values(state.dailyState.snoozed || {}).filter(d => d === today).length;
+      const unsnoozeBtn = document.getElementById('btn-cmd-unsnooze');
+      if (unsnoozeBtn) {
+        unsnoozeBtn.classList.toggle('hidden', snoozedCount === 0);
+        unsnoozeBtn.textContent = `ВЕРНУТЬ (${snoozedCount})`;
+      }
+
+      // Layer 1: Mandatory Dailies
+      const activeDailies = state.dailyHabits.filter(h => h.enabled && !(isLite && h.skipInLite));
+      const doneDailiesSet = new Set(state.dailyState.doneDailies || []);
+      let dailyRemMins = 0;
+      activeDailies.forEach(h => {
+        if (!doneDailiesSet.has(h.id)) dailyRemMins += isLite ? (Number(h.liteMins) || 10) : (Number(h.mins) || 15);
+      });
+
+      const dailiesMeta = document.getElementById('cmd-dailies-meta');
+      if (dailiesMeta) dailiesMeta.textContent = isLite ? 'лайт-режим (без выгорания)' : `~${activeDailies.reduce((a, h) => a + (Number(h.mins) || 15), 0)} мин база`;
+
+      const dailiesEl = document.getElementById('cmd-dailies-list');
+      dailiesEl.innerHTML = activeDailies.length ? activeDailies.map(h => {
+        const on = doneDailiesSet.has(h.id);
+        const label = (isLite && h.liteTitle) ? h.liteTitle : h.title;
+        const mins = isLite ? (Number(h.liteMins) || 10) : (Number(h.mins) || 15);
+        const actionBtn = (!on && h.timerPreset)
+          ? `<button type="button" data-cmd-timer="${esc(h.timerPreset)}" class="btn btn-ghost py-0.5 px-1.5 text-[9px] text-[#A3CCA8] shrink-0" title="Запустить фокус-таймер">▶ ${h.timerPreset.split(':')[1]}м</button>`
+          : ((!on && h.jumpView)
+            ? `<button type="button" data-cmd-jump="${esc(h.jumpView)}" class="btn btn-ghost py-0.5 px-1.5 text-[9px] text-[#A3CCA8] shrink-0">ОТКРЫТЬ →</button>`
+            : '');
         return `
-          <label class="panel-recessed px-3 py-2 flex items-start gap-2.5 cursor-pointer text-xs ${on ? 'opacity-55' : ''}">
-            <input type="checkbox" class="chk mt-0.5" data-dtask="${t.id}" ${on ? 'checked' : ''} />
-            <span class="${on ? 'line-through text-[#868C84]' : 'text-[#DFDDD4]'} leading-snug">${esc(t.text)}</span>
-          </label>
+          <div class="panel-recessed px-3 py-2 flex items-center justify-between gap-2 text-xs ${on ? 'opacity-50' : ''}">
+            <label class="flex items-start gap-2.5 cursor-pointer flex-1 min-w-0">
+              <input type="checkbox" class="chk mt-0.5" data-cmd-daily="${esc(h.id)}" ${on ? 'checked' : ''} />
+              <div class="min-w-0 flex-1 flex flex-wrap items-center gap-1.5">
+                <span class="hm-tag ${getTagClass({ tag: h.tag })}">${esc(h.tag)}</span>
+                <span class="${on ? 'line-through text-[#868C84]' : 'text-[#DFDDD4]'} leading-snug">${esc(label)}</span>
+              </div>
+            </label>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <span class="cmd-chip">${mins}м</span>
+              ${actionBtn}
+            </div>
+          </div>
         `;
-      }).join('');
-      listEl.querySelectorAll('[data-dtask]').forEach(cb => cb.addEventListener('change', () => {
-        const s = new Set(state.dailyState.done || []);
-        cb.checked ? s.add(cb.dataset.dtask) : s.delete(cb.dataset.dtask);
-        state.dailyState.done = Array.from(s);
-        if (cb.checked) {
-          const tObj = curTpl.tasks.find(x => x.id === cb.dataset.dtask);
-          logActivity(isoDate(0), 'check', 1, { tag: 'ДЕЛА', label: tObj ? tObj.text : 'Пункт командира дня' });
+      }).join('') : `<div class="font-mono-num text-[10px] text-[#6B726A] py-1">Ежедневки отключены — включи через «⚙ Ежедневки».</div>`;
+
+      dailiesEl.querySelectorAll('[data-cmd-daily]').forEach(cb => cb.addEventListener('change', () => {
+        const hid = cb.dataset.cmdDaily;
+        const h = state.dailyHabits.find(x => x.id === hid);
+        const s = new Set(state.dailyState.doneDailies || []);
+        cb.checked ? s.add(hid) : s.delete(hid);
+        state.dailyState.doneDailies = Array.from(s);
+        if (cb.checked && h) {
+          const lbl = (isLite && h.liteTitle) ? h.liteTitle : h.title;
+          logActivity(today, 'note', 0, { tag: h.tag || 'ДЕЛА', label: lbl });
         }
         save(true); renderDailyCommander(); renderHeatmap();
       }));
+      dailiesEl.querySelectorAll('[data-cmd-timer]').forEach(b => b.addEventListener('click', () => launchTimerFromCommander(b.dataset.cmdTimer)));
+      dailiesEl.querySelectorAll('[data-cmd-jump]').forEach(b => b.addEventListener('click', () => switchView(b.dataset.cmdJump)));
+
+      // Render Editable Dailies Config Drawer
+      const habEd = document.getElementById('cmd-habits-editor');
+      if (habEd) {
+        habEd.innerHTML = state.dailyHabits.map(h => `
+          <div class="flex items-center justify-between gap-2 px-2 py-1.5 rounded bg-[rgba(18,22,19,0.7)] border border-[rgba(163,204,168,0.09)] text-xs">
+            <label class="flex items-center gap-2 cursor-pointer flex-1 min-w-0">
+              <input type="checkbox" class="chk" data-hed-en="${esc(h.id)}" ${h.enabled ? 'checked' : ''} />
+              <span class="hm-tag ${getTagClass({ tag: h.tag })}">${esc(h.tag)}</span>
+              <span class="text-[#DFDDD4] truncate">${esc(h.title)}</span>
+            </label>
+            <div class="flex items-center gap-1 shrink-0">
+              <span class="font-mono-num text-[10px] text-[#868C84]">${h.mins}м</span>
+              <button type="button" data-hed-edit="${esc(h.id)}" class="text-[#868C84] hover:text-[#E8ECF4] font-mono-num text-[11px] px-1">✎</button>
+              <button type="button" data-hed-del="${esc(h.id)}" class="text-[#6B726A] hover:text-[#DF9B94] font-mono-num text-xs px-1">×</button>
+            </div>
+          </div>
+        `).join('');
+        habEd.querySelectorAll('[data-hed-en]').forEach(cb => cb.addEventListener('change', () => {
+          const h = state.dailyHabits.find(x => x.id === cb.dataset.hedEn);
+          if (h) { h.enabled = cb.checked; save(true); renderDailyCommander(); }
+        }));
+        habEd.querySelectorAll('[data-hed-edit]').forEach(b => b.addEventListener('click', () => {
+          const h = state.dailyHabits.find(x => x.id === b.dataset.hedEdit); if (!h) return;
+          const nt = prompt('Название ежедневки:', h.title); if (nt === null || !nt.trim()) return;
+          const nm = prompt('Время (минут):', String(h.mins));
+          h.title = nt.trim();
+          if (nm !== null && Number(nm) > 0) h.mins = Number(nm);
+          save(true); renderDailyCommander();
+        }));
+        habEd.querySelectorAll('[data-hed-del]').forEach(b => b.addEventListener('click', () => {
+          state.dailyHabits = state.dailyHabits.filter(x => x.id !== b.dataset.hedDel);
+          save(true); renderDailyCommander();
+        }));
+      }
+
+      // Layer 2: Auto-Pulled Plan Tasks
+      const { available } = buildCommanderPlanPool();
+      const picked = selectCommanderTasks(available, budgetKey, onlyMobile);
+      const donePool = state.dailyState.donePoolToday || [];
+
+      const planMeta = document.getElementById('cmd-plan-meta');
+      if (planMeta) {
+        const pickedMins = picked.reduce((a, x) => a + (Number(x.mins) || 15), 0);
+        planMeta.textContent = picked.length ? `подобрано ${picked.length} · ~${pickedMins} мин` : 'всё доступное закрыто ✓';
+      }
+
+      const planEl = document.getElementById('cmd-plan-list');
+      const openRows = picked.map(it => {
+        const gOpen = cmdExpandedGuides.has(it.key);
+        return `
+          <div class="panel-recessed px-3 py-2 text-xs ${it.hot ? 'border-[rgba(201,112,103,0.45)]' : ''}">
+            <div class="flex items-start justify-between gap-2">
+              <label class="flex items-start gap-2.5 cursor-pointer flex-1 min-w-0">
+                <input type="checkbox" class="chk mt-0.5" data-cmd-pool="${esc(it.key)}" />
+                <div class="min-w-0 flex-1 space-y-1">
+                  <div class="text-[#E8ECF4] leading-snug">${esc(it.title)}</div>
+                  <div class="flex flex-wrap items-center gap-1">
+                    <span class="hm-tag ${getTagClass({ tag: it.tag })}">${esc(it.tag)}</span>
+                    <span class="cmd-chip ${it.hot ? 'cmd-chip-hot' : ''}">${esc(it.sourceLabel)}</span>
+                    <span class="cmd-chip">${it.mins}м · ${it.mobile ? 'ТЕЛ' : 'ПК'}</span>
+                  </div>
+                </div>
+              </label>
+              <div class="flex items-center gap-1 shrink-0">
+                ${it.guide ? `<button type="button" data-cmd-guide="${esc(it.key)}" class="btn btn-ghost py-0.5 px-1.5 text-[9px]" title="Подсказка">${gOpen ? '▴' : 'КАК ▾'}</button>` : ''}
+                ${it.kind === 'cr' ? `<button type="button" data-cmd-cr="${it.crIdx}" class="btn btn-ghost py-0.5 px-1.5 text-[9px] text-[#A3CCA8]" title="Открыть код-ревью">КОД →</button>` : (it.jumpView ? `<button type="button" data-cmd-jump="${esc(it.jumpView)}" class="btn btn-ghost py-0.5 px-1.5 text-[9px]" title="Открыть раздел">→</button>` : '')}
+                <button type="button" data-cmd-snooze="${esc(it.key)}" class="btn btn-ghost py-0.5 px-1.5 text-[10px] text-[#868C84] hover:text-[#DFC28D]" title="Отложить на завтра и показать другую">↻</button>
+              </div>
+            </div>
+            ${gOpen && it.guide ? `<div class="step-guide text-[11px]">${esc(it.guide)}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+
+      const doneRows = donePool.map(it => `
+        <div class="panel-recessed px-3 py-1.5 flex items-center justify-between gap-2 text-xs opacity-50">
+          <label class="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0">
+            <input type="checkbox" class="chk" data-cmd-pool-undo="${esc(it.key)}" checked />
+            <span class="hm-tag ${getTagClass({ tag: it.tag })}">${esc(it.tag)}</span>
+            <span class="line-through text-[#868C84] truncate">${esc(it.title)}</span>
+          </label>
+          <span class="cmd-chip shrink-0">${esc(it.sourceLabel)}</span>
+        </div>
+      `).join('');
+
+      planEl.innerHTML = (openRows + doneRows) || `<div class="font-mono-num text-[10px] text-[#868C84] py-1">${onlyMobile ? 'Нет открытых задач под телефон — сними фильтр «ТЕЛ / В ДОРОГЕ» или нажми «Вернуть».' : 'На сегодня из плана всё закрыто — красавчик ✓'}</div>`;
+
+      planEl.querySelectorAll('[data-cmd-pool]').forEach(cb => cb.addEventListener('change', () => {
+        const it = picked.find(x => x.key === cb.dataset.cmdPool);
+        if (it) toggleCommanderPoolItem(it, true);
+      }));
+      planEl.querySelectorAll('[data-cmd-pool-undo]').forEach(cb => cb.addEventListener('change', () => {
+        const it = donePool.find(x => x.key === cb.dataset.cmdPoolUndo);
+        if (it) toggleCommanderPoolItem(it, false);
+      }));
+      planEl.querySelectorAll('[data-cmd-snooze]').forEach(b => b.addEventListener('click', () => {
+        state.dailyState.snoozed[b.dataset.cmdSnooze] = today;
+        save(true); renderDailyCommander();
+        toast('Отложено на завтра → подтянута следующая задача');
+      }));
+      planEl.querySelectorAll('[data-cmd-guide]').forEach(b => b.addEventListener('click', () => {
+        const k = b.dataset.cmdGuide;
+        if (cmdExpandedGuides.has(k)) cmdExpandedGuides.delete(k); else cmdExpandedGuides.add(k);
+        renderDailyCommander();
+      }));
+      planEl.querySelectorAll('[data-cmd-cr]').forEach(b => b.addEventListener('click', () => {
+        activeCrIdx = Number(b.dataset.cmdCr) || 0;
+        switchView('view-career');
+        renderCodeReview();
+        setTimeout(() => {
+          const el = document.getElementById('cr-stage');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 50);
+      }));
+      planEl.querySelectorAll('[data-cmd-jump]').forEach(b => b.addEventListener('click', () => switchView(b.dataset.cmdJump)));
+
+      // Layer 3: User's Own One-off Tasks
+      const customList = state.dailyState.custom || [];
+      const customMeta = document.getElementById('cmd-custom-meta');
+      if (customMeta) {
+        const cDone = customList.filter(c => c.done).length;
+        customMeta.textContent = customList.length ? `${cDone} / ${customList.length}` : 'пусто';
+      }
+      const customEl = document.getElementById('cmd-custom-list');
+      customEl.innerHTML = customList.length ? customList.map(c => `
+        <div class="panel-recessed px-3 py-1.5 flex items-center justify-between gap-2 text-xs ${c.done ? 'opacity-50' : ''}">
+          <label class="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0">
+            <input type="checkbox" class="chk" data-cmd-cust="${esc(c.id)}" ${c.done ? 'checked' : ''} />
+            <span class="hm-tag ${getTagClass({ tag: c.tag })}">${esc(c.tag || 'ДЕЛА')}</span>
+            <span class="${c.done ? 'line-through text-[#868C84]' : 'text-[#DFDDD4]'} truncate">${esc(c.text)}</span>
+            ${c.rolled && !c.done ? '<span class="cmd-chip cmd-chip-roll">перенос</span>' : ''}
+          </label>
+          <button type="button" data-cmd-cust-del="${esc(c.id)}" class="text-[#6B726A] hover:text-[#DF9B94] font-mono-num text-xs px-1 shrink-0 cursor-pointer">×</button>
+        </div>
+      `).join('') : '';
+
+      customEl.querySelectorAll('[data-cmd-cust]').forEach(cb => cb.addEventListener('change', () => {
+        const c = state.dailyState.custom.find(x => x.id === cb.dataset.cmdCust);
+        if (!c) return;
+        c.done = cb.checked;
+        c.doneDate = cb.checked ? today : '';
+        if (cb.checked) {
+          const actType = c.tag === '.NET' ? 'net' : 'note';
+          logActivity(today, actType, actType === 'net' ? 1 : 0, { tag: c.tag || 'ДЕЛА', label: c.text });
+        }
+        save(true); renderDailyCommander(); renderHeatmap();
+      }));
+      customEl.querySelectorAll('[data-cmd-cust-del]').forEach(b => b.addEventListener('click', () => {
+        state.dailyState.custom = state.dailyState.custom.filter(x => x.id !== b.dataset.cmdCustDel);
+        save(true); renderDailyCommander();
+      }));
+
+      // Global Daily Commander Header & Progress Bar
+      const totalItems = activeDailies.length + picked.length + donePool.length + customList.length;
+      const doneItems = activeDailies.filter(h => doneDailiesSet.has(h.id)).length + donePool.length + customList.filter(c => c.done).length;
+      const pct = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
+      const planRemMins = picked.reduce((a, x) => a + (Number(x.mins) || 15), 0);
+      const totalRemMins = dailyRemMins + planRemMins;
+
+      document.getElementById('daily-date-lbl').textContent = fmtHumanDate(today).toUpperCase();
+      document.getElementById('daily-mode-sub').textContent = `${cfg.hint}${totalRemMins > 0 ? ` · осталось ~${totalRemMins} мин` : ' · план дня закрыт ✓'}`;
+      document.getElementById('daily-progress-badge').textContent = `${doneItems} / ${totalItems}`;
+      const pBar = document.getElementById('daily-progress-bar');
+      if (pBar) pBar.style.width = `${pct}%`;
+
+      // Update Strategy Drawer Subtitle on Sunday
+      const isSunday = new Date().getDay() === 0;
+      const sSub = document.getElementById('strategy-drawer-sub');
+      if (sSub && isSunday) {
+        sSub.textContent = 'Сегодня воскресенье — раскрой для 30-секундного чекина и обзора недели!';
+        sSub.classList.add('text-[#A3CCA8]');
+      }
     }
 
     let activeQueueBranch = 'net';
@@ -4700,9 +5458,12 @@
     function openZenMode() {
       const overlay = document.getElementById('zen-overlay');
       const taskEl = document.getElementById('zen-task-text');
-      const branch = timer.mode === 'jp' ? 'jp' : 'net';
-      const nextStep = state.actionQueues[branch]?.steps.find(s => !s.done);
-      if (taskEl) taskEl.textContent = nextStep ? nextStep.title : 'Глубокий фокус без лишнего шума';
+      ensureDailyStateForToday();
+      const { available } = buildCommanderPlanPool();
+      const picked = selectCommanderTasks(available, state.dailyState.budget, Boolean(state.dailyState.onlyMobile));
+      const openCustom = (state.dailyState.custom || []).find(c => !c.done);
+      const topTitle = picked[0]?.title || openCustom?.text || 'Глубокий фокус без лишнего шума';
+      if (taskEl) taskEl.textContent = topTitle;
       overlay.classList.remove('hidden');
       updateTimerUI();
       updateAmbientBtns();
@@ -4789,6 +5550,78 @@
         } else {
           prev.classList.add('hidden');
         }
+      });
+
+      // Smart Commander static handlers
+      document.getElementById('btn-cmd-mobile-only').addEventListener('click', () => {
+        ensureDailyStateForToday();
+        state.dailyState.onlyMobile = !state.dailyState.onlyMobile;
+        save(true); renderDailyCommander();
+        toast(state.dailyState.onlyMobile ? 'Фильтр: только задачи с телефона' : 'Показаны все задачи (ПК + телефон)');
+      });
+      document.getElementById('btn-cmd-unsnooze').addEventListener('click', () => {
+        ensureDailyStateForToday();
+        state.dailyState.snoozed = {};
+        save(true); renderDailyCommander();
+        toast('Отложенные задачи возвращены');
+      });
+      document.getElementById('btn-cmd-habits-cfg').addEventListener('click', () => {
+        document.getElementById('cmd-habits-drawer').classList.toggle('hidden');
+      });
+      document.getElementById('btn-cmd-habits-reset').addEventListener('click', () => {
+        if (!confirm('Вернуть стандартный набор ежедневок (JP + карточки + код)?')) return;
+        state.dailyHabits = structuredClone(defaultDailyHabits);
+        save(true); renderDailyCommander();
+        toast('Ежедневки сброшены к базе');
+      });
+      const addDailyHabit = () => {
+        const title = document.getElementById('cmd-new-habit-title').value.trim();
+        if (!title) return;
+        const tag = document.getElementById('cmd-new-habit-tag').value || 'ДЕЛА';
+        const mins = Math.max(5, Number(document.getElementById('cmd-new-habit-mins').value) || 15);
+        state.dailyHabits.push({
+          id: 'dh_' + Date.now(),
+          title, liteTitle: title, tag, mins, liteMins: Math.min(15, mins),
+          enabled: true, timerPreset: '', jumpView: '', skipInLite: false
+        });
+        document.getElementById('cmd-new-habit-title').value = '';
+        save(true); renderDailyCommander();
+        toast('Ежедневка добавлена ✓');
+      };
+      document.getElementById('btn-cmd-add-habit').addEventListener('click', addDailyHabit);
+      document.getElementById('cmd-new-habit-title').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); addDailyHabit(); }
+      });
+
+      const addCustomDaily = () => {
+        const inp = document.getElementById('cmd-custom-in');
+        const txt = inp.value.trim();
+        if (!txt) return;
+        const tag = document.getElementById('cmd-custom-tag').value || 'ДЕЛА';
+        ensureDailyStateForToday();
+        state.dailyState.custom.push({
+          id: 'cd_' + Date.now(),
+          text: txt, tag, done: false, doneDate: '', createdDate: isoDate(0), rolled: false
+        });
+        inp.value = '';
+        save(true); renderDailyCommander();
+        toast('Добавлено в план дня ✓');
+      };
+      document.getElementById('btn-cmd-add-custom').addEventListener('click', addCustomDaily);
+      document.getElementById('cmd-custom-in').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); addCustomDaily(); }
+      });
+
+      // Strategy Drawer toggle on Deck (auto-open on Sunday for check-in)
+      const stratBody = document.getElementById('strategy-drawer-body');
+      const stratArrow = document.getElementById('strategy-drawer-arrow');
+      if (new Date().getDay() === 0 && stratBody && stratArrow) {
+        stratBody.classList.remove('hidden');
+        stratArrow.textContent = 'СКРЫТЬ ▴';
+      }
+      document.getElementById('btn-toggle-strategy-drawer').addEventListener('click', () => {
+        const hidden = stratBody.classList.toggle('hidden');
+        stratArrow.textContent = hidden ? 'ПОКАЗАТЬ ▾' : 'СКРЫТЬ ▴';
       });
 
       // Full Queues drawer toggle
@@ -5033,10 +5866,10 @@
       document.getElementById('qa-shift').addEventListener('click', () => {
         const dKey = quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0);
         const shId = 'sh_' + Date.now();
-        state.shifts.push({ id: shId, date: dKey, amount: 4000, note: 'Быстрая смена' });
-        logActivity(dKey, 'shift', 1, { tag: 'OZON', label: 'Смена Ozon · +4 000 ₽', refId: shId });
+        state.shifts.push({ id: shId, date: dKey, amount: 5000, note: 'Быстрая смена' });
+        logActivity(dKey, 'shift', 1, { tag: 'OZON', label: 'Смена Ozon · +5 000 ₽', refId: shId });
         selectedHmDate = dKey; save(true); renderAll();
-        toast(`+1 смена (+4 000 ₽ · ${fmtShortDate(dKey)})`);
+        toast(`+1 смена (+5 000 ₽ · ${fmtShortDate(dKey)})`);
       });
       document.getElementById('qa-fe').addEventListener('click', () => {
         const dKey = quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0);
