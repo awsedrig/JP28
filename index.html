@@ -1117,9 +1117,28 @@
         <div class="flex flex-wrap items-end justify-between gap-2 border-b border-[rgba(163,204,168,0.15)] pb-3">
           <div>
             <div class="font-mono-num text-[10px] text-[#A3CCA8] tracking-widest uppercase">03 // <span class="font-mincho">案件</span> · УДАЛЁННЫЙ MIDDLE .NET</div>
-            <h2 class="font-mincho text-lg sm:text-xl font-semibold text-[#E8ECF4] mt-0.5">Воронка откликов, Техпробелы и Калькулятор НДФЛ</h2>
+            <h2 class="font-mincho text-lg sm:text-xl font-semibold text-[#E8ECF4] mt-0.5">Штаб выхода на рынок, Скрининги, Карточки и Воронка</h2>
           </div>
           <div id="crm-stats" class="font-mono-num text-xs text-[#868C84]">Всего: 0 · Техсобесов: 0 · Офферов: 0</div>
+        </div>
+
+        <!-- MARKET LAUNCH PLAYBOOK 2026-2027 (Integrated Deep Research HQ) -->
+        <div class="panel p-4 space-y-3 border-[rgba(163,204,168,0.3)]">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#A3CCA8]">ШТАБ ВЫХОДА НА РЫНОК · PLAYBOOK 2026–2027</div>
+              <div id="cpb-sub" class="font-mono-num text-[11px] text-[#868C84] mt-0.5">Каналы с ER 20%+, аудит резюме, шаблоны, скрипты HR/СБ и 20 техловушек</div>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span id="cpb-progress-badge" class="font-mono-num text-xs font-semibold text-[#A3CCA8]">0 / 14</span>
+              <button type="button" id="btn-cpb-collapse" class="btn btn-ghost py-1 px-2 text-[10px]">СВЕРНУТЬ ▴</button>
+            </div>
+          </div>
+
+          <div id="cpb-body" class="space-y-3">
+            <div id="cpb-tabs" class="grid grid-cols-2 sm:grid-cols-5 gap-1.5"></div>
+            <div id="cpb-stage" class="panel-recessed p-3.5 space-y-3"></div>
+          </div>
         </div>
 
         <!-- 60 Combat Flashcards (Режим автобуса) -->
@@ -1217,8 +1236,8 @@
                 <textarea id="leg-load" rows="2" placeholder="Пик 300–500 RPS, база 400 ГБ, таблицы по 20–50 млн строк..." class="inp w-full resize-y"></textarea>
               </div>
               <div>
-                <label class="block font-mono-num text-[10px] text-[#868C84] mb-1">5. ОТВЕТЫ НА КАВЕРЗНЫЕ ВОПРОСЫ (ГПХ / БЕЗ ЭТК)</label>
-                <textarea id="leg-trick" rows="2" placeholder="Работал по ГПХ / в распределённом стартапе; причины поиска новой команды..." class="inp w-full resize-y"></textarea>
+                <label class="block font-mono-num text-[10px] text-[#DF9B94] mb-1">5. ПОЧЕМУ НЕТ ЭТК (НЕ ГОВОРИТЬ «РФ ГПХ» — ЕФС-1 ВИДИТ СФР!)</label>
+                <textarea id="leg-trick" rows="2" placeholder="Проектный формат под NDA (самозанятость НПД / распределённая команда без РФ-юрлица); переход в штат ТК РФ..." class="inp w-full resize-y"></textarea>
               </div>
             </div>
           </div>
@@ -1230,10 +1249,15 @@
             <input id="crm-comp" type="text" placeholder="Компания *" class="inp" />
             <select id="crm-chan" class="inp">
               <option value="Telegram">Telegram</option>
+              <option value="Прямой лид">Прямой лид (ЛПР)</option>
+              <option value="Реестр Минцифры">Реестр Минцифры</option>
+              <option value="HireHi">HireHi</option>
+              <option value="Hirify">Hirify</option>
               <option value="Хабр Карьера">Хабр Карьера</option>
               <option value="GetMatch">GetMatch</option>
-              <option value="Реестр ИТ">Реестр ИТ</option>
-              <option value="Прямой лид">Прямой лид</option>
+              <option value="GeekJob">GeekJob</option>
+              <option value="Сетка">Сетка</option>
+              <option value="hh.ru">hh.ru</option>
             </select>
             <input id="crm-sal" type="text" placeholder="Вилка (200–240к)" class="inp font-mono-num" />
             <select id="crm-stg" class="inp">
@@ -1300,13 +1324,26 @@
                 <div class="text-[10px] text-[#868C84]">ЭФФ. СТАВКА</div>
                 <div id="ndfl-rate" class="text-sm font-semibold text-[#DF9B94] mt-1">13.43%</div>
               </div>
+              <div class="panel-recessed p-2.5">
+                <div class="text-[10px] text-[#868C84]">БЕЗ ПРОСАДКИ</div>
+                <div id="ndfl-nodrop" class="text-xs font-semibold text-[#A3CCA8] mt-1">258 824 ₽</div>
+              </div>
+              <div class="panel-recessed p-2.5">
+                <div class="text-[10px] text-[#868C84]">ПЕРЕХОД 15%</div>
+                <div id="ndfl-month15" class="text-xs font-semibold text-[#DFC28D] mt-1">10-й мес.</div>
+              </div>
+              <div class="panel-recessed p-2.5">
+                <div class="text-[10px] text-[#868C84]">ЛИМИТ НПД</div>
+                <div id="ndfl-npd" class="text-xs font-semibold text-[#DF9B94] mt-1">10.3 мес.</div>
+              </div>
             </div>
 
             <div class="panel-recessed p-3 text-xs text-[#9EA49C] space-y-1.5 leading-relaxed">
-              <div class="font-mono-num text-[10px] text-[#C8C1AE]">ОПОРА НА СОБЕСЕДОВАНИЯХ</div>
-              <div>• Фокус: средние продуктовые/SaaS компании (30–250 чел.) через TG, Хабр, GetMatch. Без банков/госов.</div>
-              <div>• Протокол «Двух миров»: в РФ резюме — легенда, в анкетах ISA — только белый стаж 04.2027–09.2028 + 2-НДФЛ.</div>
-              <div>• 60-й день ИС: сам инициируй 1-on-1 с лидом с вопросом, что закрыть в оставшийся месяц.</div>
+              <div class="font-mono-num text-[10px] text-[#C8C1AE]">ОПОРА НА ПЕРЕГОВОРАХ (2026–2027)</div>
+              <div>• Порог 13% НДФЛ — 2,4 млн/год (= 174к net/мес). При 220к net просадка с октября ~−5 080 ₽/мес.</div>
+              <div>• Лимит самозанятости (НПД 6%) — те же 2,4 млн/год: бери НПД только как мост на 3–6 мес с переходом в ТК РФ.</div>
+              <div>• Стандарт платформы: .NET 8/9 ушли в EOS (10.11.2026); прод — .NET 10 LTS (C# 14), свежий STS — .NET 11.</div>
+              <div>• Протокол «Двух миров»: в анкетах ISA для Японии — строго только белый стаж ТК РФ + 2-НДФЛ.</div>
             </div>
           </div>
         </div>
@@ -2716,6 +2753,189 @@
       }
     ];
 
+    const CAREER_LAUNCH_STEPS = [
+      {
+        id: 'cl_1', week: 'НЕД 1 · АУДИТ', tag: 'РЕЗЮМЕ', mins: 45, mobile: false, priority: 790,
+        title: 'Пересобрать резюме (1 колонка PDF + hh.ru): убрать LogiCore и Astar IT, сжать стаж до 1,5–2 лет',
+        guide: 'Критические правки по forensic-аудиту:\n1) Стаж 3г 2м (старт в 15 лет) сжать до 1,5–2 лет (конец 2024 – н.в.).\n2) УДАЛИТЬ LogiCore Systems (гуглится как ИИ-шаблон и IP Xilinx) и Astar IT (реальная студия в Челябинске на 2 чел. — пробивается за 1 звонок!). Заменить на «Проектная разработка под NDA, распределённая команда — складская WMS / B2B CRM».\n3) Убрать «готов по МСК» → указать «Владивосток (UTC+10), окно 05:00–13:00 МСК / асинхрон».\n4) Указать СПО (09.02.07, выпуск 2028, свободное посещение, 40ч/нед). Вёрстка: строго 1 текстовая колонка без графики под ATS.'
+      },
+      {
+        id: 'cl_2', week: 'НЕД 1 · АУДИТ', tag: 'OSINT', mins: 30, mobile: true, priority: 785,
+        title: 'Чистка цифрового следа: Google/Яндекс инкогнито, Telegram, VK и старые резюме',
+        guide: '1) Прогнать ФИО, хэндлы и телефон в поиске инкогнито: скрыть/удалить старые джунские резюме с другими датами.\n2) В рабочем Telegram: деловое фото, скрыть номер, выйти из всех чатов «накрутки опыта» / «обхода собесов» (при засвете — чистый рабочий аккаунт на 2-ю SIM).\n3) Закрыть VK. Синхронизировать даты до месяца на hh.ru, Хабр Карьере, GetMatch и Сетке.'
+      },
+      {
+        id: 'cl_3', week: 'НЕД 1 · АУДИТ', tag: 'GITHUB', mins: 60, mobile: false, priority: 775,
+        title: 'Упаковать GitHub под Middle: 2–3 сильных репо (.NET 10, Postgres/Dapper, Redis, Testcontainers, CI)',
+        guide: '1) Учебные лабы 1–2 курса перевести в Private, проверить git log на адекватный email.\n2) Закрепить 2–3 чистых сервиса: .NET 10 LTS (C# 14), ASP.NET Core, PostgreSQL (EF Core + Dapper), Redis, RabbitMQ/MassTransit (Outbox), xUnit + Testcontainers, Docker Compose, GitHub Actions, схема архитектуры в README.\n3) Хронология: миграция с .NET 8 на .NET 10 LTS в 2026 (релиз .NET 10 был 11.11.2025, а .NET 8/9 ушли в EOS 10.11.2026).'
+      },
+      {
+        id: 'cl_4', week: 'НЕД 2 · БАЗА', tag: 'СОРСИНГ', mins: 45, mobile: false, priority: 740,
+        title: 'Скачать дамп Реестра Минцифры (6 499 компаний 20–249 чел.) и собрать шорт-лист 50 фирм',
+        guide: '1) Взять актуальный JSON-дамп github.com/DverkaSK/gosuslugi-itorgs (2026-11-03-active-enriched.json).\n2) Отфильтровать численность 20–249 чел.\n3) Волна 1: Новосибирск (МСК+4), Екатеринбург (МСК+2), Татарстан + B2B SaaS, WMS/логистика, частные .NET-студии (Nord Clan, SoftMediaLab и др.).\n4) Исключить банки, страховые, госов, 1С-франчайзи и топ-интеграторов. Найти ЛПР (Team Lead / CTO) через Хабр Карьеру (вкладка «Сотрудники») и Сетку.'
+      },
+      {
+        id: 'cl_5', week: 'НЕД 2 · БАЗА', tag: 'КАНАЛЫ', mins: 20, mobile: true, priority: 738,
+        title: 'Подключить алерты: @g_jobbot, @habrcareer_bot, Hirify, HireHi + папку из 6 живых TG-каналов',
+        guide: 'Создать отдельную папку «.NET Вакансии» в Telegram:\n@rabotacschap (ER 24.4%), @DotNetRuJobsFeed (21.4%), @DotNetRuJobs, @csharpdevjob (20%), @forcsharp, @back_rabota.\nНастроить фильтры в @g_jobbot, @habrcareer_bot, Hirify и на HireHi («прямой контакт»). Откликаться в первые 2–3 часа после поста!'
+      },
+      {
+        id: 'cl_6', week: 'НЕД 2 · ПИЛОТ', tag: 'СОБЕС', mins: 30, mobile: true, priority: 720,
+        title: 'Декабрьский пилот: 15–20 адресных касаний до заморозки рынка + 2–4 тестовых HR-скрининга',
+        guide: 'С середины декабря до 15 января найм падает на ~40%, поэтому не сжигай всю базу. Сделай 15–20 точечных касаний по живым декабрьским доборам, чтобы обкатать самопрезентацию, скрипты по МСК+7 и вопрос-детектор СБ.'
+      },
+      {
+        id: 'cl_7', week: 'НЕД 3–4 · ПАУЗА', tag: 'МОКИ', mins: 60, mobile: false, priority: 715,
+        title: 'Зимний техобжиг (до 10 янв): 4–6 мок-собесов + прогон «три почему» по своим метрикам',
+        guide: 'Пока рынок на праздниках — не сливай компании. Пройди 4–6 моков: Live Code Review 100 строк, разбор EXPLAIN (ANALYZE, BUFFERS), System Design 30 мин (URL Shortener / Rate Limiter / Баланс) и защиту каждой цифры из резюме (почему Dapper, как чистили Redis, как защищались от stampede).'
+      },
+      {
+        id: 'cl_8', week: 'НЕД 3–4 · ПАУЗА', tag: 'СКРИПТЫ', mins: 30, mobile: true, priority: 712,
+        title: 'Отрепетировать вслух 2-мин «О себе» и 5 ответов HR (без пауз >3 сек) + 5 ответов на Хабр Q&A',
+        guide: 'По статистике 9 247 собесов, «Расскажите про себя» задают в 68% случаев — запиши себя на диктофон, чтобы звучать живо, а не как заученный скрипт.\nПараллельно оставь 5–10 предметных ответов на Хабр Q&A и в чатах @DotNetRuJobs / @EkbDotNetCommunity — сильный органический траст при пробивке тимлидом.'
+      },
+      {
+        id: 'cl_9', week: 'НЕД 5–6 · ПИК', tag: 'ВОРОНКА', mins: 45, mobile: true, priority: 705,
+        title: 'Январский отскок (+82% вакансий): 25–35 касаний/нед (15–20 адресных + 10–15 прямых ЛПР)',
+        guide: 'После 11–15 января рынок резко оживает. Еженедельный норматив: 15–20 быстрых откликов в живых TG-каналах и бордах + 10–15 персонализированных писем тимлидам/CTO из базы Минцифры. Все контакты сразу в CRM с датой.'
+      },
+      {
+        id: 'cl_10', week: 'НЕД 5–6 · ПИК', tag: 'ДОЖИМ', mins: 20, mobile: true, priority: 700,
+        title: 'Правило 1 follow-up (через 3–4 раб. дня) + фильтр СБ вопросом-детектором на каждом HR',
+        guide: 'На каждое молчание отправляй ровно 1 короткий дожим (шаблон d). На каждом первом созвоне с HR задавай вопрос-детектор про этапы после теха и СБ/выписки — если всплывают СТД-СФР или жёсткая СБ, сразу вежливо выходи шаблоном e.'
+      },
+      {
+        id: 'cl_11', week: 'НЕД 7 · АУДИТ', tag: 'CRM', mins: 30, mobile: true, priority: 690,
+        title: 'Аудит воронки по правилу 20 касаний + 2-я волна 30 компаний (Data Insight #30–100, Startpack, студии)',
+        guide: '• < 10% из отклика в HR (0–1 ответ из 20) → правь заголовок, PDF или текст питча.\n• Сходы на HR → корректируй подачу графика 05:00–13:00 МСК или вилку.\n• Сходы на техе → не трогай резюме, заноси проваленные темы в «Техпробелы 48ч» → в колоду карточек.'
+      },
+      {
+        id: 'cl_12', week: 'НЕД 8 · ОФФЕР', tag: 'ОФФЕР', mins: 30, mobile: true, priority: 685,
+        title: 'Сверка оффера по 4 фильтрам (ТК РФ / Gross 15% / 12–20 ВЛД / без пост-ЭТК) + торг',
+        guide: 'Проверь перед подписью:\n1) Белый ТК РФ (или НПД-мост на 3–6 мес с датой перевода в штат и учётом лимита 2,4 млн).\n2) Корректный Gross с учётом перехода на 15% НДФЛ во 2-м полугодии.\n3) Письменно согласовано окно 12:00–20:00 ВЛД (05:00–13:00 МСК).\n4) Нет скрытой пост-офферной сверки ЭТК. При 2 офферах — торг +15–30к ₽.'
+      }
+    ];
+
+    const CAREER_CHANNELS = [
+      {
+        group: 'ТОП TG-КАНАЛЫ C# / .NET (ER 20–24% · ПРОВЕРЯТЬ ЕЖЕДНЕВНО)',
+        items: [
+          { id: 'ch_rabota', name: '@rabotacschap', url: 'https://t.me/rabotacschap', meta: 'ER 24.4% · №8 в IT', note: 'Чистый C#, без спама — отклик в первые 2–3 часа' },
+          { id: 'ch_dnfeed', name: '@DotNetRuJobsFeed', url: 'https://t.me/DotNetRuJobsFeed', meta: 'ER 21.4% · №11', note: 'Главный фид #remote #middle сообщества DotNetRu' },
+          { id: 'ch_dnchat', name: '@DotNetRuJobs', url: 'https://t.me/DotNetRuJobs', meta: 'Чат · прямые лиды', note: 'Писать автору вакансии в ЛС + публикация CV по правилам' },
+          { id: 'ch_csdev', name: '@csharpdevjob', url: 'https://t.me/csharpdevjob', meta: 'ER 20.0% · .NET 10', note: 'Отсеивать Unity, оперативно забирать бэкенд' },
+          { id: 'ch_forcs', name: '@forcsharp', url: 'https://t.me/forcsharp', meta: 'NewHR / GeekJob', note: 'Свежие C#/.NET посты в паре с сайтом GeekJob' },
+          { id: 'ch_jobdn', name: '@job_dotnet', url: 'https://t.me/job_dotnet', meta: 'Узкий · ~1.6к', note: 'Низкая конкуренция на отклик' },
+          { id: 'ch_backr', name: '@back_rabota', url: 'https://t.me/back_rabota', meta: 'Backend Remote', note: 'Искать по каналу .NET / C# (Middle+ удалённо)' },
+          { id: 'ch_bfj', name: '@backend_frontend_jobs', url: 'https://t.me/backend_frontend_jobs', meta: 'Продукты', note: 'Много продуктовых команд (смотреть по тегу C#)' },
+          { id: 'ch_itfeed', name: '@ITjobsFeed', url: 'https://t.me/ITjobsFeed', meta: 'Агрегатор РФ/РБ', note: 'Теги #DotNet/#CSharp; строго фильтровать «МСК ±2ч»' },
+          { id: 'ch_sng', name: '@ditkz / @refer_me_it', url: 'https://t.me/refer_me_it', meta: 'СНГ + Рефералы', note: 'Рефералки в IT + КЗ/РБ (сверять белое оформление)' }
+        ]
+      },
+      {
+        group: 'БОТЫ И ПЛОЩАДКИ ПОМИМО HH.RU (+50% К ВИЛКАМ)',
+        items: [
+          { id: 'ch_gbot', name: '@g_jobbot (GetMatch)', url: 'https://t.me/g_jobbot', meta: 'Открытые вилки', note: 'Включить алерты C#/.NET + Middle + Remote' },
+          { id: 'ch_hbot', name: '@habrcareer_bot', url: 'https://t.me/habrcareer_bot', meta: 'Хабр Карьера', note: 'Теги C#, .NET, ASP.NET Core + справочник сотрудников' },
+          { id: 'ch_hirehi', name: 'HireHi (.NET Middle)', url: 'https://hirehi.ru/middle-dotnet-jobs', meta: '166 Middle .NET', note: 'Фильтр «с прямым контактом» (TG/email) — топ-конверсия' },
+          { id: 'ch_hirify', name: 'Hirify.me', url: 'https://hirify.me/', meta: '~1 500 TG-каналов', note: 'Обновление раз в 2ч, алерты в TG, много стартапов' },
+          { id: 'ch_hseek', name: 'HireSeeker.ru', url: 'https://hireseeker.ru/', meta: 'Склейка дублей', note: 'Пробивать вакансии с hh.ru: часто находит дубль с вилкой и TG' },
+          { id: 'ch_gjob', name: 'GeekJob.ru', url: 'https://geekjob.ru/', meta: 'Средние продукты', note: 'Короткий найм без банковской СБ' },
+          { id: 'ch_setka', name: 'Сетка (setka.ru)', url: 'https://setka.ru/', meta: 'Аутрич ЛПР', note: 'Поиск тимлидов/рекрутеров по компании со статусом «нанимаю»' },
+          { id: 'ch_zarp', name: 'Zarplata.ru', url: 'https://www.zarplata.ru/', meta: 'Сибирь и ДВ', note: 'Компании поясов МСК+4…+7 (ритейл, логистика)' }
+        ]
+      },
+      {
+        group: 'ПРЯМОЙ СОРСИНГ БАЗЫ КОМПАНИЙ И СООБЩЕСТВА УРАЛ / СИБИРЬ',
+        items: [
+          { id: 'ch_minc', name: 'Дамп Реестра Минцифры (GitHub)', url: 'https://github.com/DverkaSK/gosuslugi-itorgs', meta: '6 499 фирм 20–249', note: 'Файл 2026-11-03-active-enriched.json → НСК, ЕКБ, РТ, СПб, МСК' },
+          { id: 'ch_soware', name: 'Startpack / Soware (B2B SaaS)', url: 'https://startpack.ru/', meta: 'CRM/WMS/ЭДО', note: 'Тир-1 домен под .NET с асинхронной культурой' },
+          { id: 'ch_di100', name: 'Data Insight Топ-100 E-com', url: 'https://top100.datainsight.ru/', meta: 'Эшелон #30–100', note: 'Свой бэкенд, логистика/WMS, без тяжёлой банковской СБ' },
+          { id: 'ch_rrun', name: 'Рейтинг Рунета · Outstaff 2026', url: 'https://ratingruneta.ru/outstaffing/', meta: 'Студии C#/.NET', note: 'Фильтр по стеку (Nord Clan, SoftMediaLab ЕКБ и др., мимо банков)' },
+          { id: 'ch_ekb', name: '@EkbDotNetCommunity / @OmsDotNetChat', url: 'https://t.me/EkbDotNetCommunity', meta: 'МСК+2 / МСК+3', note: '2–3 толковых техответа в чате → потом в ЛС лидам (теневой рынок)' }
+        ]
+      }
+    ];
+
+    const CAREER_TEMPLATES = [
+      {
+        id: 'tpl_a', code: 'A', title: 'Холодный аутрич тимлиду / Tech Lead / CTO в Telegram',
+        when: 'Прямой выход по базе Минцифры / Хабр Карьере / Сетке (~490 зн.)',
+        text: 'Добрый день, [Имя]! Видел ваш продукт [Название] — интересна задача по [интеграциям / API / WMS]. Я Middle .NET Backend (~2 года в проде): C# 12–14, .NET 8/10, ASP.NET Core, PostgreSQL (EF Core + Dapper, EXPLAIN ANALYZE), Redis, RabbitMQ/MassTransit, Docker, xUnit/Testcontainers. Ускорял отчёты в 40+ раз и разгружал БД кэшем. Живу во Владивостоке (окно 05:00–13:00 МСК, асинхрон). Ищу продуктовую команду в долгую — актуально ли усиление по .NET сейчас или в начале года? Скину CV и GitHub: {GH}'
+      },
+      {
+        id: 'tpl_b', code: 'B', title: 'Сопроводительное письмо на Хабр Карьере / GetMatch',
+        when: 'Отклик на продуктовую удалённую вакансию (~530 зн.)',
+        text: 'Занимаюсь тем же классом задач, что в вашей вакансии: отказоустойчивые REST API на ASP.NET Core (.NET 8/10), оптимизация PostgreSQL и асинхронные пайплайны на RabbitMQ/MassTransit (Transactional Outbox). На последнем проекте перевёл тяжёлые отчёты с EF Core на Dapper (с 15–20 с до 350 мс) и снизил чтение БД в пик на 40% через Redis Cache-Aside. Пишу тесты на xUnit + Testcontainers, CI в GitHub Actions. Удалённо из ВЛД: комфортное пересечение с МСК 05:00–13:00 (на созвоны до 14:00). GitHub: {GH}. Готов к Live Code Review.'
+      },
+      {
+        id: 'tpl_c', code: 'C', title: 'Отклик на вакансию в Telegram-канале рекрутеру',
+        when: 'В первые 2–3 часа после выхода поста в @rabotacschap / @DotNetRuJobsFeed',
+        text: 'Привет, [Имя]! По вакансии [Название роли] в [Компания].\n— Опыт: ~2 года коммерческого бэкенда (.NET 8/10, C# 12–14, ASP.NET Core).\n— Стек: PostgreSQL (EF Core, Dapper, EXPLAIN ANALYZE), Redis, RabbitMQ/MassTransit, Docker, xUnit + Testcontainers, GitHub Actions.\n— График: полная удалёнка, ВЛД (пересечение с МСК 05:00–13:00, асинхронный ритм).\n— Оформление и вилка: ТК РФ, 200–240к net (обсуждаемо).\nCV в PDF прикрепил, GitHub: {GH}. Подойдёт ли команде такой график?'
+      },
+      {
+        id: 'tpl_d', code: 'D', title: 'Дожим (Follow-up) через 3–4 рабочих дня после молчания',
+        when: 'Отправляется ровно 1 раз, затем компания уходит в резерв на 2–3 мес.',
+        text: '[Имя], добрый день! Поднимаю свой отклик от [день недели] на Middle .NET Backend, чтобы не затерялся в потоке. Если роль ещё актуальна — буду рад короткому созвону на 15 минут, могу сразу скинуть свежий репозиторий на .NET 10 + Testcontainers ({GH}). Если позиция на паузе или уже закрыта — маякните, пожалуйста, одним словом, не буду больше отвлекать. Хорошего дня!'
+      },
+      {
+        id: 'tpl_e', code: 'E', title: 'Вежливый выход при всплывшей жёсткой СБ / СТД-СФР',
+        when: 'Если на HR запросили выписку ЭТК, прозвон или анкету СБ на 2 недели',
+        text: '[Имя], спасибо большое за открытость и детали по процессу! Поскольку мои прошлые проекты шли в распределённом проектном формате под NDA без записей в российской ЭТК, а мне важно выйти на новую работу в ближайшие недели без длительных корпоративных проверок, сейчас сфокусируюсь на компаниях с более коротким циклом оформления. Был рад знакомству, желаю быстро найти сильного инженера — остаёмся на связи!'
+      }
+    ];
+
+    const CAREER_HR_SCRIPTS = [
+      {
+        id: 'hr_q1', tag: 'ЭТК / НПД', warn: 'НЕ говорить «обычный РФ ГПХ с ООО» — ЕФС-1 уходит в СФР на следующий день!',
+        q: '1. «Почему нет записей в трудовой / как оформлялись прошлые проекты?»',
+        a: '«Прошлые проекты велись в распределённой команде в проектном формате под NDA (как самозанятый / через распределённую проектную команду без российского юрлица), поэтому записей в российской ЭТК пока нет. Сейчас как раз мой приоритет — перейти в стабильную продуктовую компанию с белым оформлением по ТК РФ на долгий горизонт. Уровень кода готов полностью подтвердить на GitHub и на лайв-ревью».'
+      },
+      {
+        id: 'hr_q2', tag: '18 ЛЕТ / СПО',
+        q: '2. «Тебе 18 лет, а опыт 1,5–2 года — как совмещал с учёбой и что с парами?»',
+        a: '«Я осознанно ушёл в IT-колледж после 9-го класса, чтобы зайти в разработку на 3–4 года раньше вузовского трека. Бэкенд на C# начал писать в 15–16, к старшим курсам подключился к коммерческим проектам. В колледже официально оформлено свободное посещение (индивидуальный план, выпуск 2028) — ходить на пары не нужно, аттестации закрываю точечно без выпадения из спринтов. Плюс из-за разницы с Москвой любые учебные дела я закрываю до 11 утра по Владивостоку, так что 40 рабочих часов полностью свободны».'
+      },
+      {
+        id: 'hr_q3', tag: 'ВЛД · МСК+7',
+        q: '3. «У тебя Владивосток (+7 ч) — как будешь работать с московской командой?»',
+        a: '«Мой рабочий ритм — 12:00–20:00 по Владивостоку, это 05:00–13:00 по Москве (на важные релизы или планирования готов оставаться до 14:00 МСК). Для бэкенда это часто даже плюс: пока Москва спит, я без отвлечений делаю тяжёлые задачи, прогоняю тесты, разбираю ночные логи и открываю PR, чтобы утром коллеги сразу видели готовый код. А с 10:00 до 13:00–14:00 МСК у нас 3–4 часа живого пересечения для дейли. Единственное ограничение — мне не подойдут регулярные синки на 17:00–18:00 МСК (у меня это полночь)».'
+      },
+      {
+        id: 'hr_q4', tag: 'МОТИВАЦИЯ',
+        q: '4. «Почему уходишь с текущего проекта?»',
+        a: '«Основную часть задач, под которую меня привлекали — оптимизацию тяжёлых SQL-отчётов через Dapper, кэширование справочников в Redis и отказоустойчивые интеграции — мы довели до продакшена, и проект перешёл в режим поддерживающего сопровождения. Плюс оставался проектный формат без штатного ТК РФ. Ищу продуктовую команду с сильным код-ревью, развитием архитектуры и белым оформлением в долгую».'
+      },
+      {
+        id: 'hr_q5', tag: 'ВИЛКА / НДФЛ',
+        q: '5. «Какие ожидания по зарплате?» (не демпинговать ниже 180к!)',
+        a: '«Ориентируюсь на 200–240 тыс. ₽ на руки (net) в среднем за год — по ТК РФ с учётом прогрессивного НДФЛ 13%/15% это примерно 235–280 тыс. ₽ gross. На старт от 180–190 тыс. net готов смотреть при сильной команде, свежем стеке и полностью комфортном графике без ночных созвонов. Какая вилка заложена у вас на эту позицию?»'
+      }
+    ];
+
+    const CAREER_TRAPS_20 = [
+      { id: 'tr_01', cat: 'ТЕХ', text: 'DI и IMiddleware: IMiddleware резолвится из DI на запрос (AddScoped), а convention-based — Singleton (Scoped DbContext только параметром InvokeAsync; в BackgroundService — через IServiceScopeFactory).' },
+      { id: 'tr_02', cat: 'ТЕХ', text: 'EF Core IQueryable: Func<T,bool> вместо Expression<Func<T,bool>> выгружает таблицу в RAM; несколько Include по коллекциям → декартово произведение (Select / AsSplitQuery); read-only → AsNoTracking().' },
+      { id: 'tr_03', cat: 'ТЕХ', text: 'Индексы PostgreSQL: B-Tree (A, B) не работает для одного B; LOWER(col) ломает обычный индекс; малая таблица/низкая селективность → планировщик выберет Seq Scan (проверяем EXPLAIN (ANALYZE, BUFFERS)).' },
+      { id: 'tr_04', cat: 'ТЕХ', text: 'Lost Update в Postgres: дефолтный Read Committed не спасает от гонки баланса → SELECT FOR UPDATE, атомарный UPDATE ... WHERE qty >= @n, оптимистично xmin или Repeatable Read + ретрай 40001.' },
+      { id: 'tr_05', cat: 'ТЕХ', text: 'async void и ThreadPool Starvation: необработанное исключение в async void роняет процесс; .Result/.Wait() поверх I/O забивает пул потоков → каскадный рост задержек при низком CPU.' },
+      { id: 'tr_06', cat: 'ТЕХ', text: 'GetHashCode() => 0 на Live Code Review: превращает Dictionary из O(1) в O(n); мутация поля ключа после вставки делает элемент ненайденным.' },
+      { id: 'tr_07', cat: 'ТЕХ', text: 'HttpClient и Polly: using new HttpClient() на запрос → TIME_WAIT / Socket Exhaustion (нужен IHttpClientFactory / PooledConnectionLifetime); ретраи Polly на POST без Idempotency-Key плодят дубли.' },
+      { id: 'tr_08', cat: 'ТЕХ', text: 'Redis и HybridCache Stampede: HybridCache (.NET 9/10) защищает от stampede только внутри L1 одного инстанса! На нескольких репликах нужны TTL jittering или распределённый lock (SET NX PX).' },
+      { id: 'tr_09', cat: 'ТЕХ', text: 'Outbox, RabbitMQ vs Kafka: брокер = at-least-once → обязателен идемпотентный консьюмер (Inbox / UNIQUE MessageId в одной транзакции). RabbitMQ = умный роутинг и удаление после ACK; Kafka = лог с партициями, оффсетами и реплеем.' },
+      { id: 'tr_10', cat: 'ТЕХ', text: 'CancellationToken: непроброшенный HttpContext.RequestAborted до EF Core / Dapper / HttpClient оставляет тяжёлый SQL висеть в БД после закрытия вкладки клиентом.' },
+      { id: 'tr_11', cat: 'ТЕХ', text: 'Деньги, время и edge cases (ИИ-баги): деньги строго decimal (не double), проверка <= 0 / null / пустого массива, время через DateTimeOffset.UtcNow / TimeProvider.' },
+      { id: 'tr_12', cat: 'ТЕХ', text: 'Zero-Downtime Migrations: прямой DROP/RENAME COLUMN ломает старые поды при rolling update → паттерн Expand & Contract (добавить → двойная запись → переключить чтение → удалить в следующем релизе).' },
+      { id: 'tr_13', cat: 'CR', text: 'Live Code Review — сначала контекст: прежде чем искать баги, спроси «Какая бизнес-критичность, ожидаемый RPS и допустимы ли дубли?» — отличает практика от ИИ-читера.' },
+      { id: 'tr_14', cat: 'CR', text: 'Live Code Review — пирамида критичности: (1) потеря данных, деньги, безопасность → (2) гонки, утечки, N+1, блокировки → (3) отказоустойчивость/логи → (4) нейминг в самом конце.' },
+      { id: 'tr_15', cat: 'ПОВЕД', text: 'Думать вслух с первой секунды: молчаливые 20-сек паузы со взглядом вбок, после которых появляется готовый код, мгновенно считываются как Cluely / Interview Coder.' },
+      { id: 'tr_16', cat: 'ПОВЕД', text: 'Уточнять регламент по ИИ заранее: спокойно спроси перед практикой, разрешены ли Microsoft Learn, локальный запуск или ИИ — правила у компаний в 2026 противоположны.' },
+      { id: 'tr_17', cat: 'SD', text: 'System Design — не начинать с Kafka и Redis: первые 5 минут фиксируй DAU/RPS, чтение/запись, p99, объём данных и допустимость потери событий.' },
+      { id: 'tr_18', cat: 'CODE', text: 'Live Coding — запуск ≠ финиш: после рабочего кода сам назови O(t)/O(m) и предложи 2–3 ломающих тест-кейса (пустой вход, переполнение, гонка, дубли).' },
+      { id: 'tr_19', cat: 'АФРОД', text: 'Не выдумывать при незнании (защита от фейк-технологии): «В продакшене с этим не сталкивался; если рассуждать от базовых принципов, я бы проверил…».' },
+      { id: 'tr_20', cat: 'ФИНАЛ', text: 'Всегда задавать 2–3 инженерных вопроса в конце: цикл релизов и миграций БД, главный техдолг на полгода и как устроено асинхронное код-ревью.' }
+    ];
+
     const COMMANDER_BUDGETS = {
       lite: { label: '15–30 МИН', hint: 'Смена / выжат · база + 1 микро-шаг', maxPlanTasks: 1, maxTaskMins: 25, totalPlanMins: 25, preferMobile: true },
       medium: { label: '1–2 ЧАСА', hint: 'Пары / практика · база + 2 важных шага', maxPlanTasks: 2, maxTaskMins: 70, totalPlanMins: 95, preferMobile: false },
@@ -2766,6 +2986,11 @@
       fcStatus: {},
       codeReviewDone: [],
       legendPassport: { arch: '', inc: '', cicd: '', load: '', trick: '' },
+      careerPlaybookTab: 'plan',
+      careerLaunchDone: [],
+      careerTrapsDone: [],
+      careerChannelsChecked: { date: isoDate(0), ids: [] },
+      careerGithubUrl: 'https://github.com/awsedrig',
       milestones: structuredClone(defaultMilestones),
       weeklyCheckins: []
     };
@@ -2910,6 +3135,16 @@
       if (rawObj.legendPassport && typeof rawObj.legendPassport === 'object') {
         s.legendPassport = { ...s.legendPassport, ...rawObj.legendPassport };
       }
+      if (typeof rawObj.careerPlaybookTab === 'string') s.careerPlaybookTab = rawObj.careerPlaybookTab;
+      if (Array.isArray(rawObj.careerLaunchDone)) s.careerLaunchDone = rawObj.careerLaunchDone;
+      if (Array.isArray(rawObj.careerTrapsDone)) s.careerTrapsDone = rawObj.careerTrapsDone;
+      if (rawObj.careerChannelsChecked && typeof rawObj.careerChannelsChecked === 'object') {
+        s.careerChannelsChecked = {
+          date: rawObj.careerChannelsChecked.date || isoDate(0),
+          ids: Array.isArray(rawObj.careerChannelsChecked.ids) ? rawObj.careerChannelsChecked.ids : []
+        };
+      }
+      if (typeof rawObj.careerGithubUrl === 'string') s.careerGithubUrl = rawObj.careerGithubUrl;
       if (Array.isArray(rawObj.milestones) && rawObj.milestones.length) s.milestones = rawObj.milestones;
       if (Array.isArray(rawObj.weeklyCheckins)) s.weeklyCheckins = rawObj.weeklyCheckins;
       s.updatedAt = rawObj.updatedAt || Date.now();
@@ -4003,11 +4238,18 @@
       const offers = state.crmRows.filter(r => r.stage === 'Оффер').length;
       document.getElementById('crm-stats').textContent = `Всего: ${total} · Техсобесов: ${tech} · Офферов: ${offers}`;
 
+      const nowMs = Date.now();
       const tbody = document.getElementById('crm-tbody');
-      tbody.innerHTML = total ? state.crmRows.slice().reverse().map(r => `
+      tbody.innerHTML = total ? state.crmRows.slice().reverse().map(r => {
+        const ageDays = r.createdTs ? Math.floor((nowMs - Number(r.createdTs)) / 86400000) : 0;
+        const needFu = (r.stage === 'Отклик' || r.stage === 'HR') && !r.followedUp && ageDays >= 3;
+        return `
         <tr class="hover:bg-[rgba(163,204,168,0.05)]">
           <td class="p-2.5 font-mono-num text-[11px] text-[#868C84] whitespace-nowrap">${esc(r.date)}</td>
-          <td class="p-2.5 font-semibold text-[#E8ECF4]">${esc(r.company)}</td>
+          <td class="p-2.5 font-semibold text-[#E8ECF4]">
+            <div>${esc(r.company)}</div>
+            ${needFu ? `<button type="button" data-crmfu="${r.id}" class="mt-0.5 cmd-chip cmd-chip-roll cursor-pointer hover:border-[#A3CCA8]">ДОЖАТЬ (${ageDays}д) ↻</button>` : (r.followedUp ? '<span class="font-mono-num text-[9px] text-[#6B726A]">follow-up ✓</span>' : '')}
+          </td>
           <td class="p-2.5 text-[#9EA49C]">${esc(r.channel)}</td>
           <td class="p-2.5 font-mono-num text-[#9EA49C]">${esc(r.salary || '—')}</td>
           <td class="p-2.5">
@@ -4018,10 +4260,20 @@
           <td class="p-2.5 text-[#9EA49C]">${esc(r.notes || '—')}</td>
           <td class="p-2.5 text-right"><button type="button" data-delcrm="${r.id}" class="text-[#868C84] hover:text-[#DF9B94] font-mono-num">×</button></td>
         </tr>
-      `).join('') : `<tr><td colspan="7" class="p-4 text-center font-mono-num text-[#868C84]">Воронка пуста.</td></tr>`;
+      `;
+      }).join('') : `<tr><td colspan="7" class="p-4 text-center font-mono-num text-[#868C84]">Воронка пуста. Цель активного запуска: 25–35 касаний/нед (15–20 адресных + 10–15 ЛПР).</td></tr>`;
 
       tbody.querySelectorAll('[data-crmst]').forEach(sel => sel.addEventListener('change', () => {
         const r = state.crmRows.find(x => x.id === sel.dataset.crmst); if (r) r.stage = sel.value; save(); renderCareer();
+      }));
+      tbody.querySelectorAll('[data-crmfu]').forEach(b => b.addEventListener('click', () => {
+        const r = state.crmRows.find(x => x.id === b.dataset.crmfu);
+        if (r) { r.followedUp = true; save(true); }
+        state.careerPlaybookTab = 'templates';
+        renderCareer();
+        toast('Отмечен follow-up · шаблон D открыт сверху ↑');
+        const stg = document.getElementById('cpb-stage');
+        if (stg) stg.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }));
       tbody.querySelectorAll('[data-delcrm]').forEach(b => b.addEventListener('click', () => {
         state.crmRows = state.crmRows.filter(x => x.id !== b.dataset.delcrm); save(); renderCareer();
@@ -4058,6 +4310,266 @@
         save(true); renderFlashcards(); toast('Добавлено в колоду (.NET) ✓');
       }));
       updateNdfl();
+      renderCareerPlaybook();
+    }
+
+    let cpbExpandedGuides = new Set();
+    let cpbTrapsOnlyOpen = false;
+
+    function renderCareerPlaybook() {
+      const tabsEl = document.getElementById('cpb-tabs');
+      const stageEl = document.getElementById('cpb-stage');
+      if (!tabsEl || !stageEl) return;
+
+      const doneLaunch = new Set(state.careerLaunchDone || []);
+      const doneTraps = new Set(state.careerTrapsDone || []);
+      const today = isoDate(0);
+      if (!state.careerChannelsChecked || state.careerChannelsChecked.date !== today) {
+        state.careerChannelsChecked = { date: today, ids: [] };
+      }
+      const chChecked = new Set(state.careerChannelsChecked.ids || []);
+
+      const badge = document.getElementById('cpb-progress-badge');
+      if (badge) badge.textContent = `${doneLaunch.size} / ${CAREER_LAUNCH_STEPS.length}`;
+
+      const tabs = [
+        { id: 'plan', lbl: `01 ПЛАН (${doneLaunch.size}/${CAREER_LAUNCH_STEPS.length})` },
+        { id: 'channels', lbl: `02 КАНАЛЫ (${chChecked.size})` },
+        { id: 'templates', lbl: '03 ШАБЛОНЫ (5)' },
+        { id: 'screening', lbl: '04 HR И СБ' },
+        { id: 'traps', lbl: `05 ЛОВУШКИ (${doneTraps.size}/20)` }
+      ];
+      const activeTab = tabs.some(t => t.id === state.careerPlaybookTab) ? state.careerPlaybookTab : 'plan';
+
+      tabsEl.innerHTML = tabs.map(t => `
+        <button type="button" data-cpbtab="${t.id}" class="btn py-1.5 px-2 text-[10px] ${activeTab === t.id ? 'btn-primary' : 'btn-ghost'}">${esc(t.lbl)}</button>
+      `).join('');
+      tabsEl.querySelectorAll('[data-cpbtab]').forEach(b => b.addEventListener('click', () => {
+        state.careerPlaybookTab = b.dataset.cpbtab;
+        save(true); renderCareerPlaybook();
+      }));
+
+      // TAB 1: 8-WEEK LAUNCH PLAN
+      if (activeTab === 'plan') {
+        const pct = Math.round((doneLaunch.size / CAREER_LAUNCH_STEPS.length) * 100);
+        stageEl.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span class="font-mono-num text-[10px] text-[#A3CCA8]">ОПЕРАЦИОННЫЙ ПЛАН ВЫХОДА НА ОФФЕР (6–8 НЕДЕЛЬ · СВЯЗАН С КОМАНДИРОМ ДНЯ)</span>
+            <span class="font-mono-num text-[10px] text-[#868C84]">${pct}% закрыто</span>
+          </div>
+          <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div class="h-full bg-[#A3CCA8] transition-all" style="width:${pct}%"></div></div>
+          <div class="space-y-1.5 max-h-96 overflow-y-auto pr-1">
+            ${CAREER_LAUNCH_STEPS.map((st, idx) => {
+              const on = doneLaunch.has(st.id);
+              const gOpen = cpbExpandedGuides.has(st.id);
+              return `
+                <div class="panel p-2.5 text-xs ${on ? 'opacity-55' : ''}">
+                  <div class="flex items-start justify-between gap-2">
+                    <label class="flex items-start gap-2.5 cursor-pointer flex-1 min-w-0">
+                      <input type="checkbox" class="chk mt-0.5" data-clstep="${st.id}" ${on ? 'checked' : ''} />
+                      <div class="min-w-0 flex-1 space-y-1">
+                        <div class="${on ? 'line-through text-[#868C84]' : 'text-[#E8ECF4] font-medium'} leading-snug">${esc(st.title)}</div>
+                        <div class="flex flex-wrap items-center gap-1">
+                          <span class="cmd-chip">${esc(st.week)}</span>
+                          <span class="hm-tag hm-tag-interview">${esc(st.tag)}</span>
+                          <span class="cmd-chip">${st.mins}м</span>
+                        </div>
+                      </div>
+                    </label>
+                    <button type="button" data-clguide="${st.id}" class="btn btn-ghost py-0.5 px-2 text-[10px] shrink-0">${gOpen ? '▴' : 'ГАЙД ▾'}</button>
+                  </div>
+                  ${gOpen ? `<div class="step-guide text-[11px]">${esc(st.guide)}</div>` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+        stageEl.querySelectorAll('[data-clstep]').forEach(cb => cb.addEventListener('change', () => {
+          const id = cb.dataset.clstep;
+          const s = new Set(state.careerLaunchDone || []);
+          cb.checked ? s.add(id) : s.delete(id);
+          state.careerLaunchDone = Array.from(s);
+          if (cb.checked) {
+            const st = CAREER_LAUNCH_STEPS.find(x => x.id === id);
+            if (st) logActivity(today, 'note', 0, { tag: 'СОБЕС', label: st.title });
+          }
+          save(true); renderAll();
+        }));
+        stageEl.querySelectorAll('[data-clguide]').forEach(b => b.addEventListener('click', () => {
+          const id = b.dataset.clguide;
+          if (cpbExpandedGuides.has(id)) cpbExpandedGuides.delete(id); else cpbExpandedGuides.add(id);
+          renderCareerPlaybook();
+        }));
+        return;
+      }
+
+      // TAB 2: VERIFIED LIVE CHANNELS & SOURCING BASES
+      if (activeTab === 'channels') {
+        stageEl.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2 text-[11px]">
+            <span class="text-[#9EA49C]">Отмечай каналы по мере утреннего прохода — галочки сами сбрасываются каждый день.</span>
+            <span class="font-mono-num text-[10px] text-[#DF9B94]">Антифрод: ноль кодов входа TG и паспорта до видеосозвона!</span>
+          </div>
+          <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+            ${CAREER_CHANNELS.map(grp => `
+              <div class="space-y-1.5">
+                <div class="font-mono-num text-[10px] text-[#A3CCA8] tracking-wider pt-1">${esc(grp.group)}</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+                  ${grp.items.map(it => {
+                    const checked = chChecked.has(it.id);
+                    return `
+                      <div class="panel px-2.5 py-2 flex items-start justify-between gap-2 text-xs ${checked ? 'opacity-55' : ''}">
+                        <label class="flex items-start gap-2 cursor-pointer flex-1 min-w-0">
+                          <input type="checkbox" class="chk mt-0.5" data-chchk="${it.id}" ${checked ? 'checked' : ''} />
+                          <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-1.5">
+                              <a href="${esc(it.url)}" target="_blank" rel="noopener noreferrer" class="font-mono-num text-[11px] font-semibold text-[#E8ECF4] hover:text-[#A3CCA8] hover:underline truncate">${esc(it.name)} ↗</a>
+                              <span class="cmd-chip">${esc(it.meta)}</span>
+                            </div>
+                            <div class="text-[11px] text-[#868C84] mt-0.5 leading-snug">${esc(it.note)}</div>
+                          </div>
+                        </label>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        stageEl.querySelectorAll('[data-chchk]').forEach(cb => cb.addEventListener('change', () => {
+          const s = new Set(state.careerChannelsChecked.ids || []);
+          cb.checked ? s.add(cb.dataset.chchk) : s.delete(cb.dataset.chchk);
+          state.careerChannelsChecked = { date: today, ids: Array.from(s) };
+          save(true); renderCareerPlaybook();
+        }));
+        return;
+      }
+
+      // TAB 3: 5 OUTREACH TEMPLATES (1-CLICK COPY)
+      if (activeTab === 'templates') {
+        const ghUrl = (state.careerGithubUrl || 'https://github.com/awsedrig').trim();
+        stageEl.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="font-mono-num text-[10px] text-[#868C84]">ССЫЛКА GITHUB ДЛЯ АВТОПОДСТАНОВКИ В ШАБЛОНЫ:</span>
+            <input id="cpb-gh-in" type="text" value="${esc(ghUrl)}" placeholder="https://github.com/..." class="inp py-1 px-2 text-[11px] font-mono-num w-full sm:w-64" />
+          </div>
+          <div class="space-y-2 max-h-96 overflow-y-auto pr-1">
+            ${CAREER_TEMPLATES.map(t => {
+              const rendered = t.text.replace(/\{GH\}/g, ghUrl || '[ссылка на GitHub]');
+              return `
+                <div class="panel p-3 space-y-2 text-xs">
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="min-w-0">
+                      <span class="hm-tag hm-tag-interview mr-1.5">${esc(t.code)}</span>
+                      <span class="font-semibold text-[#E8ECF4]">${esc(t.title)}</span>
+                      <div class="font-mono-num text-[10px] text-[#868C84] mt-0.5">${esc(t.when)}</div>
+                    </div>
+                    <button type="button" data-copytpl="${t.id}" class="btn btn-primary py-1 px-2.5 text-[10px] shrink-0">КОПИРОВАТЬ</button>
+                  </div>
+                  <div class="panel-recessed p-2.5 text-[11px] text-[#C8D0C6] leading-relaxed whitespace-pre-line select-all">${esc(rendered)}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+        const ghIn = document.getElementById('cpb-gh-in');
+        if (ghIn) ghIn.addEventListener('change', () => {
+          state.careerGithubUrl = ghIn.value.trim();
+          save(true); renderCareerPlaybook();
+        });
+        stageEl.querySelectorAll('[data-copytpl]').forEach(b => b.addEventListener('click', async () => {
+          const tpl = CAREER_TEMPLATES.find(x => x.id === b.dataset.copytpl);
+          if (!tpl) return;
+          const curGh = (state.careerGithubUrl || 'https://github.com/awsedrig').trim();
+          const finalTxt = tpl.text.replace(/\{GH\}/g, curGh);
+          try {
+            await navigator.clipboard.writeText(finalTxt);
+            toast(`Шаблон ${tpl.code} скопирован ✓`);
+          } catch {
+            prompt('Скопируй текст (Ctrl+C):', finalTxt);
+          }
+        }));
+        return;
+      }
+
+      // TAB 4: HR SCREENING SCRIPTS & SB RED FLAGS
+      if (activeTab === 'screening') {
+        const detectorQ = 'Подскажите, пожалуйста, сколько всего этапов после технического собеседования и как обычно проходит финальное согласование — есть ли отдельная длительная проверка СБ с запросом выписок или сразу переходим к офферу и стандартному оформлению?';
+        stageEl.innerHTML = `
+          <div class="panel p-3 border-[rgba(201,112,103,0.45)] bg-[rgba(34,20,19,0.55)] space-y-1.5 text-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="font-mono-num text-[10px] font-semibold text-[#DF9B94]">ВОПРОС-ДЕТЕКТОР СБ (ЗАДАВАТЬ В КОНЦЕ КАЖДОГО HR-ЗВОНКА)</span>
+              <button type="button" id="btn-copy-detector" class="btn btn-ghost py-0.5 px-2 text-[10px]">КОПИРОВАТЬ</button>
+            </div>
+            <div class="text-[#E8ECF4] leading-relaxed">«${esc(detectorQ)}»</div>
+          </div>
+
+          <div class="space-y-2 max-h-80 overflow-y-auto pr-1">
+            ${CAREER_HR_SCRIPTS.map(sc => `
+              <div class="panel p-3 space-y-1.5 text-xs">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="hm-tag hm-tag-interview">${esc(sc.tag)}</span>
+                  <span class="font-semibold text-[#E8ECF4]">${esc(sc.q)}</span>
+                </div>
+                ${sc.warn ? `<div class="font-mono-num text-[10px] text-[#DF9B94]">[!] ${esc(sc.warn)}</div>` : ''}
+                <div class="text-[#C6CCC4] leading-relaxed">${esc(sc.a)}</div>
+              </div>
+            `).join('')}
+
+            <div class="panel p-3 space-y-1.5 text-xs border-[rgba(201,112,103,0.3)]">
+              <div class="font-mono-num text-[10px] text-[#DF9B94] uppercase">СТОП-ЛИСТ КРАСНЫХ ФЛАГОВ (ОТСЕВ НА ВХОДЕ)</div>
+              <div class="text-[11px] text-[#B8BEB6] leading-relaxed">
+                • <strong>Компании:</strong> банки и их IT-дочки (Сбер, ВТБ/Иннотех, Т-Банк, Альфа, Совкомбанк, ГПБ), страховые (РГС), госсектор, ВПК, ТЭК, телеком-гиганты, топ-интеграторы (IBS, Ланит, КРОК, Т1), аутстафф «в топ-5 банков».<br/>
+                • <strong>Маркеры в вакансии:</strong> «проверка СБ», «КИИ / ФСТЭК / банковский контур», «DLP / закрытый ноутбук», «строго МСК ±2ч», «обязательно оконченное высшее».<br/>
+                • <strong>На звонке:</strong> анкета СБ с ИНН прошлых компаний и родственниками, запрос СТД-СФР / СЗИ-ИЛС / актов ГПХ, прозвон прошлых HR, СБ 5–14 дней → вежливый выход шаблоном E.
+              </div>
+            </div>
+          </div>
+        `;
+        const detBtn = document.getElementById('btn-copy-detector');
+        if (detBtn) detBtn.addEventListener('click', async () => {
+          try { await navigator.clipboard.writeText(detectorQ); toast('Вопрос-детектор скопирован ✓'); }
+          catch { prompt('Скопируй:', detectorQ); }
+        });
+        return;
+      }
+
+      // TAB 5: 20 INTERVIEW TRAPS (2026)
+      const trapsFiltered = cpbTrapsOnlyOpen ? CAREER_TRAPS_20.filter(x => !doneTraps.has(x.id)) : CAREER_TRAPS_20;
+      stageEl.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+          <span class="font-mono-num text-[10px] text-[#A3CCA8]">20 ЛОВУШЕК ТЕХСКРИНИНГА И ПРАВИЛ LIVE CODING / CODE REVIEW (2026)</span>
+          <label class="flex items-center gap-1.5 cursor-pointer font-mono-num text-[10px] text-[#C8C1AE]">
+            <input id="cpb-traps-open-cb" type="checkbox" class="chk" ${cpbTrapsOnlyOpen ? 'checked' : ''} />
+            <span>Только неразобранные (${CAREER_TRAPS_20.length - doneTraps.size})</span>
+          </label>
+        </div>
+        <div class="space-y-1.5 max-h-96 overflow-y-auto pr-1">
+          ${trapsFiltered.length ? trapsFiltered.map((tr, idx) => {
+            const on = doneTraps.has(tr.id);
+            const num = tr.id.replace('tr_', '');
+            return `
+              <label class="panel px-3 py-2 flex items-start gap-2.5 cursor-pointer text-xs ${on ? 'opacity-50' : ''}">
+                <input type="checkbox" class="chk mt-0.5" data-trapcb="${tr.id}" ${on ? 'checked' : ''} />
+                <div class="min-w-0 flex-1 leading-snug">
+                  <span class="font-mono-num text-[10px] text-[#6B726A] mr-1">${num}.</span>
+                  <span class="hm-tag ${tr.cat === 'ТЕХ' ? 'hm-tag-net' : (tr.cat === 'АФРОД' ? 'hm-tag-shift' : 'hm-tag-jp')} mr-1">${esc(tr.cat)}</span>
+                  <span class="${on ? 'line-through text-[#868C84]' : 'text-[#DFDDD4]'}">${esc(tr.text)}</span>
+                </div>
+              </label>
+            `;
+          }).join('') : `<div class="font-mono-num text-xs text-[#A3CCA8] py-2">✓ Все 20 ловушек разобраны!</div>`}
+        </div>
+      `;
+      const openCb = document.getElementById('cpb-traps-open-cb');
+      if (openCb) openCb.addEventListener('change', (e) => { cpbTrapsOnlyOpen = e.target.checked; renderCareerPlaybook(); });
+      stageEl.querySelectorAll('[data-trapcb]').forEach(cb => cb.addEventListener('change', () => {
+        const s = new Set(state.careerTrapsDone || []);
+        cb.checked ? s.add(cb.dataset.trapcb) : s.delete(cb.dataset.trapcb);
+        state.careerTrapsDone = Array.from(s);
+        save(true); renderCareerPlaybook();
+      }));
     }
 
     function updateNdfl() {
@@ -4065,9 +4577,34 @@
       if (netM < 50000) netM = 50000;
       const annNet = netM * 12, t13 = 2400000 * 0.87;
       const annGross = annNet <= t13 ? annNet / 0.87 : 2400000 + (annNet - t13) / 0.85;
-      document.getElementById('ndfl-gross').textContent = `${Math.round(annGross / 12).toLocaleString('ru-RU')} ₽`;
+      const mGross = annGross / 12;
+      document.getElementById('ndfl-gross').textContent = `${Math.round(mGross).toLocaleString('ru-RU')} ₽`;
       document.getElementById('ndfl-year').textContent = `${Math.round(annGross).toLocaleString('ru-RU')} ₽`;
       document.getElementById('ndfl-rate').textContent = `${((1 - annNet / annGross) * 100).toFixed(2)}%`;
+
+      const noDropEl = document.getElementById('ndfl-nodrop');
+      const m15El = document.getElementById('ndfl-month15');
+      const npdEl = document.getElementById('ndfl-npd');
+      if (noDropEl) {
+        const noDropGross = netM <= 174000 ? netM / 0.87 : netM / 0.85;
+        noDropEl.textContent = `${Math.round(noDropGross).toLocaleString('ru-RU')} ₽`;
+      }
+      if (m15El) {
+        if (annGross <= 2400000) {
+          m15El.textContent = 'Нет (13%)';
+          m15El.style.color = '#A3CCA8';
+        } else {
+          const mNum = Math.min(12, Math.ceil(2400000 / mGross));
+          m15El.textContent = `${mNum}-й мес.`;
+          m15El.style.color = '#DFC28D';
+        }
+      }
+      if (npdEl) {
+        const npdGrossM = netM / 0.94;
+        const npdMonths = 2400000 / npdGrossM;
+        npdEl.textContent = npdMonths >= 12 ? '12+ мес. ✓' : `${npdMonths.toFixed(1)} мес.`;
+        npdEl.style.color = npdMonths >= 12 ? '#A3CCA8' : '#DF9B94';
+      }
     }
 
     let jpExpandedGuides = new Set();
@@ -5177,6 +5714,26 @@
         });
       }
 
+      // 7b. Next unchecked step from 8-week Market Launch Playbook (Forensic Audit -> Sourcing -> Outreach)
+      const doneCL = new Set(state.careerLaunchDone || []);
+      const nextCL = CAREER_LAUNCH_STEPS.find(x => !doneCL.has(x.id));
+      if (nextCL) {
+        pool.push({
+          key: `claunch:${nextCL.id}`,
+          kind: 'claunch',
+          refId: nextCL.id,
+          group: 'career_launch',
+          priority: nextCL.priority || 725,
+          mins: nextCL.mins || 30,
+          mobile: nextCL.mobile !== false,
+          tag: 'СОБЕС',
+          sourceLabel: `Штаб · ${nextCL.week}`,
+          title: nextCL.title,
+          guide: nextCL.guide,
+          jumpView: 'view-career'
+        });
+      }
+
       // 8. Next unsolved Live Code Review case (great for phone / 15m slots!)
       const crDone = new Set(state.codeReviewDone || []);
       const nextCrIdx = codeReviewCases.findIndex(c => !crDone.has(c.id));
@@ -5309,6 +5866,10 @@
         state.codeReviewDone = Array.from(s);
       } else if (item.kind === 'jpstep') {
         setJpStepDone(item.stageIdx, item.refId, checked, true);
+      } else if (item.kind === 'claunch') {
+        const s = new Set(state.careerLaunchDone || []);
+        checked ? s.add(item.refId) : s.delete(item.refId);
+        state.careerLaunchDone = Array.from(s);
       } else if (item.kind === 'o30') {
         const s = new Set(state.orderChecked || []);
         checked ? s.add(item.refId) : s.delete(item.refId);
@@ -6637,11 +7198,19 @@
         save(true); renderFinance(); renderHeatmap(); toast('Заморожено на 72ч');
       });
 
+      // Career Playbook collapse toggle
+      document.getElementById('btn-cpb-collapse').addEventListener('click', () => {
+        const body = document.getElementById('cpb-body');
+        const btn = document.getElementById('btn-cpb-collapse');
+        const hidden = body.classList.toggle('hidden');
+        btn.textContent = hidden ? 'РАЗВЕРНУТЬ ▾' : 'СВЕРНУТЬ ▴';
+      });
+
       // Career
       document.getElementById('btn-crm-add').addEventListener('click', () => {
         const company = document.getElementById('crm-comp').value.trim(); if (!company) return;
         state.crmRows.push({
-          id: 'crm_' + Date.now(), date: fmtShortDate(isoDate(0)), company,
+          id: 'crm_' + Date.now(), createdTs: Date.now(), followedUp: false, date: fmtShortDate(isoDate(0)), company,
           channel: document.getElementById('crm-chan').value,
           salary: document.getElementById('crm-sal').value.trim(),
           stage: document.getElementById('crm-stg').value,
