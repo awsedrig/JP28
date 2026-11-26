@@ -1316,13 +1316,14 @@
       <section id="view-study" class="app-view hidden space-y-5">
         <div class="flex flex-wrap items-end justify-between gap-2 border-b border-[rgba(163,204,168,0.15)] pb-3">
           <div>
-            <div class="font-mono-num text-[10px] text-[#A3CCA8] tracking-widest uppercase">04 // <span class="font-mincho">日本語</span> · ЯПОНСКИЙ, FE И КОЛЛЕДЖ</div>
-            <h2 class="font-mincho text-lg sm:text-xl font-semibold text-[#E8ECF4] mt-0.5">Часы JLPT N5→N3, ITPEC FE, 5 CRUD и План 30 дней</h2>
+            <div class="font-mono-num text-[10px] text-[#A3CCA8] tracking-widest uppercase">04 // <span class="font-mincho">日本語</span> · ЯПОНСКИЙ И УЧЁБА</div>
+            <h2 class="font-mincho text-lg sm:text-xl font-semibold text-[#E8ECF4] mt-0.5">Маршрут 0 → N5 → N4 → N3, часы, Anki и Колледж</h2>
           </div>
+          <div id="study-jp-pace-badge" class="font-mono-num text-xs text-[#868C84]">Темп 14д: 0.0 ч/нед</div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <!-- Japanese & FE -->
+          <!-- Japanese Hours, Pace, Anki Vocab/Kanji & Smart FE -->
           <div class="lg:col-span-6 panel p-4 space-y-4">
             <div class="flex items-center justify-between">
               <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">СЧЁТЧИК ЧАСОВ ЯПОНСКОГО</div>
@@ -1338,7 +1339,7 @@
               <button type="button" data-jpadd="-0.5" class="jp-add-btn btn btn-ghost text-[#DF9B94]">−30м</button>
             </div>
 
-            <div class="space-y-3 font-mono-num text-xs">
+            <div class="space-y-2.5 font-mono-num text-xs">
               <div>
                 <div class="flex justify-between text-[11px] mb-1"><span>N5 (04.07.2027 · ДВФУ)</span><span id="bar-n5-t" class="text-[#868C84]">0 / 325ч</span></div>
                 <div class="w-full h-1.5 bg-[#1B201D] rounded-full overflow-hidden"><div id="bar-n5" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div></div>
@@ -1353,7 +1354,37 @@
               </div>
             </div>
 
-            <div class="pt-3 border-t border-[rgba(163,204,168,0.12)] space-y-2">
+            <!-- Anki Words & Kanji Live Counters -->
+            <div class="pt-3 border-t border-[rgba(163,204,168,0.12)] grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div class="panel-recessed p-2.5 space-y-2">
+                <div class="flex items-center justify-between font-mono-num text-[10px]">
+                  <span class="text-[#868C84]">ANKI · СЛОВА</span>
+                  <span id="jp-words-val" class="font-semibold text-[#A3CCA8]">0 / 1 500</span>
+                </div>
+                <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="jp-words-bar" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div></div>
+                <div class="flex items-center gap-1">
+                  <button type="button" data-jpvocab="words:10" class="jp-vocab-btn btn btn-ghost py-0.5 px-2 text-[10px] flex-1">+10</button>
+                  <button type="button" data-jpvocab="words:25" class="jp-vocab-btn btn btn-ghost py-0.5 px-2 text-[10px] flex-1">+25</button>
+                  <button type="button" id="btn-jp-words-edit" class="btn btn-ghost py-0.5 px-2 text-[10px]" title="Задать точное число слов">✎</button>
+                </div>
+              </div>
+
+              <div class="panel-recessed p-2.5 space-y-2">
+                <div class="flex items-center justify-between font-mono-num text-[10px]">
+                  <span class="text-[#868C84]">КАНДЗИ · <span class="font-mincho">漢字</span></span>
+                  <span id="jp-kanji-val" class="font-semibold text-[#C8C1AE]">0 / 350</span>
+                </div>
+                <div class="w-full h-1 bg-[#1B201D] rounded-full overflow-hidden"><div id="jp-kanji-bar" class="h-full bg-[#C8C1AE] transition-all" style="width:0%"></div></div>
+                <div class="flex items-center gap-1">
+                  <button type="button" data-jpvocab="kanji:5" class="jp-vocab-btn btn btn-ghost py-0.5 px-2 text-[10px] flex-1">+5</button>
+                  <button type="button" data-jpvocab="kanji:15" class="jp-vocab-btn btn btn-ghost py-0.5 px-2 text-[10px] flex-1">+15</button>
+                  <button type="button" id="btn-jp-kanji-edit" class="btn btn-ghost py-0.5 px-2 text-[10px]" title="Задать точное число кандзи">✎</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ITPEC FE (auto-hidden until Phase 1-2 archive enabled) -->
+            <div id="study-fe-block" class="hidden pt-3 border-t border-[rgba(163,204,168,0.12)] space-y-2">
               <div class="flex items-center justify-between font-mono-num text-xs">
                 <span class="text-[#868C84]">ITPEC FE (Улан-Батор · апр 2028)</span>
                 <span id="study-fe-total" class="font-semibold text-[#E8ECF4]">0.0 / 100 ч</span>
@@ -1366,20 +1397,18 @@
                 <button type="button" data-feadd="-0.5" class="fe-add-btn btn btn-ghost py-1 text-[#DF9B94]">−30м</button>
               </div>
             </div>
-
-            <div class="panel-recessed p-3 text-[11px] text-[#9EA49C] leading-relaxed">
-              <strong class="text-[#DFDDD4]">Регистрация JLPT во Владивостоке:</strong> лично в Генконсульстве (Верхнепортовая, 46), 5-дневные окна в конце марта и начале сентября. Стек: <em>Genki I–II</em> → <em>Quartet I / Shin Kanzen Master N3</em> + Anki Kaishi 1.5k.
-            </div>
           </div>
 
           <!-- College 5 CRUDs & Custom Tasks -->
-          <div class="lg:col-span-6 panel p-4 space-y-3">
-            <div class="flex items-center justify-between">
-              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">КОЛЛЕДЖ (5 CRUD), ШКОЛА 21 И ЗАДАЧИ</div>
-              <span id="tasks-badge" class="font-mono-num text-xs font-semibold text-[#A3CCA8]">0 / 6</span>
-            </div>
+          <div class="lg:col-span-6 panel p-4 flex flex-col justify-between space-y-3">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">КОЛЛЕДЖ (5 CRUD), ШКОЛА 21 И ЗАДАЧИ</div>
+                <span id="tasks-badge" class="font-mono-num text-xs font-semibold text-[#A3CCA8]">0 / 6</span>
+              </div>
 
-            <div id="custom-tasks-list" class="space-y-1.5 max-h-80 overflow-y-auto pr-1"></div>
+              <div id="custom-tasks-list" class="space-y-1.5 max-h-80 overflow-y-auto pr-1"></div>
+            </div>
 
             <div class="pt-3 border-t border-[rgba(163,204,168,0.12)] flex gap-2">
               <input id="new-task-in" type="text" placeholder="Добавить свою задачу / проект..." class="inp flex-1" />
@@ -1388,13 +1417,28 @@
           </div>
         </div>
 
-        <!-- 30-Day Order -->
-        <div class="panel p-4 space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">ПЛАН-ПРИКАЗ НА 30 ДНЕЙ (25 НОЯ – 25 ДЕК 2026)</div>
-            <span id="order30-badge" class="font-mono-num text-xs font-semibold text-[#A3CCA8]">0 / 12</span>
+        <!-- 4-STAGE JAPANESE ROADMAP (Unified with Commander, Queues & Calendar) -->
+        <div class="panel p-4 space-y-4 border-[rgba(163,204,168,0.28)]">
+          <div class="flex flex-wrap items-start justify-between gap-2">
+            <div>
+              <div class="font-mono-num text-[10px] uppercase tracking-widest text-[#A3CCA8]">ПОЭТАПНЫЙ МАРШРУТ ЯПОНСКОГО · 0 → N5 → N4 → N3</div>
+              <div id="jp-rm-global-lbl" class="font-mono-num text-xs text-[#868C84] mt-0.5">Связано с Командиром дня, календарём и вехами · 0 / 28 шагов</div>
+            </div>
+            <button type="button" id="btn-jp-start-timer" class="btn btn-primary py-1.5 px-3 text-[10px]">▶ ТАЙМЕР JP 45М</button>
           </div>
-          <div id="order30-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+
+          <div class="w-full h-1.5 bg-[#1B201D] rounded-full overflow-hidden">
+            <div id="jp-rm-global-bar" class="h-full bg-[#A3CCA8] transition-all" style="width:0%"></div>
+          </div>
+
+          <!-- Current Active JP Step Highlight -->
+          <div id="jp-current-focus-box" class="panel-recessed p-3 border-[rgba(163,204,168,0.28)]"></div>
+
+          <!-- 4 Stage Selector Pills -->
+          <div id="jp-stage-tabs" class="grid grid-cols-2 sm:grid-cols-4 gap-1.5"></div>
+
+          <!-- Active Stage Details & Steps -->
+          <div id="jp-stage-body" class="panel-recessed p-3.5 space-y-3"></div>
         </div>
       </section>
 
@@ -1443,6 +1487,18 @@
 
           <div id="roadmap-btns" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1.5"></div>
           <div id="roadmap-box" class="panel-recessed p-4 space-y-4"></div>
+        </div>
+
+        <!-- Collapsible 30-Day Start Sprint (moved from View 04 to keep Language clean) -->
+        <div class="panel p-4 space-y-3">
+          <button type="button" id="btn-toggle-order30" class="w-full flex flex-wrap items-center justify-between gap-2 text-left cursor-pointer">
+            <div class="flex items-center gap-2">
+              <span class="font-mono-num text-[10px] uppercase tracking-widest text-[#868C84]">СПРИНТ ПЕРВЫХ 30 ДНЕЙ (25 НОЯ – 25 ДЕК 2026)</span>
+              <span id="order30-badge" class="font-mono-num text-xs font-semibold text-[#A3CCA8]">0 / 12</span>
+            </div>
+            <span id="order30-arrow" class="font-mono-num text-[10px] text-[#868C84]">ПОКАЗАТЬ ▾</span>
+          </button>
+          <div id="order30-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 pt-1"></div>
         </div>
 
         <!-- Financial & City Simulator -->
@@ -2477,6 +2533,189 @@
     const shortWindows = [{"id": "sw1", "start": "2027-01-09", "leadDays": 14, "title": "ГРЕЙС КРЕДИТКИ Т-БАНКА (09.01.2027)", "desc": "Внести обязательный платёж ~15–18 000 ₽ до 9 января, чтобы не слетел беспроцентный период."}, {"id": "sw2", "start": "2027-03-23", "leadDays": 14, "title": "ОКНО РЕГИСТРАЦИИ JLPT N5 (~23–27 МАРТА)", "desc": "5 рабочих дней! Лично в Генконсульство Японии (Владивосток, Верхнепортовая, 46, 6 эт., 14:00–17:00), ~800 ₽ наличными без сдачи."}, {"id": "sw3", "start": "2027-09-07", "leadDays": 14, "title": "ОКНО РЕГИСТРАЦИИ JLPT N4 (~7–11 СЕНТЯБРЯ)", "desc": "5 рабочих дней! Лично на Верхнепортовую, 46 (14:00–17:00), ~800 ₽ наличными. Этот сертификат пойдёт в пакет CoE."}, {"id": "sw4", "start": "2028-03-01", "leadDays": 14, "title": "РЕГИСТРАЦИЯ ITPEC FE (УЛАН-БАТОР, МАРТ 2028)", "desc": "Подать заявку в National IT Park (Монголия) и согласовать оплату взноса 180 000 MNT (~$50) наличными в день экзамена."}, {"id": "sw5", "start": "2028-03-23", "leadDays": 14, "title": "ОКНО РЕГИСТРАЦИИ JLPT N3 (~23–27 МАРТА 2028)", "desc": "5 рабочих дней! Лично в Генконсульство (Верхнепортовая, 46, 1 000 ₽ наличными без сдачи) на сессию 2 июля 2028."}, {"id": "sw6", "start": "2028-05-15", "leadDays": 14, "title": "ПОСЛЕДИПЛОМНЫЕ КАНИКУЛЫ (ДО 15.05.2028)", "desc": "Подать письменное заявление директору колледжа в 2 экз. (ч.17 ст.59 ФЗ-273) для продления отсрочки до 31 августа."}, {"id": "sw7", "start": "2028-06-30", "leadDays": 14, "title": "СПРАВКА О КАНИКУЛАХ В ВОЕНКОМАТ (ДО 30.06.2028)", "desc": "Письменно приобщить бумажную справку с датой отчисления 31.08.2028 к личному делу + оформить нотариальную доверенность."}];
     const dailyTemplates = {"ozon": {"label": "СМЕНА OZON", "sub": "Щадящий режим на 12ч склад", "tasks": [{"id": "do1", "text": "Дорога / перерыв: 15–20 мин кана или повторы в Anki (0 новых карт!)"}, {"id": "do2", "text": "Дорога / перерыв: прощёлкать 5 карточек .NET в «Режиме автобуса»"}, {"id": "do3", "text": "После смены: вбить смену в трекер (+4 000 ₽) и не открывать маркетплейсы"}, {"id": "do4", "text": "Ноль тяжёлого кода вечером — душ, еда и сон 7,5–8 часов"}]}, "middle": {"label": "РАБОТА 5/2", "sub": "Фаза 2 · Асинхрон 12:00–20:00 ВЛД", "tasks": [{"id": "dm1", "text": "08:00–09:30: 1,5 ч японского (или прогон ITPEC FE) на свежую голову"}, {"id": "dm2", "text": "09:30–11:30: колледж / зал / документы (загран, клиника, банк)"}, {"id": "dm3", "text": "12:00–20:00: фулл-тайм Middle .NET (15–20 ВЛД пересечение с МСК)"}, {"id": "dm4", "text": "21:00–22:30: быт и законные 45–60 мин Switch / New 3DS LL (JP)"}]}, "school": {"label": "ШКОЛА 21 / КОЛЛЕДЖ", "sub": "Кампус + CRUD + база", "tasks": [{"id": "ds1", "text": "Кампус: peer-to-peer ревью как тренировка Live Code Review (ищи edge cases)"}, {"id": "ds2", "text": "Колледж: продвинуть текущий CRUD-сайт (без перфекционизма)"}, {"id": "ds3", "text": "Вечер (45 мин): 1 таймер JP (кана / Anki + Genki)"}, {"id": "ds4", "text": "Перед сном: 5–10 карточек .NET и 45 мин Switch/3DS"}]}, "combat": {"label": "БОЕВОЙ ВЫХОДНОЙ", "sub": "Максимум прогресса без срыва", "tasks": [{"id": "dc1", "text": "Утро (1–2ч): 1 практический стенд .NET из очереди «Следующее действие»"}, {"id": "dc2", "text": "День (1ч): 1 кейс Live Code Review + 10 карточек .NET / 5–8 откликов в воронку"}, {"id": "dc3", "text": "Вечер (45–90м): японский (таймер JP + Anki + учебник)"}, {"id": "dc4", "text": "Награда после ядра: 45–60 мин Switch / 3DS + сон ≥7,5ч"}]}, "tired": {"label": "ВЫЖАТ (АНТИСРЫВ)", "sub": "Не порвать ритм, ноль вины", "tasks": [{"id": "dt1", "text": "10 минут повторов в Anki (новые карты = 0, только закрыть долг)"}, {"id": "dt2", "text": "Прочитать ровно 3 карточки .NET или 1 короткий шаг из плана"}, {"id": "dt3", "text": "Не открывать Ozon/WB/Т-Банк рассрочки — все хотелки в Карантин 72ч"}, {"id": "dt4", "text": "Лёгкий отдых и ранний отбой, завтра вернёшься в строй"}]}};
 
+    const defaultJpStages = [
+      {
+        code: '01',
+        short: 'БАЗА · КАНА',
+        date: 'Ноя–Дек 26',
+        targetHours: 25,
+        title: 'Азбуки, Anki FSRS и запуск ежедневного ритма',
+        summary: 'Убрать главный порог входа за 2–3 недели: читать хирагану и катакану на автомате без ромадзи и поставить конвейер повторений.',
+        steps: [
+          {
+            id: 'jp1_1', tag: 'КАНА', mins: 30, mobile: true, done: false,
+            title: 'Хирагана: чтение и пропись 100% без подсказок',
+            guide: 'Учи по 10 знаков в день (ряд あ→か→さ...) через Tofugu Hiragana Guide + пропись на бумаге.\nКритерий закрытия: проходишь тест на RealKana / Kana Quiz (все 46 знаков + дакутэн/комбинации) со скоростью < 2 мин и точностью ≥95%.'
+          },
+          {
+            id: 'jp1_2', tag: 'КАНА', mins: 30, mobile: true, done: false,
+            title: 'Катакана: чтение 100% + IT-термины и вывески',
+            guide: 'Особое внимание на пары-двойники: シ/ツ и ソ/ン. Сразу читай реальные слова в катакане (サーバー, データベース, コンビニ, ラーメン) — мозг запоминает их в разы быстрее сухих слогов.'
+          },
+          {
+            id: 'jp1_3', tag: 'ANKI', mins: 20, mobile: true, done: false,
+            title: 'Поставить Anki (ПК + S23), включить FSRS и загрузить Kaishi 1.5k',
+            guide: '1) Установи Anki на ПК и AnkiDroid на S23, привяжи бесплатный аккаунт AnkiWeb.\n2) Загрузи колоду Kaishi 1.5k (лучшая база слов с аудио и предложениями).\n3) В настройках колоды включи FSRS (экономит 20–30% повторов), лимит 10 новых/день. Железное правило: в день смены Ozon — 0 новых карт, только закрыть повторы.'
+          },
+          {
+            id: 'jp1_4', tag: 'БАЗА', mins: 30, mobile: true, done: false,
+            title: 'Разобрать порядок SOV и базовые частицы (は / が / を / に / で / の)',
+            guide: 'Прочитай вводную часть Genki I или первые главы Tae Kim Grammar Guide, чтобы понять каркас японского предложения (глагол всегда в конце, тема は vs подлежащее が) до того, как пойдёшь по главам учебника.'
+          },
+          {
+            id: 'jp1_5', tag: 'РИТМ', mins: 45, mobile: true, done: false,
+            title: 'Закрепить ритм 45 мин/день (14 активных дней JP по таймеру)',
+            guide: 'Никакого Duolingo и метания между 10 приложениями. Один чёткий ритуал: 15 мин Anki + 30 мин кана/учебник. Как только наберёшь 14 дней в календаре — база привычки встроена.'
+          }
+        ]
+      },
+      {
+        code: '02',
+        short: 'JLPT N5',
+        date: 'Янв–Июл 27',
+        targetHours: 325,
+        title: 'JLPT N5 · Genki I и первая визовая страховка',
+        summary: 'Системно закрыть фундамент грамматики (Genki I целиком), набрать 800+ слов и сдать JLPT N5 04.07.2027 в ДВФУ с запасом.',
+        steps: [
+          {
+            id: 'jp2_1', tag: 'GENKI I', mins: 45, mobile: false, done: false,
+            title: 'Genki I · главы 1–3 (представление, これ/それ/あれ, ます-форма глаголов)',
+            guide: 'Проходи учебник + рабочую тетрадь (или онлайн-тренажёр Seth Clydesdale Genki Exercises). Обязательно проговаривай диалоги вслух за аудио, чтобы не растить «немой» японский.'
+          },
+          {
+            id: 'jp2_2', tag: 'GENKI I', mins: 45, mobile: false, done: false,
+            title: 'Genki I · главы 4–6 (прошедшее время, い/な-прилагательные, て-форма)',
+            guide: 'Глава 6 (て-форма) — главный перевал N5. Запомни песенку/правило спряжения (う/つ/る→って, む/ぶ/ぬ→んで, く→いて, ぐ→いで) и прогони 50 глаголов до автоматизма.'
+          },
+          {
+            id: 'jp2_3', tag: 'ANKI', mins: 20, mobile: true, done: false,
+            title: 'Рубеж Anki: 400 слов (Kaishi 1.5k) + первые 50 базовых кандзи',
+            guide: 'Обновляй счётчик слов и кандзи сверху. Не зубри изолированные чтения кандзи — запоминай их прямо внутри слов в Kaishi (например, 日本, 学生, 食べる, 時間).'
+          },
+          {
+            id: 'jp2_4', tag: 'РЕГ. N5', mins: 30, mobile: true, done: false,
+            title: 'Конец марта 2027: подать заявку на JLPT N5 в Генконсульстве',
+            guide: 'Окно регистрации — всего 5 рабочих дней!\nКуда: лично в Генконсульство Японии (Владивосток, ул. Верхнепортовая, 46, 6 этаж, 14:00–17:00, приходи до 16:00). Почтой не принимают.\nС собой: паспорт, 2 фото 3×4 и ~800 ₽ наличными строго без сдачи.'
+          },
+          {
+            id: 'jp2_5', tag: 'GENKI I', mins: 45, mobile: false, done: false,
+            title: 'Genki I · главы 7–9 (ている, словарная/короткая форма, と思う, придаточные)',
+            guide: 'С апреля 2027 (после выхода на Middle .NET) включается Фаза 2: 08:00–09:30 в будни + по 3ч в сб/вс (13,5 ч/нед). Короткая форма (ない/た/なかった) — база всей живой речи.'
+          },
+          {
+            id: 'jp2_6', tag: 'GENKI I', mins: 45, mobile: false, done: false,
+            title: 'Genki I · главы 10–12 (сравнения, たい, たり, から/ので — финал N5)',
+            guide: 'После 12-й главы вся грамматика N5 закрыта. Сделай сводный конспект слабых конструкций в Obsidian и прогони итоговый тест по всем главам Genki I.'
+          },
+          {
+            id: 'jp2_7', tag: 'АУДИО', mins: 30, mobile: true, done: false,
+            title: 'Словарь 800+ слов + 30 выпусков Nihongo con Teppei (Beginner)',
+            guide: 'Слушай по 1–2 коротких выпуска (4–5 мин) в дороге на S23. Цель — перестать мысленно переводить каждое слово на русский и ловить смысл фразы целиком на естественной скорости.'
+          },
+          {
+            id: 'jp2_8', tag: 'ЭКЗАМЕН', mins: 90, mobile: false, done: false,
+            title: '2 полных пробника N5 на таймере (≥110/180) → сдача 04.07.2027 в ДВФУ',
+            guide: 'Прорешай 2 официальных пробника JLPT N5 строго с секундомером и бланком (включая аудирование без перемотки). Проходной балл — 80/180; идём на ≥110. Галочка здесь автоматически зажжёт Веху 05 и шаг Этапа 03.'
+          }
+        ]
+      },
+      {
+        code: '03',
+        short: 'JLPT N4 · CoE',
+        date: 'Июл–Дек 27',
+        targetHours: 600,
+        title: 'JLPT N4 · Genki II и бумажный ключ к самоспонсорству CoE',
+        summary: 'Главный визовый экзамен до подачи CoE: закрыть Genki II, добить Kaishi 1.5k, включить погружение на New 3DS LL и сдать N4 05.12.2027.',
+        steps: [
+          {
+            id: 'jp3_1', tag: 'GENKI II', mins: 45, mobile: false, done: false,
+            title: 'Genki II · главы 13–15 (потенциальная форма, なら, приглашения, волевая よう)',
+            guide: 'Не делай паузу после сдачи N5 в июле — на инерции сразу заходи в Genki II. Потенциальная форма (食べられる/話せる) и よう сразу резко расширяют то, что ты можешь сказать.'
+          },
+          {
+            id: 'jp3_2', tag: 'GENKI II', mins: 45, mobile: false, done: false,
+            title: 'Genki II · главы 16–18 (てあげる/くれる/もらう, そうだ, たら/と, переходность)',
+            guide: 'Самый коварный блок N4: направление действий (кто кому оказал услугу) и пары переходных/непереходных глаголов (開ける/開く). Отрабатывай на живых картинках и примерах, а не сухой таблицей.'
+          },
+          {
+            id: 'jp3_3', tag: 'РЕГ. N4', mins: 30, mobile: true, done: false,
+            title: 'Начало сентября 2027: подать заявку на JLPT N4 в Генконсульстве',
+            guide: 'КРИТИЧНОЕ ОКНО! 5 рабочих дней в начале сентября на Верхнепортовой, 46 (14:00–17:00, ~800 ₽ наличными без сдачи). Бумажный сертификат за декабрьскую сессию придёт в конце февраля 2028 — ровно к подаче CoE.'
+          },
+          {
+            id: 'jp3_4', tag: '3DS / БЫТ', mins: 45, mobile: true, done: false,
+            title: 'Перевести New 3DS LL на японский + чтение Tadoku Level 1–2',
+            guide: 'Поставь на прошитую New 3DS LL японские ромы с фуриганой: とびだせ どうぶつの森 (Animal Crossing: New Leaf) или Yo-Kai Watch. Вечерние 45 мин игры превращаются в мягкое погружение в живой бытовой язык.'
+          },
+          {
+            id: 'jp3_5', tag: 'GENKI II', mins: 45, mobile: false, done: false,
+            title: 'Genki II · главы 19–21 (кэйго 尊敬語/謙譲語, пассив られる)',
+            guide: 'Кэйго (вежливая речь) постоянно встречается в магазинах, конбини, мэрии и на собеседованиях в Японии. На N4 достаточно уверенно узнавать базовые формы (いらっしゃる, おっしゃる, いただく) и не путать пассив с потенциалом.'
+          },
+          {
+            id: 'jp3_6', tag: 'GENKI II', mins: 45, mobile: false, done: false,
+            title: 'Genki II · главы 22–23 (каузатив させる, каузатив-пассив — финал базы)',
+            guide: 'Закрывает всю базовую грамматику японского языка. После 23-й главы можно смело выходить из учебников для начинающих в реальный контент.'
+          },
+          {
+            id: 'jp3_7', tag: 'ANKI', mins: 25, mobile: true, done: false,
+            title: 'Добить Kaishi 1.5k на 100% (~1 500 слов, ~350 кандзи) + Yomitan',
+            guide: 'Когда все 1 500 новых карт Kaishi пройдены, поставь в Firefox расширение Yomitan + AnkiConnect — сможешь в 1 клик собирать в Anki незнакомые слова прямо из манги, веб-новелл (Kakuyomu/Syosetu) и субтитров.'
+          },
+          {
+            id: 'jp3_8', tag: 'ЭКЗАМЕН', mins: 90, mobile: false, done: false,
+            title: '3 полных пробника N4 (≥115/180) → сдача 05.12.2027 в ДВФУ',
+            guide: 'Проходной балл N4 — 90/180 (и минимумы по секциям). Прогони 3 прошлых варианта на время, выпиши ошибки по грамматике и аудированию. Галочка здесь автоматически зажжёт Веху 06 и шаг Этапа 04.'
+          }
+        ]
+      },
+      {
+        code: '04',
+        short: 'JLPT N3',
+        date: 'Янв–Июл 28',
+        targetHours: 950,
+        title: 'JLPT N3 · Quartet I, Shin Kanzen Master и комфортный вылет',
+        summary: 'Пробить плато N4→N3 до переезда: выйти на живое чтение и речь, сдать N3 02.07.2028 (≥110/180), чтобы в Токио взять N2 за 6–9 месяцев.',
+        steps: [
+          {
+            id: 'jp4_1', tag: 'QUARTET', mins: 50, mobile: false, done: false,
+            title: 'Quartet I · уроки 1–3 (переход на реальные тексты и связную речь)',
+            guide: 'Quartet I — прямое продолжение Genki II. Главный сдвиг здесь: длинные тексты без сплошного перевода и умение пересказывать прочитанное своими словами.'
+          },
+          {
+            id: 'jp4_2', tag: 'РЕГ. N3', mins: 30, mobile: true, done: false,
+            title: 'Конец марта 2028: подать заявку на JLPT N3 в Генконсульстве',
+            guide: '5-дневное окно в конце марта 2028 (параллельно с ITPEC FE и подготовкой CoE — держи под контролем!). Верхнепортовая, 46, 1 000 ₽ наличными без сдачи.'
+          },
+          {
+            id: 'jp4_3', tag: 'QUARTET', mins: 50, mobile: false, done: false,
+            title: 'Quartet I · уроки 4–6 + Shin Kanzen Master N3 (Грамматика)',
+            guide: 'SKM N3 文法 — золотой стандарт сдачи N3: чётко разводит похожие конструкции (わけだ / はずだ / べきだ, うちに / 間に), на которых чаще всего сыпятся на экзамене.'
+          },
+          {
+            id: 'jp4_4', tag: 'ЧТЕНИЕ', mins: 45, mobile: true, done: false,
+            title: 'Shin Kanzen Master N3 (Чтение) + манга / NHK News Web Easy',
+            guide: 'На N3 чтение — главный пожиратель времени. Тренируй технику скимминга (сначала вопрос → потом поиск ответа в тексте) и читай по 1–2 главы манги или статьи NHK Easy каждый вечер.'
+          },
+          {
+            id: 'jp4_5', tag: 'СЛОВАРЬ', mins: 25, mobile: true, done: false,
+            title: 'Рубеж словаря: 3 500+ слов и 650+ кандзи (Anki + майнинг)',
+            guide: 'К лету 2028 держи стабильный майнинг по 10–15 новых слов в день из живого контента (манга, визуальные новеллы, статьи) — так словарный запас N3 набирается органично.'
+          },
+          {
+            id: 'jp4_6', tag: 'РЕЧЬ', mins: 45, mobile: true, done: false,
+            title: 'Аудирование (YUYU / Teppei Z) + 1 разговорный урок/нед с носителем',
+            guide: 'За 3–4 месяца до вылета подключи 1 созвон в неделю по 30–45 мин с японским тьютором (iTalki / Preply, бытовые сценарии: аренда, банк, мэрия, рассказ о себе и IT). Это снимает ступор в первые недели в Токио.'
+          },
+          {
+            id: 'jp4_7', tag: 'ЭКЗАМЕН', mins: 100, mobile: false, done: false,
+            title: '3 пробника N3 на таймере (≥115/180) → сдача 02.07.2028 в ДВФУ',
+            guide: 'Проходной N3 — 95/180. Цель — уверенные ≥110–115/180, чтобы в октябре 2028 сразу попасть в сильную группу языковой школы и закрыть N2 без застревания. Галочка синхронизируется с Этапом 07.'
+          }
+        ]
+      }
+    ];
+
     const COMMANDER_BUDGETS = {
       lite: { label: '15–30 МИН', hint: 'Смена / выжат · база + 1 микро-шаг', maxPlanTasks: 1, maxTaskMins: 25, totalPlanMins: 25, preferMobile: true },
       medium: { label: '1–2 ЧАСА', hint: 'Пары / практика · база + 2 важных шага', maxPlanTasks: 2, maxTaskMins: 70, totalPlanMins: 95, preferMobile: false },
@@ -2503,6 +2742,9 @@
       capitalRub: 0,
       jpHours: 0,
       feHours: 0,
+      activeJpStage: 0,
+      jpVocab: { words: 0, kanji: 0 },
+      jpStages: structuredClone(defaultJpStages),
       crmRows: [],
       techGaps: [
         { id: 'g1', text: 'IMiddleware vs convention-based middleware (Scoped vs Singleton)', done: false },
@@ -2544,6 +2786,40 @@
       s.capitalRub = Number(rawObj.capitalRub) || 0;
       s.jpHours = Number(rawObj.jpHours) || 0;
       s.feHours = Number(rawObj.feHours) || 0;
+      s.activeJpStage = Number(rawObj.activeJpStage) || 0;
+      if (rawObj.jpVocab && typeof rawObj.jpVocab === 'object') {
+        s.jpVocab = { words: Number(rawObj.jpVocab.words) || 0, kanji: Number(rawObj.jpVocab.kanji) || 0 };
+      }
+      if (Array.isArray(rawObj.jpStages) && rawObj.jpStages.length === defaultJpStages.length) {
+        s.jpStages = structuredClone(defaultJpStages).map((defSt, idx) => {
+          const savedSt = rawObj.jpStages[idx];
+          if (!savedSt || !Array.isArray(savedSt.steps)) return defSt;
+          const savedMap = new Map(savedSt.steps.map(st => [st.id, st]));
+          const defIds = new Set(defSt.steps.map(st => st.id));
+          defSt.steps = defSt.steps.map(dst => {
+            const prev = savedMap.get(dst.id);
+            return prev ? { ...dst, done: Boolean(prev.done), title: prev.title || dst.title, guide: prev.guide || dst.guide } : dst;
+          });
+          savedSt.steps.forEach(sst => { if (!defIds.has(sst.id)) defSt.steps.push(sst); });
+          return defSt;
+        });
+      } else {
+        s.jpStages = structuredClone(defaultJpStages);
+        // One-time smart migration from legacy actionQueues.jp done flags if user already checked early items
+        const oldJpSteps = rawObj.actionQueues?.jp?.steps;
+        if (Array.isArray(oldJpSteps)) {
+          const doneMap = new Map(oldJpSteps.map(x => [x.id, Boolean(x.done)]));
+          const mapLegacy = { qj1: 'jp1_1', qj2: 'jp1_2', qj3: 'jp1_3', qj4: 'jp2_1', qj5: 'jp2_4', qj6: 'jp2_8', qj7: 'jp3_3', qj8: 'jp3_8', qj11: 'jp4_2', qj12: 'jp4_7' };
+          for (const [oldId, newId] of Object.entries(mapLegacy)) {
+            if (doneMap.get(oldId)) {
+              for (const st of s.jpStages) {
+                const hit = st.steps.find(x => x.id === newId);
+                if (hit) hit.done = true;
+              }
+            }
+          }
+        }
+      }
       if (Array.isArray(rawObj.crmRows)) s.crmRows = rawObj.crmRows;
       if (Array.isArray(rawObj.techGaps)) s.techGaps = rawObj.techGaps;
       if (Array.isArray(rawObj.tasks) && rawObj.tasks.length) s.tasks = rawObj.tasks;
@@ -3535,6 +3811,7 @@
       toggleEl('kpi-shift-card', archived);
       toggleEl('kpi-stage-card', !archived);
       toggleEl('kpi-fe-card', !archived);
+      toggleEl('study-fe-block', !archived);
       toggleEl('deck-debts-card', archived);
       const snapGrid = document.getElementById('deck-snap-grid');
       if (snapGrid) snapGrid.className = archived ? 'grid grid-cols-1 gap-4' : 'grid grid-cols-1 lg:grid-cols-2 gap-4';
@@ -3793,9 +4070,271 @@
       document.getElementById('ndfl-rate').textContent = `${((1 - annNet / annGross) * 100).toFixed(2)}%`;
     }
 
+    let jpExpandedGuides = new Set();
+
+    function getActiveJpStageIdx() {
+      const stages = state.jpStages || [];
+      for (let i = 0; i < stages.length; i++) {
+        if (stages[i].steps.some(s => !s.done)) return i;
+      }
+      return Math.max(0, stages.length - 1);
+    }
+
+    function getNextJpStep() {
+      const stages = state.jpStages || [];
+      for (let i = 0; i < stages.length; i++) {
+        const step = stages[i].steps.find(s => !s.done);
+        if (step) return { stageIdx: i, stage: stages[i], step };
+      }
+      return null;
+    }
+
+    function getAllJpStepsFlat() {
+      const out = [];
+      (state.jpStages || []).forEach((st, si) => {
+        st.steps.forEach(s => out.push({ ...s, stageIdx: si, stageCode: st.code, stageShort: st.short }));
+      });
+      return out;
+    }
+
+    function setJpStepDone(stageIdx, stepId, done, silentLog = false) {
+      const st = state.jpStages?.[stageIdx];
+      const step = st?.steps.find(x => x.id === stepId);
+      if (!step) return;
+      const stageWasDone = st.steps.every(x => x.done);
+      step.done = Boolean(done);
+
+      if (done) {
+        if (!silentLog) {
+          logActivity(isoDate(0), 'note', 0, { tag: 'JP', label: `${st.short}: ${step.title}` });
+        }
+        // Unified Organism Sync: exam steps sync to 8-Stage Master Plan & Milestones
+        const syncPlanStep = (pIdx, pId) => {
+          const ps = state.planStages?.[pIdx]?.steps.find(x => x.id === pId);
+          if (ps) ps.done = true;
+        };
+        const syncMilestone = (mId) => {
+          const m = state.milestones?.find(x => x.id === mId);
+          if (m && !m.done) {
+            m.done = true;
+            m.date = fmtShortDate(isoDate(0)) + '.' + String(new Date().getFullYear()).slice(2);
+          }
+        };
+        if (stepId === 'jp2_8') { syncPlanStep(2, 's3_5'); syncMilestone('m5'); }
+        else if (stepId === 'jp3_8') { syncPlanStep(3, 's4_1'); syncMilestone('m6'); }
+        else if (stepId === 'jp4_7') { syncPlanStep(6, 's7_1'); }
+        else if (stepId === 'jp2_1') {
+          const s1Done = (state.jpStages[0]?.steps || []).slice(0, 3).every(x => x.done);
+          if (s1Done) syncPlanStep(0, 's1_5');
+        }
+
+        if (!stageWasDone && st.steps.every(x => x.done) && stageIdx < state.jpStages.length - 1) {
+          state.activeJpStage = stageIdx + 1;
+          toast(`Этап JP ${st.code} закрыт → открыт ${state.jpStages[stageIdx + 1].short} ✓`);
+        } else if (!silentLog) {
+          toast('Шаг японского закрыт и синхронизирован ✓');
+        }
+      }
+      save(true);
+      renderAll();
+    }
+
+    function renderJpRoadmap() {
+      const stages = state.jpStages || [];
+      let total = 0, done = 0;
+      stages.forEach(st => { total += st.steps.length; done += st.steps.filter(x => x.done).length; });
+      const pct = total ? Math.round((done / total) * 100) : 0;
+
+      const glbl = document.getElementById('jp-rm-global-lbl');
+      const gbar = document.getElementById('jp-rm-global-bar');
+      if (glbl) glbl.textContent = `Связано с Командиром дня, календарём и вехами · выполнено ${done} / ${total} (${pct}%)`;
+      if (gbar) gbar.style.width = `${pct}%`;
+
+      // Current focus box
+      const focusBox = document.getElementById('jp-current-focus-box');
+      const next = getNextJpStep();
+      if (focusBox) {
+        if (!next) {
+          focusBox.innerHTML = `<div class="font-mono-num text-xs text-[#A3CCA8]">✓ Весь маршрут до JLPT N3 полностью закрыт!</div>`;
+        } else {
+          const gOpen = jpExpandedGuides.has('focus_' + next.step.id);
+          focusBox.innerHTML = `
+            <div class="space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2 font-mono-num text-[10px]">
+                <span class="text-[#A3CCA8]">ТЕКУЩИЙ ШАГ · ЭТАП ${next.stage.code} (${esc(next.stage.short)})</span>
+                <span class="text-[#868C84]">~${next.step.mins || 30} мин · ${next.step.mobile ? 'ТЕЛ / ПК' : 'ПК / УЧЕБНИК'}</span>
+              </div>
+              <div class="flex flex-wrap items-start justify-between gap-2">
+                <label class="flex items-start gap-2.5 cursor-pointer flex-1 min-w-0">
+                  <input type="checkbox" class="chk mt-0.5" data-jpfocus-done="${next.stageIdx}:${next.step.id}" />
+                  <div class="min-w-0">
+                    <span class="hm-tag hm-tag-jp mr-1.5">${esc(next.step.tag)}</span>
+                    <span class="text-xs sm:text-[13px] font-medium text-[#E8ECF4] leading-snug">${esc(next.step.title)}</span>
+                  </div>
+                </label>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button type="button" data-jpfocus-guide="focus_${next.step.id}" class="btn btn-ghost py-1 px-2 text-[10px]">${gOpen ? 'СКРЫТЬ ▴' : 'ГАЙД ▾'}</button>
+                </div>
+              </div>
+              ${gOpen ? `<div class="step-guide text-[11px]">${esc(next.step.guide)}</div>` : ''}
+            </div>
+          `;
+          focusBox.querySelectorAll('[data-jpfocus-done]').forEach(cb => cb.addEventListener('change', () => {
+            const [si, sid] = cb.dataset.jpfocusDone.split(':');
+            setJpStepDone(Number(si), sid, cb.checked);
+          }));
+          focusBox.querySelectorAll('[data-jpfocus-guide]').forEach(b => b.addEventListener('click', () => {
+            const k = b.dataset.jpfocusGuide;
+            if (jpExpandedGuides.has(k)) jpExpandedGuides.delete(k); else jpExpandedGuides.add(k);
+            renderJpRoadmap();
+          }));
+        }
+      }
+
+      // Stage tabs
+      const activeIdx = Math.min(stages.length - 1, Math.max(0, Number(state.activeJpStage) || 0));
+      const tabsEl = document.getElementById('jp-stage-tabs');
+      if (tabsEl) {
+        tabsEl.innerHTML = stages.map((st, i) => {
+          const stDone = st.steps.filter(x => x.done).length;
+          const allDone = st.steps.length > 0 && stDone === st.steps.length;
+          const selected = i === activeIdx;
+          const cls = selected ? 'stage-pill-active' : (allDone ? 'stage-pill-done' : 'bg-[rgba(10,12,11,0.7)] border-[rgba(163,204,168,0.14)] text-[#868C84] hover:border-[rgba(163,204,168,0.35)]');
+          return `
+            <button type="button" data-jpst="${i}" class="p-2 text-left rounded border font-mono-num transition cursor-pointer ${cls}">
+              <div class="flex items-center justify-between text-[9px]">
+                <span class="text-[#A3CCA8]">${st.code} · ${esc(st.date)}</span>
+                <span>${allDone ? '✓' : `${stDone}/${st.steps.length}`}</span>
+              </div>
+              <div class="text-[11px] font-semibold mt-0.5 truncate">${esc(st.short)}</div>
+            </button>
+          `;
+        }).join('');
+        tabsEl.querySelectorAll('[data-jpst]').forEach(b => b.addEventListener('click', () => {
+          state.activeJpStage = Number(b.dataset.jpst);
+          save(true);
+          renderJpRoadmap();
+        }));
+      }
+
+      // Selected Stage Body
+      const bodyEl = document.getElementById('jp-stage-body');
+      const cur = stages[activeIdx];
+      if (!bodyEl || !cur) return;
+      const cDone = cur.steps.filter(x => x.done).length;
+      const cPct = cur.steps.length ? Math.round((cDone / cur.steps.length) * 100) : 100;
+      const curHrs = Number(state.jpHours) || 0;
+
+      bodyEl.innerHTML = `
+        <div class="flex flex-wrap items-start justify-between gap-2">
+          <div class="space-y-1 flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2 font-mono-num text-[10px]">
+              <span class="px-2 py-0.5 rounded bg-[rgba(163,204,168,0.14)] border border-[rgba(163,204,168,0.32)] text-[#A3CCA8]">ЭТАП ${cur.code} · ${esc(cur.date)}</span>
+              <span class="text-[#868C84]">Ориентир: ${curHrs.toFixed(1)} / ${cur.targetHours} ч</span>
+            </div>
+            <div class="font-mincho text-sm sm:text-base font-semibold text-[#E8ECF4]">${esc(cur.title)}</div>
+            <p class="text-xs text-[#9EA49C] leading-relaxed">${esc(cur.summary)}</p>
+          </div>
+          <div class="font-mono-num text-right shrink-0">
+            <div class="text-base font-semibold text-[#E8ECF4]">${cDone} / ${cur.steps.length}</div>
+            <div class="text-[10px] text-[#868C84]">${cPct}%</div>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          ${cur.steps.map((s, si) => {
+            const isOpen = jpExpandedGuides.has(s.id);
+            return `
+              <div class="panel p-2.5 transition ${s.done ? 'opacity-55' : ''}">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-start gap-2.5 flex-1 min-w-0">
+                    <input type="checkbox" class="chk mt-0.5" data-jpstep="${activeIdx}:${s.id}" ${s.done ? 'checked' : ''} />
+                    <div class="min-w-0 flex-1">
+                      <div class="flex flex-wrap items-center gap-1.5">
+                        <span class="font-mono-num text-[9px] text-[#6B726A]">${String(si + 1).padStart(2, '0')}.</span>
+                        <span class="hm-tag hm-tag-jp">${esc(s.tag || 'JP')}</span>
+                        <button type="button" data-jpguide="${s.id}" class="text-left text-xs font-medium ${s.done ? 'line-through text-[#868C84]' : 'text-[#E8ECF4]'} hover:text-[#A3CCA8] cursor-pointer">${esc(s.title)}</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" data-jpguide="${s.id}" class="btn btn-ghost py-0.5 px-2 text-[10px]">${isOpen ? '▴' : 'ГАЙД ▾'}</button>
+                    <button type="button" data-jpedit="${activeIdx}:${s.id}" title="Редактировать" class="text-[#868C84] hover:text-[#E8ECF4] font-mono-num text-xs px-1">✎</button>
+                    <button type="button" data-jpdel="${activeIdx}:${s.id}" title="Удалить" class="text-[#5D645C] hover:text-[#DF9B94] font-mono-num text-xs px-1">×</button>
+                  </div>
+                </div>
+                ${isOpen ? `<div class="step-guide text-[11px]">${esc(s.guide || 'Добавь детали через ✎')}</div>` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <div class="pt-2.5 border-t border-[rgba(163,204,168,0.12)] flex flex-wrap sm:flex-nowrap gap-2">
+          <input id="jp-new-tag" type="text" placeholder="Тег (ANKI/GENKI)" class="inp font-mono-num text-[11px] w-32" />
+          <input id="jp-new-title" type="text" placeholder="Добавить свой шаг в этап ${cur.code}..." class="inp text-xs flex-1 min-w-[160px]" />
+          <button type="button" id="btn-jp-add-step" class="btn btn-primary py-1.5 px-3 text-[10px]">+ ШАГ</button>
+        </div>
+      `;
+
+      bodyEl.querySelectorAll('[data-jpstep]').forEach(cb => cb.addEventListener('change', () => {
+        const [si, sid] = cb.dataset.jpstep.split(':');
+        setJpStepDone(Number(si), sid, cb.checked);
+      }));
+      bodyEl.querySelectorAll('[data-jpguide]').forEach(b => b.addEventListener('click', () => {
+        const sid = b.dataset.jpguide;
+        if (jpExpandedGuides.has(sid)) jpExpandedGuides.delete(sid); else jpExpandedGuides.add(sid);
+        renderJpRoadmap();
+      }));
+      bodyEl.querySelectorAll('[data-jpedit]').forEach(b => b.addEventListener('click', () => {
+        const [si, sid] = b.dataset.jpedit.split(':');
+        const step = state.jpStages[Number(si)]?.steps.find(x => x.id === sid);
+        if (!step) return;
+        const nt = prompt('Название шага:', step.title); if (nt === null) return;
+        const ng = prompt('Инструкция (перенос строки через \n):', (step.guide || '').replace(/
+/g, '\n')); if (ng === null) return;
+        if (nt.trim()) step.title = nt.trim();
+        step.guide = ng.replace(/\n/g, '
+').trim();
+        save(); renderAll();
+      }));
+      bodyEl.querySelectorAll('[data-jpdel]').forEach(b => b.addEventListener('click', () => {
+        const [si, sid] = b.dataset.jpdel.split(':');
+        if (!confirm('Удалить шаг из маршрута японского?')) return;
+        state.jpStages[Number(si)].steps = state.jpStages[Number(si)].steps.filter(x => x.id !== sid);
+        save(); renderAll();
+      }));
+      const addBtn = document.getElementById('btn-jp-add-step');
+      if (addBtn) addBtn.addEventListener('click', () => {
+        const title = document.getElementById('jp-new-title').value.trim();
+        if (!title) return;
+        const tag = document.getElementById('jp-new-tag').value.trim().toUpperCase() || 'JP';
+        cur.steps.push({ id: 'jpc_' + Date.now(), tag, mins: 30, mobile: true, done: false, title, guide: 'Добавь детали через ✎' });
+        save(); renderAll();
+      });
+    }
+
     function renderStudy() {
       const h = Number(state.jpHours) || 0, fe = Number(state.feHours) || 0;
       document.getElementById('study-jp-total').textContent = `${h.toFixed(1)} ч`;
+
+      // Real 14-day weekly JP pace + required pace to next exam
+      let jp14 = 0;
+      for (let i = 0; i < 14; i++) {
+        const rec = state.activityLog[isoDate(-i)];
+        if (rec) jp14 += Number(rec.jp) || 0;
+      }
+      const paceWk = jp14 / 2;
+      const nowD = new Date(); nowD.setHours(0, 0, 0, 0);
+      const nextTarget = h < 325
+        ? { lbl: 'N5', hrs: 325, dt: '2027-07-04' }
+        : (h < 600 ? { lbl: 'N4', hrs: 600, dt: '2027-12-05' } : { lbl: 'N3', hrs: 950, dt: '2028-07-02' });
+      const wksLeft = Math.max(1, (new Date(nextTarget.dt + 'T00:00:00') - nowD) / (7 * 86400000));
+      const reqWk = Math.max(0, (nextTarget.hrs - h) / wksLeft);
+      const paceEl = document.getElementById('study-jp-pace-badge');
+      if (paceEl) {
+        paceEl.innerHTML = `Темп 14д: <span class="text-[#A3CCA8] font-semibold">${paceWk.toFixed(1)} ч/нед</span> · к ${nextTarget.lbl} нужно ~${reqWk.toFixed(1)} ч/нед`;
+      }
+
       const setB = (idB, idT, target) => {
         const pct = Math.min(100, Math.round((h / target) * 100));
         document.getElementById(idB).style.width = `${pct}%`;
@@ -3806,6 +4345,22 @@
       setB('bar-n3', 'bar-n3-t', 950);
       document.getElementById('study-fe-total').textContent = `${fe.toFixed(1)} / 100 ч`;
       document.getElementById('bar-fe').style.width = `${Math.min(100, Math.round((fe / 100) * 100))}%`;
+
+      // Anki Vocab & Kanji counters
+      const wCnt = Number(state.jpVocab?.words) || 0;
+      const kCnt = Number(state.jpVocab?.kanji) || 0;
+      const wGoal = wCnt >= 1500 ? 3500 : 1500;
+      const kGoal = kCnt >= 350 ? 650 : 350;
+      const wEl = document.getElementById('jp-words-val');
+      const kEl = document.getElementById('jp-kanji-val');
+      if (wEl) {
+        wEl.textContent = `${wCnt.toLocaleString('ru-RU')} / ${wGoal.toLocaleString('ru-RU')}`;
+        document.getElementById('jp-words-bar').style.width = `${Math.min(100, Math.round((wCnt / wGoal) * 100))}%`;
+      }
+      if (kEl) {
+        kEl.textContent = `${kCnt.toLocaleString('ru-RU')} / ${kGoal.toLocaleString('ru-RU')}`;
+        document.getElementById('jp-kanji-bar').style.width = `${Math.min(100, Math.round((kCnt / kGoal) * 100))}%`;
+      }
 
       const done = state.tasks.filter(t => t.done).length;
       document.getElementById('tasks-badge').textContent = `${done} / ${state.tasks.length}`;
@@ -3836,31 +4391,38 @@
         state.tasks = state.tasks.filter(x => x.id !== b.dataset.tdel); save(); renderAll();
       }));
 
+      // Render 4-Stage Japanese Roadmap
+      renderJpRoadmap();
+
+      // Render 30-Day Start Sprint (now living inside View 05 collapsible card)
       const oSet = new Set(state.orderChecked);
       let tot = 0; order30Weeks.forEach(w => tot += w.tasks.length);
-      document.getElementById('order30-badge').textContent = `${oSet.size} / ${tot}`;
+      const oBadge = document.getElementById('order30-badge');
       const oGrid = document.getElementById('order30-grid');
-      oGrid.innerHTML = order30Weeks.map(w => `
-        <div class="panel-recessed p-3 space-y-2">
-          <div class="font-mono-num text-[10px] font-semibold text-[#A3CCA8] border-b border-[rgba(163,204,168,0.12)] pb-1.5">${w.week}</div>
-          <div class="space-y-2">
-            ${w.tasks.map(t => {
-              const on = oSet.has(t.id);
-              return `
-                <label class="flex items-start gap-2 text-xs cursor-pointer">
-                  <input type="checkbox" class="chk mt-0.5" data-o30="${t.id}" ${on ? 'checked' : ''} />
-                  <span class="${on ? 'line-through text-[#868C84]' : 'text-[#C6C9C3]'} leading-snug">${t.text}</span>
-                </label>
-              `;
-            }).join('')}
+      if (oBadge) oBadge.textContent = `${oSet.size} / ${tot}`;
+      if (oGrid) {
+        oGrid.innerHTML = order30Weeks.map(w => `
+          <div class="panel-recessed p-3 space-y-2">
+            <div class="font-mono-num text-[10px] font-semibold text-[#A3CCA8] border-b border-[rgba(163,204,168,0.12)] pb-1.5">${w.week}</div>
+            <div class="space-y-2">
+              ${w.tasks.map(t => {
+                const on = oSet.has(t.id);
+                return `
+                  <label class="flex items-start gap-2 text-xs cursor-pointer">
+                    <input type="checkbox" class="chk mt-0.5" data-o30="${t.id}" ${on ? 'checked' : ''} />
+                    <span class="${on ? 'line-through text-[#868C84]' : 'text-[#C6C9C3]'} leading-snug">${t.text}</span>
+                  </label>
+                `;
+              }).join('')}
+            </div>
           </div>
-        </div>
-      `).join('');
-      oGrid.querySelectorAll('[data-o30]').forEach(cb => cb.addEventListener('change', () => {
-        const s = new Set(state.orderChecked);
-        cb.checked ? s.add(cb.dataset.o30) : s.delete(cb.dataset.o30);
-        state.orderChecked = Array.from(s); save(); renderStudy();
-      }));
+        `).join('');
+        oGrid.querySelectorAll('[data-o30]').forEach(cb => cb.addEventListener('change', () => {
+          const s = new Set(state.orderChecked);
+          cb.checked ? s.add(cb.dataset.o30) : s.delete(cb.dataset.o30);
+          state.orderChecked = Array.from(s); save(); renderAll();
+        }));
+      }
     }
 
     let wChart = null, cChart = null;
@@ -4573,9 +5135,9 @@
         });
       }
 
-      // 7. Next Action from each of the 4 Queues
-      const qPriority = { net: 755, money: 740, reloc: 715, jp: 695 };
-      ['net', 'money', 'reloc', 'jp'].forEach(k => {
+      // 7. Next Action from Queues (money, net, reloc) + Unified Japanese Roadmap (jpStages)
+      const qPriority = { net: 755, money: 740, reloc: 715 };
+      ['net', 'money', 'reloc'].forEach(k => {
         const br = state.actionQueues?.[k];
         if (!br) return;
         const next = br.steps.find(s => !s.done);
@@ -4590,13 +5152,32 @@
           priority: qPriority[k] || 700,
           mins: est.mins,
           mobile: est.mobile,
-          tag: k === 'net' ? '.NET' : (k === 'jp' ? 'JP' : (k === 'money' ? 'ДЕЛА' : 'ПЛАН')),
+          tag: k === 'net' ? '.NET' : (k === 'money' ? 'ДЕЛА' : 'ПЛАН'),
           sourceLabel: `Ветка · ${br.short}`,
           title: next.title,
           guide: next.guide,
-          jumpView: k === 'net' ? 'view-career' : (k === 'money' ? 'view-finance' : (k === 'jp' ? 'view-study' : 'view-plan'))
+          jumpView: k === 'net' ? 'view-career' : (k === 'money' ? 'view-finance' : 'view-plan')
         });
       });
+
+      const nextJp = getNextJpStep();
+      if (nextJp) {
+        pool.push({
+          key: `jpstep:${nextJp.stageIdx}:${nextJp.step.id}`,
+          kind: 'jpstep',
+          stageIdx: nextJp.stageIdx,
+          refId: nextJp.step.id,
+          group: 'jp',
+          priority: 745,
+          mins: Number(nextJp.step.mins) || 30,
+          mobile: nextJp.step.mobile !== false,
+          tag: 'JP',
+          sourceLabel: `JP · ${nextJp.stage.short}`,
+          title: nextJp.step.title,
+          guide: nextJp.step.guide,
+          jumpView: 'view-study'
+        });
+      }
 
       // 8. Next unsolved Live Code Review case (great for phone / 15m slots!)
       const crDone = new Set(state.codeReviewDone || []);
@@ -4636,10 +5217,10 @@
               mins: est.mins,
               mobile: est.mobile,
               tag: 'ДЕЛА',
-              sourceLabel: 'План 30д',
+              sourceLabel: 'Спринт 30д',
               title: open.text,
               guide: `${w.week} — закрывай шаг и отмечай галочкой.`,
-              jumpView: 'view-study'
+              jumpView: 'view-plan'
             });
             break;
           }
@@ -4728,6 +5309,8 @@
         const s = new Set(state.codeReviewDone || []);
         checked ? s.add(item.refId) : s.delete(item.refId);
         state.codeReviewDone = Array.from(s);
+      } else if (item.kind === 'jpstep') {
+        setJpStepDone(item.stageIdx, item.refId, checked, true);
       } else if (item.kind === 'o30') {
         const s = new Set(state.orderChecked || []);
         checked ? s.add(item.refId) : s.delete(item.refId);
@@ -4820,9 +5403,13 @@
       if (dailiesMeta) dailiesMeta.textContent = isLite ? 'лайт-режим (без выгорания)' : `~${activeDailies.reduce((a, h) => a + (Number(h.mins) || 15), 0)} мин база`;
 
       const dailiesEl = document.getElementById('cmd-dailies-list');
+      const curJpFocus = getNextJpStep();
       dailiesEl.innerHTML = activeDailies.length ? activeDailies.map(h => {
         const on = doneDailiesSet.has(h.id);
-        const label = (isLite && h.liteTitle) ? h.liteTitle : h.title;
+        let label = (isLite && h.liteTitle) ? h.liteTitle : h.title;
+        const subHint = (h.id === 'dh_jp' && curJpFocus && !on)
+          ? `<div class="text-[10px] text-[#868C84] mt-0.5 truncate">Сейчас по маршруту: <span class="text-[#A3CCA8]">${esc(curJpFocus.step.title)}</span></div>`
+          : '';
         const mins = isLite ? (Number(h.liteMins) || 10) : (Number(h.mins) || 15);
         const actionBtn = (!on && h.timerPreset)
           ? `<button type="button" data-cmd-timer="${esc(h.timerPreset)}" class="btn btn-ghost py-0.5 px-1.5 text-[9px] text-[#A3CCA8] shrink-0" title="Запустить фокус-таймер">▶ ${h.timerPreset.split(':')[1]}м</button>`
@@ -4833,9 +5420,12 @@
           <div class="panel-recessed px-3 py-2 flex items-center justify-between gap-2 text-xs ${on ? 'opacity-50' : ''}">
             <label class="flex items-start gap-2.5 cursor-pointer flex-1 min-w-0">
               <input type="checkbox" class="chk mt-0.5" data-cmd-daily="${esc(h.id)}" ${on ? 'checked' : ''} />
-              <div class="min-w-0 flex-1 flex flex-wrap items-center gap-1.5">
-                <span class="hm-tag ${getTagClass({ tag: h.tag })}">${esc(h.tag)}</span>
-                <span class="${on ? 'line-through text-[#868C84]' : 'text-[#DFDDD4]'} leading-snug">${esc(label)}</span>
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="hm-tag ${getTagClass({ tag: h.tag })}">${esc(h.tag)}</span>
+                  <span class="${on ? 'line-through text-[#868C84]' : 'text-[#DFDDD4]'} leading-snug">${esc(label)}</span>
+                </div>
+                ${subHint}
               </div>
             </label>
             <div class="flex items-center gap-1.5 shrink-0">
@@ -5041,9 +5631,16 @@
     function renderNextActions() {
       const grid = document.getElementById('next-actions-grid');
       if (!grid) return;
+      const jpFlat = getAllJpStepsFlat();
+      const getBranchData = (k) => {
+        if (k === 'jp') {
+          return { title: 'ЯПОНСКИЙ · МАРШРУТ 0→N3', short: 'ЯПОНСКИЙ', color: '#94B8C8', steps: jpFlat };
+        }
+        return state.actionQueues[k];
+      };
       const keys = ['money', 'net', 'jp', 'reloc'];
       grid.innerHTML = keys.map(k => {
-        const br = state.actionQueues[k];
+        const br = getBranchData(k);
         const doneCount = br.steps.filter(s => s.done).length;
         const next = br.steps.find(s => !s.done);
         if (!next) {
@@ -5058,6 +5655,7 @@
           `;
         }
         const gOpen = expandedQueueGuides.has(next.id);
+        const qVal = k === 'jp' ? `jp:${next.stageIdx}:${next.id}` : `${k}:${next.id}`;
         return `
           <div class="panel-recessed p-3 space-y-2">
             <div class="flex items-center justify-between font-mono-num text-[10px]">
@@ -5066,7 +5664,7 @@
             </div>
             <div class="flex items-start justify-between gap-2">
               <label class="flex items-start gap-2 cursor-pointer flex-1 min-w-0">
-                <input type="checkbox" class="chk mt-0.5" data-qdone="${k}:${next.id}" />
+                <input type="checkbox" class="chk mt-0.5" data-qdone="${qVal}" />
                 <span class="text-xs text-[#E8ECF4] leading-snug">${esc(next.title)}</span>
               </label>
               <button type="button" data-qguide="${next.id}" class="btn btn-ghost py-0.5 px-1.5 text-[9px] shrink-0">${gOpen ? '▴' : 'КАК ▾'}</button>
@@ -5077,12 +5675,17 @@
       }).join('');
 
       grid.querySelectorAll('[data-qdone]').forEach(cb => cb.addEventListener('change', () => {
-        const [k, sid] = cb.dataset.qdone.split(':');
+        const parts = cb.dataset.qdone.split(':');
+        if (parts[0] === 'jp') {
+          setJpStepDone(Number(parts[1]), parts[2], cb.checked);
+          return;
+        }
+        const [k, sid] = parts;
         const st = state.actionQueues[k]?.steps.find(x => x.id === sid);
         if (st) {
           st.done = cb.checked;
           const br = state.actionQueues[k];
-          if (cb.checked) logActivity(isoDate(0), k === 'jp' ? 'jp' : 'net', k === 'jp' ? 0.5 : 1, { tag: br ? br.short : 'ШАГ', label: st.title });
+          if (cb.checked) logActivity(isoDate(0), 'net', 1, { tag: br ? br.short : 'ШАГ', label: st.title });
           save(true); renderAll(); toast('Шаг закрыт → загружен следующий ✓');
         }
       }));
@@ -5097,7 +5700,7 @@
       const listEl = document.getElementById('queue-branch-list');
       if (!tabsEl || !listEl) return;
       tabsEl.innerHTML = keys.map(k => {
-        const br = state.actionQueues[k];
+        const br = getBranchData(k);
         const dc = br.steps.filter(s => s.done).length;
         const on = activeQueueBranch === k;
         return `<button type="button" data-qtab="${k}" class="btn py-1 px-2.5 text-[10px] ${on ? 'btn-primary' : 'btn-ghost'}">${esc(br.short)} (${dc}/${br.steps.length})</button>`;
@@ -5106,14 +5709,15 @@
         activeQueueBranch = b.dataset.qtab; renderNextActions();
       }));
 
-      const curBr = state.actionQueues[activeQueueBranch];
+      const curBr = getBranchData(activeQueueBranch);
       listEl.innerHTML = curBr.steps.map((s, idx) => {
         const gOpen = expandedQueueGuides.has('full_' + s.id);
+        const fqVal = activeQueueBranch === 'jp' ? `jp:${s.stageIdx}:${s.id}` : `${activeQueueBranch}:${s.id}`;
         return `
           <div class="panel-recessed px-3 py-2 text-xs ${s.done ? 'opacity-55' : ''}">
             <div class="flex items-start justify-between gap-2">
               <label class="flex items-start gap-2 cursor-pointer flex-1 min-w-0">
-                <input type="checkbox" class="chk mt-0.5" data-fqdone="${activeQueueBranch}:${s.id}" ${s.done ? 'checked' : ''} />
+                <input type="checkbox" class="chk mt-0.5" data-fqdone="${fqVal}" ${s.done ? 'checked' : ''} />
                 <span class="font-mono-num text-[10px] text-[#868C84] shrink-0">${String(idx + 1).padStart(2, '0')}.</span>
                 <span class="${s.done ? 'line-through text-[#868C84]' : 'text-[#DFDDD4]'} leading-snug">${esc(s.title)}</span>
               </label>
@@ -5125,12 +5729,17 @@
       }).join('');
 
       listEl.querySelectorAll('[data-fqdone]').forEach(cb => cb.addEventListener('change', () => {
-        const [k, sid] = cb.dataset.fqdone.split(':');
+        const parts = cb.dataset.fqdone.split(':');
+        if (parts[0] === 'jp') {
+          setJpStepDone(Number(parts[1]), parts[2], cb.checked);
+          return;
+        }
+        const [k, sid] = parts;
         const st = state.actionQueues[k]?.steps.find(x => x.id === sid);
         if (st) {
           st.done = cb.checked;
           const br = state.actionQueues[k];
-          if (cb.checked) logActivity(isoDate(0), k === 'jp' ? 'jp' : 'net', k === 'jp' ? 0.5 : 1, { tag: br ? br.short : 'ШАГ', label: st.title });
+          if (cb.checked) logActivity(isoDate(0), 'net', 1, { tag: br ? br.short : 'ШАГ', label: st.title });
           save(true); renderAll();
         }
       }));
@@ -5894,6 +6503,10 @@
         const dKey = quickDateMode === 'yesterday' ? isoDate(-1) : isoDate(0);
         state.jpHours = Number(((Number(state.jpHours) || 0) + 0.75).toFixed(2));
         logActivity(dKey, 'jp', 0.75, { tag: 'JP', label: 'Японский · +45 мин', mins: 45, affectsTotal: 'jp' });
+        if (dKey === isoDate(0)) {
+          ensureDailyStateForToday();
+          if (!state.dailyState.doneDailies.includes('dh_jp')) state.dailyState.doneDailies.push('dh_jp');
+        }
         selectedHmDate = dKey; save(true); renderAll();
         toast(`+45 мин японский (${fmtShortDate(dKey)})`);
       });
@@ -6058,9 +6671,46 @@
         const delta = Number(b.dataset.jpadd);
         const dKey = document.getElementById('jp-date-in').value || isoDate(0);
         state.jpHours = Math.max(0, Number(((Number(state.jpHours) || 0) + delta).toFixed(2)));
-        if (delta > 0) logActivity(dKey, 'jp', delta, { tag: 'JP', label: `Японский · +${fmtHrsReadable(delta)}`, mins: Math.round(delta * 60), affectsTotal: 'jp' });
+        if (delta > 0) {
+          logActivity(dKey, 'jp', delta, { tag: 'JP', label: `Японский · +${fmtHrsReadable(delta)}`, mins: Math.round(delta * 60), affectsTotal: 'jp' });
+          if (dKey === isoDate(0)) {
+            ensureDailyStateForToday();
+            if (!state.dailyState.doneDailies.includes('dh_jp')) state.dailyState.doneDailies.push('dh_jp');
+          }
+        }
         save(); renderAll();
       }));
+      document.querySelectorAll('.jp-vocab-btn').forEach(b => b.addEventListener('click', () => {
+        const [field, amt] = b.dataset.jpvocab.split(':');
+        if (!state.jpVocab) state.jpVocab = { words: 0, kanji: 0 };
+        state.jpVocab[field] = Math.max(0, (Number(state.jpVocab[field]) || 0) + Number(amt));
+        save(true); renderStudy();
+        toast(field === 'words' ? `+${amt} слов (всего ${state.jpVocab.words})` : `+${amt} кандзи (всего ${state.jpVocab.kanji})`);
+      }));
+      document.getElementById('btn-jp-words-edit').addEventListener('click', () => {
+        const cur = Number(state.jpVocab?.words) || 0;
+        const nv = prompt('Сколько слов изучено в Anki:', String(cur));
+        if (nv === null) return;
+        const num = Math.max(0, Math.round(Number(nv)));
+        if (!isNaN(num)) { state.jpVocab.words = num; save(); renderStudy(); }
+      });
+      document.getElementById('btn-jp-kanji-edit').addEventListener('click', () => {
+        const cur = Number(state.jpVocab?.kanji) || 0;
+        const nv = prompt('Сколько кандзи изучено:', String(cur));
+        if (nv === null) return;
+        const num = Math.max(0, Math.round(Number(nv)));
+        if (!isNaN(num)) { state.jpVocab.kanji = num; save(); renderStudy(); }
+      });
+      document.getElementById('btn-jp-start-timer').addEventListener('click', () => {
+        switchView('view-deck');
+        launchTimerFromCommander('jp:45');
+      });
+      document.getElementById('btn-toggle-order30').addEventListener('click', () => {
+        const grid = document.getElementById('order30-grid');
+        const arr = document.getElementById('order30-arrow');
+        const hidden = grid.classList.toggle('hidden');
+        if (arr) arr.textContent = hidden ? 'ПОКАЗАТЬ ▾' : 'СКРЫТЬ ▴';
+      });
       document.querySelectorAll('.fe-add-btn').forEach(b => b.addEventListener('click', () => {
         const delta = Number(b.dataset.feadd);
         const dKey = document.getElementById('jp-date-in').value || isoDate(0);
@@ -6115,6 +6765,7 @@
         state.expenses.forEach(e => rows.push(['Расход', e.date, e.note, -Math.abs(Number(e.amount)||0), e.cat, '']));
         state.crmRows.forEach(r => rows.push(['CRM Middle', r.date, r.company, r.salary, r.stage, `${r.channel} | ${r.notes}`]));
         state.planStages.forEach(st => st.steps.forEach(p => rows.push(['План', `Этап ${st.code} (${st.date})`, p.title, p.tag, p.done ? 'Готово' : 'В работе', (p.guide || '').replace(/\r?\n/g, ' ')])));
+        (state.jpStages || []).forEach(st => st.steps.forEach(p => rows.push(['Маршрут JP', `Этап ${st.code} (${st.short})`, p.title, p.tag, p.done ? 'Готово' : 'В работе', (p.guide || '').replace(/\r?\n/g, ' ')])));
         Object.keys(state.activityLog || {}).sort().forEach(dk => {
           const rec = state.activityLog[dk];
           if (rec && Array.isArray(rec.items)) {
