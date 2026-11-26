@@ -4290,11 +4290,9 @@
         const step = state.jpStages[Number(si)]?.steps.find(x => x.id === sid);
         if (!step) return;
         const nt = prompt('Название шага:', step.title); if (nt === null) return;
-        const ng = prompt('Инструкция (перенос строки через \n):', (step.guide || '').replace(/
-/g, '\n')); if (ng === null) return;
+        const ng = prompt('Инструкция (перенос строки через \\n):', (step.guide || '').replace(/\n/g, '\\n')); if (ng === null) return;
         if (nt.trim()) step.title = nt.trim();
-        step.guide = ng.replace(/\n/g, '
-').trim();
+        step.guide = ng.replace(/\\n/g, '\n').trim();
         save(); renderAll();
       }));
       bodyEl.querySelectorAll('[data-jpdel]').forEach(b => b.addEventListener('click', () => {
